@@ -80,8 +80,13 @@ file(GLOB LVGL_PUBLIC_HEADERS
     "${LVGL_ROOT_DIR}/lv_version.h")
 
 if(NOT LV_CONF_SKIP)
-	list(APPEND LVGL_PUBLIC_HEADERS
-		"${CMAKE_SOURCE_DIR}/lv_conf.h")
+  if (LV_CONF_PATH)
+    list(APPEND LVGL_PUBLIC_HEADERS
+    ${LV_CONF_PATH})
+  else()
+    list(APPEND LVGL_PUBLIC_HEADERS
+    "${CMAKE_SOURCE_DIR}/lv_conf.h")
+  endif()
 endif()
 
 if("${LIB_INSTALL_DIR}" STREQUAL "")
@@ -93,6 +98,8 @@ endif()
 if("${INC_INSTALL_DIR}" STREQUAL "")
   set(INC_INSTALL_DIR "include/lvgl")
 endif()
+
+set(CMAKE_INSTALL_PREFIX .)
 
 #Install headers
 install(
@@ -126,8 +133,8 @@ if(NOT LV_CONF_BUILD_DISABLE_DEMOS)
 endif()
 
 
-configure_file("${LVGL_ROOT_DIR}/lvgl.pc.in" lvgl.pc @ONLY)
-configure_file("${LVGL_ROOT_DIR}/lv_version.h.in" lv_version.h @ONLY)
+configure_file("${LVGL_ROOT_DIR}/lvgl.pc.in" ${CMAKE_BINARY_DIR}/lvgl.pc @ONLY)
+configure_file("${LVGL_ROOT_DIR}/lv_version.h.in" ${CMAKE_BINARY_DIR}/lv_version.h @ONLY)
 
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/lvgl.pc"

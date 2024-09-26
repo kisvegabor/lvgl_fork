@@ -112,7 +112,7 @@ typedef int32_t (*lv_anim_get_value_cb_t)(lv_anim_t *);
 /** Callback used when the animation is deleted*/
 typedef void (*lv_anim_deleted_cb_t)(lv_anim_t *);
 
-/**< Parameter used when path is custom_bezier */
+/** Parameter used when path is custom_bezier */
 typedef struct {
     int16_t x1;
     int16_t y1;
@@ -121,8 +121,8 @@ typedef struct {
 } lv_anim_bezier3_para_t;
 
 /** Describes an animation*/
-struct lv_anim_t {
-    void * var;                               /**<Variable to animate*/
+struct _lv_anim_t {
+    void * var;                               /**< Variable to animate*/
     lv_anim_exec_xcb_t exec_cb;               /**< Function to execute to animate*/
     lv_anim_custom_exec_cb_t custom_exec_cb;  /**< Function to execute to animate,
                                                * same purpose as exec_cb but different parameters*/
@@ -141,7 +141,7 @@ struct lv_anim_t {
     uint32_t playback_duration;               /**< Duration of playback animation*/
     uint32_t repeat_delay;                    /**< Wait before repeat*/
     uint32_t repeat_cnt;                      /**< Repeat count for the animation*/
-    union lv_anim_path_para_t {
+    union _lv_anim_path_para_t {
         lv_anim_bezier3_para_t bezier3;       /**< Parameter used when path is custom_bezier*/
     } parameter;
 

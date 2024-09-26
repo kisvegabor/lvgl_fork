@@ -77,7 +77,7 @@ typedef struct _tiny_ttf_glyph_cache_data_t {
     lv_font_glyph_dsc_t glyph_dsc;
 } tiny_ttf_glyph_cache_data_t;
 
-typedef struct lv_tiny_ttf_cache_data_t {
+typedef struct _lv_tiny_ttf_cache_data_t {
     uint32_t glyph_index;
     uint32_t size;
     lv_draw_buf_t * draw_buf;
@@ -123,7 +123,7 @@ static void lv_tiny_ttf_cache_create(ttf_font_desc_t * dsc);
 void lv_tiny_ttf_set_size(lv_font_t * font, int32_t font_size)
 {
     if(font_size <= 0) {
-        LV_LOG_ERROR("invalid font size: %"PRIx32, font_size);
+        LV_LOG_ERROR("invalid font size: %"LV_PRIx32, font_size);
         return;
     }
     ttf_font_desc_t * dsc = (ttf_font_desc_t *)font->dsc;

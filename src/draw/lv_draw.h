@@ -3,6 +3,10 @@
  *
  */
 
+/**
+ * Modified by NXP in 2024
+ */
+
 #ifndef LV_DRAW_H
 #define LV_DRAW_H
 
@@ -63,7 +67,7 @@ typedef enum {
     LV_DRAW_TASK_STATE_READY,
 } lv_draw_task_state_t;
 
-struct lv_layer_t  {
+struct _lv_layer_t  {
 
     /** Target draw buffer of the layer*/
     lv_draw_buf_t * draw_buf;
@@ -172,10 +176,21 @@ bool lv_draw_dispatch_layer(lv_display_t * disp, lv_layer_t * layer);
 void lv_draw_dispatch_wait_for_request(void);
 
 /**
+ * Wait for draw finish in case of asynchronous task execution.
+ * If `LV_USE_OS == 0` it just return.
+ */
+void lv_draw_wait_for_finish(void);
+
+/**
  * When a draw unit finished a draw task it needs to request dispatching
  * to let LVGL assign a new draw task to it
  */
 void lv_draw_dispatch_request(void);
+
+/**
+ * Get the total number of draw units.
+  */
+uint32_t lv_draw_get_unit_count(void);
 
 /**
  * Find and available draw task

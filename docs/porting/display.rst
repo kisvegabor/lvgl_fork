@@ -20,7 +20,7 @@ flush_cb
 
 An example ``flush_cb`` looks like this:
 
-.. code:: c
+.. code-block:: c
 
    void my_flush_cb(lv_display_t * display, const lv_area_t * area, uint8_t * px_map)
    {
@@ -83,7 +83,7 @@ The draw buffers can be set with
 
 Example:
 
-.. code:: c
+.. code-block:: c
 
    static uint16_t buf[LCD_HOR_RES * LCD_VER_RES / 10];
    lv_display_set_buffers(disp, buf, NULL, sizeof(buf), LV_DISPLAY_RENDER_MODE_PARTIAL);
@@ -136,7 +136,6 @@ or anything else to optimize while the waiting for flush.
 If ``flush_wait_cb`` is not set, LVGL assume that `lv_display_flush_ready`
 is used.
 
-
 Rotation
 --------
 
@@ -173,10 +172,10 @@ The default color format of the display is set according to :c:macro:`LV_COLOR_D
 - :c:macro:`LV_COLOR_DEPTH` ``24``: RGB888 (3 bytes/pixel)
 - :c:macro:`LV_COLOR_DEPTH` ``16``: RGB565 (2 bytes/pixel)
 - :c:macro:`LV_COLOR_DEPTH` ``8``: L8 (1 bytes/pixel)
-- :c:macro:`LV_COLOR_DEPTH` ``1``: I1 (1 bit/pixel) Only support for horizontal mapped buffers.
+- :c:macro:`LV_COLOR_DEPTH` ``1``: I1 (1 bit/pixel) Only support for horizontal mapped buffers. See :ref:`monochrome` for more details:
 
 The ``color_format`` can be changed with
-:cpp:expr:`lv_display_set_color_depth(display, LV_COLOR_FORMAT_...)`.
+``lv_display_set_color_depth(display, LV_COLOR_FORMAT_...)`` .
 Besides the default value :c:macro:`LV_COLOR_FORMAT_ARGB8888` can be
 used as a well.
 
@@ -184,8 +183,8 @@ It's very important that draw buffer(s) should be large enough for any
 selected color format.
 
 
-Swap endianness
---------------
+Swap Endianness
+---------------
 
 In case of RGB565 color format it might be required to swap the 2 bytes
 because the SPI, I2C or 8 bit parallel port periphery sends them in the wrong order.
@@ -205,6 +204,40 @@ to
 
 ``GGG BBBBB | RRRRR GGG``.
 
+.. _monochrome:
+
+Monochrome Displays
+-------------------
+
+LVGL supports rendering directly in a 1-bit format for monochrome displays.
+To enable it, set ``LV_COLOR_DEPTH 1`` or use :cpp:expr:`lv_display_set_color_format(display, LV_COLOR_FORMAT_I1)`.
+
+The :cpp:expr:`LV_COLOR_FORMAT_I1` format assumes that bytes are mapped to rows (i.e., the bits of a byte are written next to each other).
+The order of bits is MSB first, which means:
+
+.. code::
+
+             MSB           LSB
+   bits       7 6 5 4 3 2 1 0
+   pixels     0 1 2 3 4 5 6 7
+             Left         Right
+
+Ensure that the LCD controller is configured accordingly.
+
+Internally, LVGL rounds the redrawn areas to byte boundaries. Therefore, updated areas will:
+
+- Start on an ``Nx8`` coordinate.
+- End on an ``Nx8 - 1`` coordinate.
+
+When setting up the buffers for rendering (:cpp:func:`lv_display_set_buffers`), make the buffer 8 bytes larger.
+This is necessary because LVGL reserves 2 x 4 bytes in the buffer, as these are assumed to be used as a palette.
+
+To skip the palette, include the following line in your ``flush_cb`` function: ``px_map += 8``.
+
+As usual, monochrome displays support partial, full, and direct rendering modes as well.
+In full and direct modes, the buffer size should be large enough for the whole screen, meaning ``(horizontal_resolution x vertical_resolution / 8) + 8`` bytes.
+As LVGL can not handle fractional width make sure to round the horizontal resolution to 8-
+(For example 90 to 96)
 
 User data
 ---------
@@ -223,7 +256,7 @@ the TE signal.
 
 You can do this in the following way:
 
-.. code:: c
+.. code-block:: c
 
    /*Delete the original display refresh timer*/
    lv_display_delete_refr_timer(disp);
@@ -246,7 +279,7 @@ Force refreshing
 ----------------
 
 Normally the invalidated areas (marked for redraw) are rendered in :cpp:func:`lv_timer_handler` in every
-:c:macro:`LV_DEF_REFR_PERIOD` milliseconds. However, by using :cpp:func:`lv_refr_now(display)` you can ask LVGL to
+:c:macro:`LV_DEF_REFR_PERIOD` milliseconds. However, by using :cpp:expr:`lv_refr_now(display)` you can ask LVGL to
 redraw the invalid areas immediately. The refreshing will happen in :cpp:func:`lv_refr_now` which might take
 longer time.
 
@@ -280,8 +313,7 @@ Further reading
 
 -  `lv_port_disp_template.c <https://github.com/lvgl/lvgl/blob/master/examples/porting/lv_port_disp_template.c>`__
    for a template for your own driver.
--  :ref:`Drawing <drawing>` to learn more about how rendering
-   works in LVGL.
+-  :ref:`Drawing <porting_draw>` to learn more about how rendering works in LVGL.
 -  :ref:`display_features` to learn more about higher
    level display features.
 

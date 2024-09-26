@@ -33,7 +33,7 @@ extern "C" {
  *      TYPEDEFS
  **********************/
 
-struct lv_display_t {
+struct _lv_display_t {
 
     /*---------------------
      * Resolution
@@ -141,8 +141,7 @@ struct lv_display_t {
 
     lv_event_list_t event_list;
 
-    uint32_t sw_rotate : 1; /**< 1: use software rotation (slower)*/
-    uint32_t rotation  : 2; /**< Element of  lv_display_rotation_t*/
+    uint32_t rotation  : 3; /**< Element of  lv_display_rotation_t*/
 
     lv_theme_t * theme;     /**< The theme assigned to the screen*/
 
