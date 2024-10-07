@@ -69,6 +69,9 @@ uint32_t ui_key_get(void)
     uint32_t key = last_key;
     last_key = 0;
 
+    static int cnt = 0;
+    if(key) cnt++;
+
     switch(key) {
         case LV_KEY_LEFT:
             key = UI_KEY_LEFT;
@@ -104,7 +107,8 @@ uint32_t ui_key_get(void)
             ui_scr_play_video_open();
             return 0;
         case 'm':
-            ui_scr_menu_open(NULL);
+            if(cnt & 1) ui_scr_menu_open(NULL);
+            else ui_scr_cc_open_photo();
             return 0;
         case 'c':
             ui_scr_capture_open();
