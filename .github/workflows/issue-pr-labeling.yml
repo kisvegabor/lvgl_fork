@@ -2,9 +2,12 @@ name: Issue Labeling Based on PRs
 
 on:
   pull_request:
-    types: [opened, edited]
-  pull_request_target:
-    types: [closed]
+    types: [opened, edited, closed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
 
 jobs:
   label_on_pr_reference:
@@ -27,7 +30,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: '👨‍💻 PR opened'
-          issue-number: ${{ steps.check_fix.outputs.result }}
+          number: ${{ steps.check_fix.outputs.result }}
 
   label_on_merge:
     runs-on: ubuntu-latest
@@ -48,7 +51,7 @@ jobs:
         uses: actions-ecosystem/action-update-labels@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ steps.check_fix.outputs.result }}
+          number: ${{ steps.check_fix.outputs.result }}
           add-labels: '🎉 Completed'
           remove-labels: '👨‍💻 PR opened'
 
