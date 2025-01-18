@@ -92,6 +92,9 @@ extern "C" {
 #define lv_anim_set_playback_delay lv_anim_set_reverse_delay
 #define lv_anim_set_playback_duration lv_anim_set_reverse_duration
 
+#define lv_gradient_init_stops lv_grad_init_stops
+#define lv_gradient_stop_t lv_gradient_stop_t
+
 /**********************
  * DEPRECATED FUNCTIONS
  **********************/
