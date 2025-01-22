@@ -123,7 +123,7 @@ void lv_example_grad_3(void)
 }
 #else
 
-void lv_example_grad_2(void)
+void lv_example_grad_3(void)
 {
     lv_obj_t * label = lv_label_create(lv_screen_active());
     lv_label_set_text(label, "LV_USE_DRAW_SW_COMPLEX_GRADIENTS needs to be enabled");
