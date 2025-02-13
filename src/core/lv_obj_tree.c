@@ -470,7 +470,7 @@ void lv_obj_get_name_resolved(const lv_obj_t * obj, char buf[], size_t buf_size)
     /*Craft a name if not set. E.g. "lv_button_1"*/
     else {
         uint32_t idx = lv_obj_get_index_by_type(obj, obj->class_p);
-        lv_snprintf(buf, buf_size, "%s_%d", obj->class_p->name, idx + 1);
+        lv_snprintf(buf, buf_size, "%s_%d", obj->class_p->name, idx);
     }
 }
 
