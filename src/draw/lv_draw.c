@@ -91,6 +91,21 @@ void * lv_draw_create_unit(size_t size)
     return new_unit;
 }
 
+static void set_last_dependency(lv_layer_t * layer, lv_draw_task_t * t)
+{
+    t->last_dependency = NULL;
+    lv_draw_task_t * t_check = layer->draw_task_head;
+    while(t_check != t) {
+        if(t_check->state == LV_DRAW_TASK_STATE_QUEUED &&
+           lv_area_is_on(&t->_real_area, &t_check->_real_area)) {
+            t->last_dependency = t_check;
+
+        }
+
+        t_check = t->next;
+    }
+}
+
 lv_draw_task_t * lv_draw_add_task(lv_layer_t * layer, const lv_area_t * coords)
 {
     LV_PROFILER_DRAW_BEGIN;
