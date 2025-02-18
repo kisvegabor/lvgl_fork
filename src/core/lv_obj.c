@@ -438,6 +438,8 @@ void * lv_obj_get_id(const lv_obj_t * obj)
 
 lv_obj_t * lv_obj_find_by_id(const lv_obj_t * obj, const void * id)
 {
+    LV_LOG_WARN("DEPRECATED: IDs are used only the print the widget trees. To find a widget use obj_name");
+
     if(obj == NULL) obj = lv_display_get_screen_active(NULL);
     if(obj == NULL) return NULL;
 

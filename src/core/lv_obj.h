@@ -399,6 +399,7 @@ void lv_obj_set_id(lv_obj_t * obj, void * id);
 void * lv_obj_get_id(const lv_obj_t * obj);
 
 /**
+ * DEPRECATED IDs are used only the print the widget trees. To find a widget use obj_name
  * Get the child object by its id.
  * It will check children and grandchildren recursively.
  * Function `lv_obj_id_compare` is used to matched obj id with given id.
