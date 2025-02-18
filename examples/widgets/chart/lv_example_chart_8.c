@@ -28,14 +28,14 @@ void lv_example_chart_8(void)
     lv_obj_t * chart = lv_chart_create(lv_screen_active());
     lv_chart_set_update_mode(chart, LV_CHART_UPDATE_MODE_CIRCULAR);
     lv_obj_set_style_size(chart, 0, 0, LV_PART_INDICATOR);
-    lv_obj_set_size(chart, 280, 150);
+    lv_obj_set_size(chart, 1480, 150);
     lv_obj_center(chart);
 
-    lv_chart_set_point_count(chart, 80);
+    lv_chart_set_point_count(chart, 800);
     lv_chart_series_t * ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
     /*Prefill with data*/
     uint32_t i;
-    for(i = 0; i < 80; i++) {
+    for(i = 0; i < 800; i++) {
         lv_chart_set_next_value(chart, ser, lv_rand(10, 90));
     }
 

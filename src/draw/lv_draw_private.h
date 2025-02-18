@@ -32,6 +32,7 @@ extern "C" {
 
 struct _lv_draw_task_t {
     lv_draw_task_t * next;
+    lv_draw_task_t * dependency;
 
     lv_draw_task_type_t type;
 

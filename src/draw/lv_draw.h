@@ -64,6 +64,7 @@ typedef enum {
     LV_DRAW_TASK_STATE_WAITING,     /*Waiting for something to be finished. E.g. rendering a layer*/
     LV_DRAW_TASK_STATE_QUEUED,
     LV_DRAW_TASK_STATE_IN_PROGRESS,
+    LV_DRAW_TASK_STATE_PROCESSED,
     LV_DRAW_TASK_STATE_READY,
 } lv_draw_task_state_t;
 
@@ -159,6 +160,7 @@ lv_draw_task_t * lv_draw_add_task(lv_layer_t * layer, const lv_area_t * coords);
  */
 void lv_draw_finalize_task_creation(lv_layer_t * layer, lv_draw_task_t * t);
 
+void lv_draw_set_task_ready(lv_layer_t * layer, lv_draw_task_t * t);
 /**
  * Try dispatching draw tasks to draw units
  */

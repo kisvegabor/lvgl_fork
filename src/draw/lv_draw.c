@@ -91,18 +91,26 @@ void * lv_draw_create_unit(size_t size)
     return new_unit;
 }
 
-static void set_last_dependency(lv_layer_t * layer, lv_draw_task_t * t)
+static void find_dependency(lv_layer_t * layer, lv_draw_task_t * t)
 {
-    t->last_dependency = NULL;
+    /*Find an older tasks which intersects the area of this task,
+     *that is the this task depends on the old one*/
+    t->dependency = NULL;
     lv_draw_task_t * t_check = layer->draw_task_head;
     while(t_check != t) {
-        if(t_check->state == LV_DRAW_TASK_STATE_QUEUED &&
-           lv_area_is_on(&t->_real_area, &t_check->_real_area)) {
-            t->last_dependency = t_check;
-
+        /*Can't depend on READY tasks*/
+        if(t_check->state == LV_DRAW_TASK_STATE_READY) {
+            t_check = t_check->next;
+            continue;
         }
 
-        t_check = t->next;
+        if(lv_area_is_on(&t->_real_area, &t_check->_real_area)) {
+            t->dependency = t_check;
+            return;
+
+        }
+        t_check = t_check->next;
+
     }
 }
 
@@ -172,12 +180,18 @@ void lv_draw_finalize_task_creation(lv_layer_t * layer, lv_draw_task_t * t)
         if(t->preferred_draw_unit_id == LV_DRAW_UNIT_NONE) {
             LV_LOG_WARN("the draw task was not taken by any units");
             t->state = LV_DRAW_TASK_STATE_READY;
+            t->_real_area.x1 = LV_COORD_MIN;
+            t->_real_area.x2 = LV_COORD_MIN;
+            t->_real_area.y1 = LV_COORD_MIN;
+            t->_real_area.y2 = LV_COORD_MIN;
         }
         else {
+            find_dependency(layer, t);
             lv_draw_dispatch();
         }
     }
     else {
+
         /*Let the draw units set their preference score*/
         t->preference_score = 100;
         t->preferred_draw_unit_id = 0;
@@ -192,8 +206,31 @@ void lv_draw_finalize_task_creation(lv_layer_t * layer, lv_draw_task_t * t)
             }
             u = u->next;
         }
+
+        if(t->preferred_draw_unit_id == LV_DRAW_UNIT_NONE) {
+            LV_LOG_WARN("the draw task was not taken by any units");
+            t->state = LV_DRAW_TASK_STATE_READY;
+            t->_real_area.x1 = LV_COORD_MIN;
+            t->_real_area.x2 = LV_COORD_MIN;
+            t->_real_area.y1 = LV_COORD_MIN;
+            t->_real_area.y2 = LV_COORD_MIN;
+        }
+        else {
+            find_dependency(layer, t);
+        }
     }
     LV_PROFILER_DRAW_END;
+}
+
+void lv_draw_set_task_ready(lv_layer_t * layer, lv_draw_task_t * t)
+{
+    lv_draw_task_t * younger = t->next;
+    while(younger) {
+        if(younger->dependency == t) {
+            find_dependency(layer, younger);
+        }
+        younger = younger->next;
+    }
 }
 
 void lv_draw_wait_for_finish(void)
@@ -246,6 +283,12 @@ bool lv_draw_dispatch_layer(lv_display_t * disp, lv_layer_t * layer)
     while(t) {
         t_next = t->next;
         if(t->state == LV_DRAW_TASK_STATE_READY) {
+
+            /*Check if there is a new dependency for the younger tasks. */
+
+
+            lv_draw_set_task_ready(t->target_layer, t);
+            //            set_last_dependency(layer, t);
             lv_cleanup_task(t, disp);
             if(t_prev != NULL)
                 t_prev->next = t_next;
@@ -372,9 +415,7 @@ lv_draw_task_t * lv_draw_get_next_available_task(lv_layer_t * layer, lv_draw_tas
     lv_draw_task_t * t = t_prev ? t_prev->next : layer->draw_task_head;
     while(t) {
         /*Find a queued and independent task*/
-        if(t->state == LV_DRAW_TASK_STATE_QUEUED &&
-           (t->preferred_draw_unit_id == LV_DRAW_UNIT_NONE || t->preferred_draw_unit_id == draw_unit_id) &&
-           is_independent(layer, t)) {
+        if(t->state == LV_DRAW_TASK_STATE_QUEUED && t->dependency == NULL) {
             LV_PROFILER_DRAW_END;
             return t;
         }
@@ -536,33 +577,6 @@ void lv_draw_task_get_area(const lv_draw_task_t * t, lv_area_t * area)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
-/**
- * Check if there are older draw task overlapping the area of `t_check`
- * @param layer      the draw ctx to search in
- * @param t_check       check this task if it overlaps with the older ones
- * @return              true: `t_check` is not overlapping with older tasks so it's independent
- */
-static bool is_independent(lv_layer_t * layer, lv_draw_task_t * t_check)
-{
-    LV_PROFILER_DRAW_BEGIN;
-    lv_draw_task_t * t = layer->draw_task_head;
-
-    /*If t_check is outside of the older tasks then it's independent*/
-    while(t && t != t_check) {
-        if(t->state != LV_DRAW_TASK_STATE_READY) {
-            lv_area_t a;
-            if(lv_area_intersect(&a, &t->_real_area, &t_check->_real_area)) {
-                LV_PROFILER_DRAW_END;
-                return false;
-            }
-        }
-        t = t->next;
-    }
-    LV_PROFILER_DRAW_END;
-
-    return true;
-}
 
 /**
  * Clean-up resources allocated by a finished task
