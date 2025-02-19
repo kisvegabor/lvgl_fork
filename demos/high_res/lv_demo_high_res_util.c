@@ -157,8 +157,82 @@ const lv_demo_high_res_sizes_t lv_demo_high_res_sizes_all[SIZE_COUNT] = {
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * lv_demo_high_res_base_obj_create(const char * assets_path,
-                                            const char * logo_path,
+
+LV_IMAGE_DECLARE(img_lv_demo_high_res_about_app_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_album_art_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_arrow_left_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_backward_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_cold_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_door_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_door_1_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dry_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_energy_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_ev_charging_app_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_ev_charging_widget3_1_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_ev_charging_widget3_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_fan_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_fan2_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_fan2_1_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_forward_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_health_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_health_icon_bold_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_heat_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_lamp_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_lamp2_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_lamp2_1_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_logout_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_main_light_slider_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_minus_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_pager_left_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_pager_pause_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_pager_play_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_pager_right_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_play_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_play_icon_1_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_plus_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_range_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_setting_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_setting_icon_bold_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_smart_home_app_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_smart_home_widget1_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_smart_home_widget2_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_smart_meter_app_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_thermostat_app_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_time_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_unlock_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_volume_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_weather_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_wifi_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_wind_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_wind_1_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_bg_about_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_bg_about_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_bg_ev_charging_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_bg_ev_charging_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_bg_home_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_bg_home_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_bg_smart_home_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_bg_smart_home_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_bg_smart_meter_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_bg_smart_meter_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_bg_thermostat_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_bg_thermostat_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_dark_theme_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_dark_theme_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_light_theme_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_light_theme_icon_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_widget1_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_widget1_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_widget2_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_widget2_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_widget3_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_widget3_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_widget4_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_widget4_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_light_widget5_bg_sm);
+LV_IMAGE_DECLARE(img_lv_demo_high_res_dark_widget5_bg_sm);
+
+lv_obj_t * lv_demo_high_res_base_obj_create(const char * logo_path,
                                             const char * slides_path,
                                             lv_demo_high_res_exit_cb_t exit_cb)
 {
@@ -190,91 +264,84 @@ lv_obj_t * lv_demo_high_res_base_obj_create(const char * assets_path,
     }
     c->sz = &lv_demo_high_res_sizes_all[size];
 
-    static const struct {
-        const char * name;
-        lv_color_format_t cf;
-    } image_details[IMG_COUNT] = {
-        {"about_app_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"album_art", LV_COLOR_FORMAT_ARGB8888},
-        {"arrow_left", LV_COLOR_FORMAT_ARGB8888},
-        {"backward_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"cold_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"door", LV_COLOR_FORMAT_ARGB8888},
-        {"door_1", LV_COLOR_FORMAT_ARGB8888},
-        {"dry_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"energy_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"ev_charging_app_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"ev_charging_widget3_1_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"ev_charging_widget3_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"fan", LV_COLOR_FORMAT_ARGB8888},
-        {"fan2", LV_COLOR_FORMAT_ARGB8888},
-        {"fan2_1", LV_COLOR_FORMAT_ARGB8888},
-        {"forward_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"health_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"health_icon_bold", LV_COLOR_FORMAT_ARGB8888},
-        {"heat_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"lamp", LV_COLOR_FORMAT_ARGB8888},
-        {"lamp2", LV_COLOR_FORMAT_ARGB8888},
-        {"lamp2_1", LV_COLOR_FORMAT_ARGB8888},
-        {"logout_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"main_light_slider", LV_COLOR_FORMAT_ARGB8888},
-        {"minus", LV_COLOR_FORMAT_ARGB8888},
-        {"pager_left", LV_COLOR_FORMAT_ARGB8888},
-        {"pager_pause", LV_COLOR_FORMAT_ARGB8888},
-        {"pager_play", LV_COLOR_FORMAT_ARGB8888},
-        {"pager_right", LV_COLOR_FORMAT_ARGB8888},
-        {"play_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"play_icon_1", LV_COLOR_FORMAT_ARGB8888},
-        {"plus", LV_COLOR_FORMAT_ARGB8888},
-        {"range_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"setting_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"setting_icon_bold", LV_COLOR_FORMAT_ARGB8888},
-        {"smart_home_app_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"smart_home_widget1_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"smart_home_widget2_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"smart_meter_app_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"thermostat_app_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"time_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"unlock", LV_COLOR_FORMAT_ARGB8888},
-        {"volume", LV_COLOR_FORMAT_ARGB8888},
-        {"weather", LV_COLOR_FORMAT_ARGB8888},
-        {"wifi_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"wind", LV_COLOR_FORMAT_ARGB8888},
-        {"wind_1", LV_COLOR_FORMAT_ARGB8888},
-        {"light_bg_about", LV_COLOR_FORMAT_NATIVE},
-        {"dark_bg_about", LV_COLOR_FORMAT_NATIVE},
-        {"light_bg_ev_charging", LV_COLOR_FORMAT_NATIVE},
-        {"dark_bg_ev_charging", LV_COLOR_FORMAT_NATIVE},
-        {"light_bg_home", LV_COLOR_FORMAT_NATIVE},
-        {"dark_bg_home", LV_COLOR_FORMAT_NATIVE},
-        {"light_bg_smart_home", LV_COLOR_FORMAT_NATIVE},
-        {"dark_bg_smart_home", LV_COLOR_FORMAT_NATIVE},
-        {"light_bg_smart_meter", LV_COLOR_FORMAT_NATIVE},
-        {"dark_bg_smart_meter", LV_COLOR_FORMAT_NATIVE},
-        {"light_bg_thermostat", LV_COLOR_FORMAT_NATIVE},
-        {"dark_bg_thermostat", LV_COLOR_FORMAT_NATIVE},
-        {"light_dark_theme_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_dark_theme_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"light_light_theme_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_light_theme_icon", LV_COLOR_FORMAT_ARGB8888},
-        {"light_widget1_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_widget1_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"light_widget2_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_widget2_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"light_widget3_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_widget3_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"light_widget4_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_widget4_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"light_widget5_bg", LV_COLOR_FORMAT_ARGB8888},
-        {"dark_widget5_bg", LV_COLOR_FORMAT_ARGB8888},
+    const void * images_tmp[] = {
+        &img_lv_demo_high_res_about_app_icon_sm,
+        &img_lv_demo_high_res_album_art_sm,
+        &img_lv_demo_high_res_arrow_left_sm,
+        &img_lv_demo_high_res_backward_icon_sm,
+        &img_lv_demo_high_res_cold_icon_sm,
+        &img_lv_demo_high_res_door_sm,
+        &img_lv_demo_high_res_door_1_sm,
+        &img_lv_demo_high_res_dry_icon_sm,
+        &img_lv_demo_high_res_energy_icon_sm,
+        &img_lv_demo_high_res_ev_charging_app_icon_sm,
+        &img_lv_demo_high_res_ev_charging_widget3_1_bg_sm,
+        &img_lv_demo_high_res_ev_charging_widget3_bg_sm,
+        &img_lv_demo_high_res_fan_sm,
+        &img_lv_demo_high_res_fan2_sm,
+        &img_lv_demo_high_res_fan2_1_sm,
+        &img_lv_demo_high_res_forward_icon_sm,
+        &img_lv_demo_high_res_health_icon_sm,
+        &img_lv_demo_high_res_health_icon_bold_sm,
+        &img_lv_demo_high_res_heat_icon_sm,
+        &img_lv_demo_high_res_lamp_sm,
+        &img_lv_demo_high_res_lamp2_sm,
+        &img_lv_demo_high_res_lamp2_1_sm,
+        &img_lv_demo_high_res_logout_icon_sm,
+        &img_lv_demo_high_res_main_light_slider_sm,
+        &img_lv_demo_high_res_minus_sm,
+        &img_lv_demo_high_res_pager_left_sm,
+        &img_lv_demo_high_res_pager_pause_sm,
+        &img_lv_demo_high_res_pager_play_sm,
+        &img_lv_demo_high_res_pager_right_sm,
+        &img_lv_demo_high_res_play_icon_sm,
+        &img_lv_demo_high_res_play_icon_1_sm,
+        &img_lv_demo_high_res_plus_sm,
+        &img_lv_demo_high_res_range_icon_sm,
+        &img_lv_demo_high_res_setting_icon_sm,
+        &img_lv_demo_high_res_setting_icon_bold_sm,
+        &img_lv_demo_high_res_smart_home_app_icon_sm,
+        &img_lv_demo_high_res_smart_home_widget1_bg_sm,
+        &img_lv_demo_high_res_smart_home_widget2_bg_sm,
+        &img_lv_demo_high_res_smart_meter_app_icon_sm,
+        &img_lv_demo_high_res_thermostat_app_icon_sm,
+        &img_lv_demo_high_res_time_icon_sm,
+        &img_lv_demo_high_res_unlock_sm,
+        &img_lv_demo_high_res_volume_sm,
+        &img_lv_demo_high_res_weather_sm,
+        &img_lv_demo_high_res_wifi_icon_sm,
+        &img_lv_demo_high_res_wind_sm,
+        &img_lv_demo_high_res_wind_1_sm,
+        &img_lv_demo_high_res_dark_bg_about_sm,
+        &img_lv_demo_high_res_dark_bg_about_sm,
+        &img_lv_demo_high_res_dark_bg_ev_charging_sm,
+        &img_lv_demo_high_res_dark_bg_ev_charging_sm,
+        &img_lv_demo_high_res_dark_bg_home_sm,
+        &img_lv_demo_high_res_dark_bg_home_sm,
+        &img_lv_demo_high_res_dark_bg_smart_home_sm,
+        &img_lv_demo_high_res_dark_bg_smart_home_sm,
+        &img_lv_demo_high_res_dark_bg_smart_meter_sm,
+        &img_lv_demo_high_res_dark_bg_smart_meter_sm,
+        &img_lv_demo_high_res_dark_bg_thermostat_sm,
+        &img_lv_demo_high_res_dark_bg_thermostat_sm,
+        &img_lv_demo_high_res_dark_dark_theme_icon_sm,
+        &img_lv_demo_high_res_dark_dark_theme_icon_sm,
+        &img_lv_demo_high_res_dark_light_theme_icon_sm,
+        &img_lv_demo_high_res_dark_light_theme_icon_sm,
+        &img_lv_demo_high_res_dark_widget1_bg_sm,
+        &img_lv_demo_high_res_dark_widget1_bg_sm,
+        &img_lv_demo_high_res_dark_widget2_bg_sm,
+        &img_lv_demo_high_res_dark_widget2_bg_sm,
+        &img_lv_demo_high_res_dark_widget3_bg_sm,
+        &img_lv_demo_high_res_dark_widget3_bg_sm,
+        &img_lv_demo_high_res_dark_widget4_bg_sm,
+        &img_lv_demo_high_res_dark_widget4_bg_sm,
+        &img_lv_demo_high_res_dark_widget5_bg_sm,
+        &img_lv_demo_high_res_dark_widget5_bg_sm,
     };
-    const char * size_prefix = size == SIZE_SM ? "sm" : size == SIZE_MD ? "md" : "lg";
+
     for(uint32_t i = 0; i < IMG_COUNT; i++) {
-        char path_buf[256];
-        int chars = lv_snprintf(path_buf, sizeof(path_buf), "%s/img_lv_demo_high_res_%s_%s.png",
-                                assets_path, image_details[i].name, size_prefix);
-        LV_ASSERT(chars < (int)sizeof(path_buf));
-        c->imgs[i] = lv_demo_high_res_image_preload(path_buf, image_details[i].cf, LV_SCALE_NONE);
+        c->imgs[i] = images_tmp[i];
     }
 
     for(uint32_t i = 0; i < STYLE_COLOR_COUNT; i++) {
@@ -503,40 +570,6 @@ static void init_fonts_sm(lv_style_t * fonts)
     lv_style_set_text_font(&fonts[FONT_LABEL_LG], &font_lv_demo_high_res_roboto_slab_bold_20);
     lv_style_set_text_font(&fonts[FONT_LABEL_XL], &font_lv_demo_high_res_roboto_slab_bold_24);
     lv_style_set_text_font(&fonts[FONT_LABEL_2XL], &font_lv_demo_high_res_roboto_slab_bold_40);
-}
-
-static void init_fonts_md(lv_style_t * fonts)
-{
-    lv_style_set_text_font(&fonts[FONT_HEADING_MD], &font_lv_demo_high_res_roboto_slab_regular_30);
-    lv_style_set_text_font(&fonts[FONT_HEADING_LG], &font_lv_demo_high_res_roboto_slab_regular_60);
-    lv_style_set_text_font(&fonts[FONT_HEADING_XL], &font_lv_demo_high_res_roboto_slab_light_120);
-    lv_style_set_text_font(&fonts[FONT_HEADING_XXL], &font_lv_demo_high_res_roboto_slab_light_160);
-    lv_style_set_text_font(&fonts[FONT_LABEL_XS], &font_lv_demo_high_res_roboto_medium_12);
-    lv_style_set_text_line_space(&fonts[FONT_LABEL_XS],
-                                 30 * lv_font_get_line_height(&font_lv_demo_high_res_roboto_medium_12) / 100); /* +30% */
-    /* lv_style_set_text_letter_space(&fonts[FONT_LABEL_XS], 197 * lv_font_get_letter_space(&font_lv_demo_high_res_roboto_medium_12) / 200); */ /* -1.5% */
-    lv_style_set_text_font(&fonts[FONT_LABEL_SM], &font_lv_demo_high_res_roboto_medium_16);
-    lv_style_set_text_font(&fonts[FONT_LABEL_MD], &font_lv_demo_high_res_roboto_medium_24);
-    lv_style_set_text_font(&fonts[FONT_LABEL_LG], &font_lv_demo_high_res_roboto_slab_bold_30);
-    lv_style_set_text_font(&fonts[FONT_LABEL_XL], &font_lv_demo_high_res_roboto_slab_bold_36);
-    lv_style_set_text_font(&fonts[FONT_LABEL_2XL], &font_lv_demo_high_res_roboto_slab_bold_60);
-}
-
-static void init_fonts_lg(lv_style_t * fonts)
-{
-    lv_style_set_text_font(&fonts[FONT_HEADING_MD], &font_lv_demo_high_res_roboto_slab_regular_45);
-    lv_style_set_text_font(&fonts[FONT_HEADING_LG], &font_lv_demo_high_res_roboto_slab_regular_90);
-    lv_style_set_text_font(&fonts[FONT_HEADING_XL], &font_lv_demo_high_res_roboto_slab_light_180);
-    lv_style_set_text_font(&fonts[FONT_HEADING_XXL], &font_lv_demo_high_res_roboto_slab_light_240);
-    lv_style_set_text_font(&fonts[FONT_LABEL_XS], &font_lv_demo_high_res_roboto_medium_18);
-    lv_style_set_text_line_space(&fonts[FONT_LABEL_XS],
-                                 30 * lv_font_get_line_height(&font_lv_demo_high_res_roboto_medium_18) / 100); /* +30% */
-    /* lv_style_set_text_letter_space(&fonts[FONT_LABEL_XS], 197 * lv_font_get_letter_space(&font_lv_demo_high_res_roboto_medium_18) / 200); */ /* -1.5% */
-    lv_style_set_text_font(&fonts[FONT_LABEL_SM], &font_lv_demo_high_res_roboto_medium_24);
-    lv_style_set_text_font(&fonts[FONT_LABEL_MD], &font_lv_demo_high_res_roboto_medium_36);
-    lv_style_set_text_font(&fonts[FONT_LABEL_LG], &font_lv_demo_high_res_roboto_slab_bold_45);
-    lv_style_set_text_font(&fonts[FONT_LABEL_XL], &font_lv_demo_high_res_roboto_slab_bold_54);
-    lv_style_set_text_font(&fonts[FONT_LABEL_2XL], &font_lv_demo_high_res_roboto_slab_bold_90);
 }
 
 static void theme_observer_cb(lv_observer_t * observer, lv_subject_t * subject)

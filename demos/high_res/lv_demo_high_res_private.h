@@ -223,8 +223,7 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_demo_high_res_sizes_t lv_demo_high_res_
  * GLOBAL PROTOTYPES
  **********************/
 
-lv_obj_t * lv_demo_high_res_base_obj_create(const char * assets_path,
-                                            const char * logo_path,
+lv_obj_t * lv_demo_high_res_base_obj_create(const char * logo_path,
                                             const char * slides_path,
                                             lv_demo_high_res_exit_cb_t exit_cb);
 
