@@ -128,7 +128,7 @@ lv_result_t lv_snapshot_take_to_draw_buf(lv_obj_t * obj, lv_color_format_t cf, l
     lv_refr_set_disp_refreshing(disp_new);
     lv_obj_redraw(&layer, obj);
 
-    while(layer.draw_task_head) {
+    while(!lv_ll_is_empty(&layer.draw_task_ll)) {
         lv_draw_dispatch_wait_for_request();
         lv_draw_dispatch();
     }

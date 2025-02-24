@@ -734,7 +734,7 @@ static void refr_area(const lv_area_t * area_p)
         /*Wait until all tiles are ready and destroy remove them*/
         for(i = 0; i < tile_cnt; i++) {
             lv_layer_t * tile_layer = &tile_layers[i];
-            while(tile_layer->draw_task_head) {
+            while(!lv_ll_is_empty(&tile_layer->draw_task_ll)) {
                 lv_draw_dispatch_wait_for_request();
                 lv_draw_dispatch();
             }
@@ -1255,7 +1255,7 @@ static void draw_buf_flush(lv_display_t * disp)
     /*Flush the rendered content to the display*/
     lv_layer_t * layer = disp->layer_head;
 
-    while(layer->draw_task_head) {
+    while(!lv_ll_is_empty(&layer->draw_task_ll)) {
         lv_draw_dispatch_wait_for_request();
         lv_draw_dispatch();
     }

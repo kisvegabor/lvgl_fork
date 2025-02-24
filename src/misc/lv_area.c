@@ -243,11 +243,11 @@ bool lv_area_is_point_on(const lv_area_t * a_p, const lv_point_t * p_p, int32_t 
 
 bool lv_area_is_on(const lv_area_t * a1_p, const lv_area_t * a2_p)
 {
-    extern int cnt;
-    cnt++;
-    if(cnt == 100000) {
-        cnt++;
-    }
+    //    extern int cnt;
+    //    cnt++;
+    //    if(cnt == 100000) {
+    //        cnt++;
+    //    }
     if((a1_p->x1 <= a2_p->x2) && (a1_p->x2 >= a2_p->x1) && (a1_p->y1 <= a2_p->y2) && (a1_p->y2 >= a2_p->y1)) {
         return true;
     }

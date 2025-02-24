@@ -388,11 +388,11 @@ void lv_canvas_init_layer(lv_obj_t * obj, lv_layer_t * layer)
 
 void lv_canvas_finish_layer(lv_obj_t * canvas, lv_layer_t * layer)
 {
-    if(layer->draw_task_head == NULL) return;
+    if(lv_ll_is_empty(&layer->draw_task_ll)) return;
 
     bool task_dispatched;
 
-    while(layer->draw_task_head) {
+    while(!lv_ll_is_empty(&layer->draw_task_ll)) {
         lv_draw_dispatch_wait_for_request();
         task_dispatched = lv_draw_dispatch_layer(lv_obj_get_display(canvas), layer);
 
