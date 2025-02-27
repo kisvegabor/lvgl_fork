@@ -98,67 +98,19 @@ void lv_demo_high_res_app_about(lv_obj_t * base_obj)
 
     /* slides */
 
-    if(lv_array_is_empty(&c->about_slides_array)) {
-        lv_obj_t * label = lv_label_create(bg_cont);
-        if(c->about_slides_dir_exists) {
-            lv_label_set_text_fmt(label, "Couldn't find images named Slide1.png, Slide2.png, etc. in the '%s' folder",
-                                  c->slides_path);
-        }
-        else {
-            lv_label_set_text_fmt(label, "Couldn't open the '%s' folder to load the images", c->slides_path);
-        }
-        lv_obj_center(label);
-        lv_obj_add_style(label, &c->styles[STYLE_COLOR_BASE][STYLE_TYPE_TEXT], 0);
-        return;
-    }
+    lv_obj_t * label = lv_label_create(bg_cont);
+    lv_label_set_text(label,
+                      "LVGL is the most popular free and open-source embedded graphics library to create beautiful UIs for any MCU, MPU and display type. \n\n"
+                      "From consumer electronics to industrial automation, any application can leverage LVGL's 30+ built-in widgets, 100+ style properties, "
+                      "web-inspired layouts, and typography system supporting many languages");
+    lv_obj_center(label);
+    lv_obj_set_width(label, lv_pct(70));
+    lv_obj_set_style_text_align(label,  LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_line_space(label,  6, 0);
+    LV_FONT_DECLARE(font_lv_demo_high_res_roboto_medium_16);
+    lv_obj_set_style_text_font(label,  &font_lv_demo_high_res_roboto_medium_16, 0);
+    lv_obj_add_style(label, &c->styles[STYLE_COLOR_BASE][STYLE_TYPE_TEXT], 0);
 
-    lv_obj_t * slides_cont = lv_obj_create(bg_cont);
-    lv_obj_remove_style_all(slides_cont);
-    lv_obj_set_size(slides_cont, LV_PCT(100), LV_SIZE_CONTENT);
-    lv_obj_set_flex_flow(slides_cont, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(slides_cont, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_align(slides_cont, LV_ALIGN_BOTTOM_MID);
-    lv_obj_set_style_pad_row(slides_cont, c->sz->gap[3], 0);
-
-
-    lv_obj_t * slide_deck_cont = lv_obj_create(slides_cont);
-    lv_obj_remove_style_all(slide_deck_cont);
-    lv_obj_set_size(slide_deck_cont, LV_PCT(100), LV_SIZE_CONTENT);
-    lv_obj_t * slide_deck = lv_demo_high_res_simple_container_create(slide_deck_cont, false, c->sz->gap[2],
-                                                                     LV_FLEX_ALIGN_START);
-    lv_obj_set_style_pad_left(slide_deck, lv_display_get_horizontal_resolution(NULL) * 2 / 5, 0);
-
-    lv_obj_t * buttons = lv_demo_high_res_simple_container_create(slides_cont, false, c->sz->gap[2], LV_FLEX_ALIGN_START);
-    lv_obj_t * left = create_button(buttons, c->imgs[IMG_PAGER_LEFT], c);
-    lv_obj_set_width(left, c->sz->icon[3]);
-    lv_obj_add_state(left, LV_STATE_DISABLED);
-    lv_obj_t * play_pause = create_button(buttons, c->imgs[IMG_PAGER_PAUSE], c);
-    lv_obj_set_width(play_pause, c->sz->icon[4]);
-    lv_obj_set_user_data(play_pause, c);
-    lv_obj_t * right = create_button(buttons, c->imgs[IMG_PAGER_RIGHT], c);
-    lv_obj_set_width(right, c->sz->icon[3]);
-
-    lv_obj_add_event_cb(slide_deck_cont, slide_deck_scrolled_cb, LV_EVENT_SCROLL, buttons);
-    lv_obj_add_event_cb(left, left_clicked_cb, LV_EVENT_CLICKED, slide_deck);
-    lv_obj_add_event_cb(right, right_clicked_cb, LV_EVENT_CLICKED, slide_deck);
-
-    lv_timer_t * play_pause_timer = lv_timer_create(play_pause_timer_cb, 5000, slide_deck);
-    lv_obj_add_event_cb(play_pause, play_pause_clicked_cb, LV_EVENT_CLICKED, play_pause_timer);
-    lv_obj_add_event_cb(bg_cont, bg_cont_delete_cb, LV_EVENT_DELETE, play_pause_timer);
-
-    lv_obj_t * slide;
-
-    uint32_t about_slides_count = lv_array_size(&c->about_slides_array);
-    for(uint32_t i = 0; i < about_slides_count; i++) {
-        lv_image_dsc_t ** slide_src = lv_array_at(&c->about_slides_array, i);
-        slide = lv_image_create(slide_deck);
-        lv_image_set_src(slide, *slide_src);
-    }
-
-    slide = lv_obj_get_child(slide_deck, 0);
-    if(slide) {
-        lv_obj_scroll_to_view_recursive(slide, LV_ANIM_OFF);
-    }
 }
 
 /**********************
