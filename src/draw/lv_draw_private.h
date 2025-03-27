@@ -184,6 +184,7 @@ typedef struct {
 #endif
     lv_mutex_t circle_cache_mutex;
     bool task_running;
+    volatile int dispatching;
 } lv_draw_global_info_t;
 
 /**********************

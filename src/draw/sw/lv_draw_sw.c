@@ -14,6 +14,7 @@
 #include "../../display/lv_display_private.h"
 #include "../../stdlib/lv_string.h"
 #include "../../core/lv_global.h"
+#include <time.h>
 
 #if LV_USE_VECTOR_GRAPHIC && LV_USE_THORVG
     #if LV_USE_THORVG_EXTERNAL
@@ -62,6 +63,7 @@ static int32_t lv_draw_sw_delete(lv_draw_unit_t * draw_unit);
  *  STATIC VARIABLES
  **********************/
 #define _draw_info LV_GLOBAL_DEFAULT()->draw_info
+lv_draw_sw_unit_t * draw_sw_unit;
 
 /**********************
  *      MACROS
@@ -78,7 +80,7 @@ void lv_draw_sw_init(void)
     lv_draw_sw_mask_init();
 #endif
 
-    lv_draw_sw_unit_t * draw_sw_unit = lv_draw_create_unit(sizeof(lv_draw_sw_unit_t));
+    draw_sw_unit = lv_draw_create_unit(sizeof(lv_draw_sw_unit_t));
     draw_sw_unit->base_unit.dispatch_cb = dispatch;
     draw_sw_unit->base_unit.evaluate_cb = evaluate;
     draw_sw_unit->base_unit.delete_cb = LV_USE_OS ? lv_draw_sw_delete : NULL;
@@ -194,6 +196,19 @@ lv_draw_sw_blend_handler_t lv_draw_sw_get_blend_handler(lv_color_format_t dest_c
     }
 
     return NULL;
+}
+int found;
+void lv_draw_sw_print_thread_stat(void)
+{
+    int32_t i;
+    for(i = 0; i < LV_DRAW_SW_DRAW_UNIT_CNT; i++) {
+        uint32_t sec = draw_sw_unit->thread_dscs[i].exec_time_ns_sum / 1000000000L;
+        uint32_t nsec = draw_sw_unit->thread_dscs[i].exec_time_ns_sum - (sec * 1000000000L);
+        printf("%d: %ld.%ld\n", i + 1, sec, (int64_t)nsec / 1000000L);
+    }
+
+    printf("found: %d\n", found);
+
 }
 
 /**********************
@@ -353,12 +368,33 @@ static void render_thread_cb(void * ptr)
             break;
         }
 
+        struct timespec before;
+        clock_gettime(CLOCK_MONOTONIC, &before);
+
+        lv_layer_t * layer = thread_dsc->task_act->target_layer;
         execute_drawing(thread_dsc->task_act);
 #if LV_USE_PARALLEL_DRAW_DEBUG
         parallel_debug_draw(thread_dsc->task_act, thread_dsc->idx);
 #endif
         thread_dsc->task_act->state = LV_DRAW_TASK_STATE_READY;
-        thread_dsc->task_act = NULL;
+
+        struct timespec after;
+        clock_gettime(CLOCK_MONOTONIC, &after);
+
+        thread_dsc->exec_time_ns_sum += (after.tv_sec - before.tv_sec) * 1000000000;
+        thread_dsc->exec_time_ns_sum += (after.tv_nsec - before.tv_nsec);
+
+        if(_draw_info.dispatching == 0) {
+            _draw_info.dispatching = 1;
+            thread_dsc->task_act = lv_draw_get_available_task(layer, NULL, DRAW_UNIT_ID_SW);
+            if(thread_dsc->task_act) {
+                found++;
+            }
+            _draw_info.dispatching = 0;
+        }
+        else {
+            thread_dsc->task_act = NULL;
+        }
 
         /*The draw unit is free now. Request a new dispatching as it can get a new task*/
         lv_draw_dispatch_request();

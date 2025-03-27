@@ -20,7 +20,7 @@
  *********************/
 /*memset the allocated memories to 0xaa and freed memories to 0xbb (just for testing purposes)*/
 #ifndef LV_MEM_ADD_JUNK
-    #define LV_MEM_ADD_JUNK  0
+    #define LV_MEM_ADD_JUNK  1
 #endif
 
 #define zero_mem LV_GLOBAL_DEFAULT()->memory_zero

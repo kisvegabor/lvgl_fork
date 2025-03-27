@@ -39,6 +39,7 @@ typedef struct {
     uint32_t idx;
     volatile bool inited;
     volatile bool exit_status;
+    uint64_t exec_time_ns_sum;
 } lv_draw_sw_thread_dsc_t;
 
 struct _lv_draw_sw_unit_t {

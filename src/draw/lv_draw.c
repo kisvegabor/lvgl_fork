@@ -204,6 +204,7 @@ void lv_draw_wait_for_finish(void)
 void lv_draw_dispatch(void)
 {
     LV_PROFILER_DRAW_BEGIN;
+    _draw_info.dispatching = 1;
     bool task_dispatched = false;
     lv_display_t * disp = lv_display_get_next(NULL);
     while(disp) {
@@ -219,6 +220,7 @@ void lv_draw_dispatch(void)
         }
         disp = lv_display_get_next(disp);
     }
+    _draw_info.dispatching = 0;
     LV_PROFILER_DRAW_END;
 }
 
