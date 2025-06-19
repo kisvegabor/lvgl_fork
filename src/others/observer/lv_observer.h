@@ -52,6 +52,15 @@ typedef union {
 } lv_subject_value_t;
 
 /**
+ * Range constraints for subjects with min-max limits
+ */
+typedef struct {
+    lv_subject_value_t min_value;        /**< Minimum allowed value */
+    lv_subject_value_t max_value;        /**< Maximum allowed value */
+    void * original_user_data;           /**< Original user_data before range was set */
+} lv_subject_range_t;
+
+/**
  * The Subject (an observable value)
  */
 typedef struct {
@@ -60,7 +69,8 @@ typedef struct {
     lv_subject_value_t prev_value;       /**< Previous value */
     void * user_data;                    /**< Additional parameter, can be used freely by user */
     uint32_t type                 :  4;  /**< One of the LV_SUBJECT_TYPE_... values */
-    uint32_t size                 : 24;  /**< String buffer size or group length */
+    uint32_t size                 : 23;  /**< String buffer size or group length */
+    uint32_t has_range            :  1;  /**< True if subject has min/max range constraints */
     uint32_t notify_restart_query :  1;  /**< If an Observer was deleted during notification,
                                           * start notifying from the beginning. */
 } lv_subject_t;
@@ -104,6 +114,44 @@ int32_t lv_subject_get_int(lv_subject_t * subject);
  */
 int32_t lv_subject_get_previous_int(lv_subject_t * subject);
 
+/**
+ * Initialize an integer-type Subject with min-max range.
+ * @param subject   pointer to Subject
+ * @param value     initial value (will be clamped to range)
+ * @param min_value minimum allowed value
+ * @param max_value maximum allowed value
+ */
+void lv_subject_init_int_range(lv_subject_t * subject, int32_t value, int32_t min_value, int32_t max_value);
+
+/**
+ * Set the min-max range for an integer Subject.
+ * @param subject   pointer to Subject
+ * @param min_value minimum allowed value
+ * @param max_value maximum allowed value
+ * @note            Current value will be clamped to new range
+ */
+void lv_subject_set_int_range(lv_subject_t * subject, int32_t min_value, int32_t max_value);
+
+/**
+ * Get the minimum value of an integer Subject.
+ * @param subject   pointer to Subject
+ * @return          minimum value, or INT32_MIN if no range is set
+ */
+int32_t lv_subject_get_int_min(lv_subject_t * subject);
+
+/**
+ * Get the maximum value of an integer Subject.
+ * @param subject   pointer to Subject
+ * @return          maximum value, or INT32_MAX if no range is set
+ */
+int32_t lv_subject_get_int_max(lv_subject_t * subject);
+
+/**
+ * Remove the min-max range from an integer Subject.
+ * @param subject   pointer to Subject
+ */
+void lv_subject_remove_int_range(lv_subject_t * subject);
+
 #if LV_USE_FLOAT
 
 /**
@@ -133,6 +181,44 @@ float lv_subject_get_float(lv_subject_t * subject);
  * @return          current value
  */
 float lv_subject_get_previous_float(lv_subject_t * subject);
+
+/**
+ * Initialize a float-type Subject with min-max range.
+ * @param subject   pointer to Subject
+ * @param value     initial value (will be clamped to range)
+ * @param min_value minimum allowed value
+ * @param max_value maximum allowed value
+ */
+void lv_subject_init_float_range(lv_subject_t * subject, float value, float min_value, float max_value);
+
+/**
+ * Set the min-max range for a float Subject.
+ * @param subject   pointer to Subject
+ * @param min_value minimum allowed value
+ * @param max_value maximum allowed value
+ * @note            Current value will be clamped to new range
+ */
+void lv_subject_set_float_range(lv_subject_t * subject, float min_value, float max_value);
+
+/**
+ * Get the minimum value of a float Subject.
+ * @param subject   pointer to Subject
+ * @return          minimum value, or -FLT_MAX if no range is set
+ */
+float lv_subject_get_float_min(lv_subject_t * subject);
+
+/**
+ * Get the maximum value of a float Subject.
+ * @param subject   pointer to Subject
+ * @return          maximum value, or FLT_MAX if no range is set
+ */
+float lv_subject_get_float_max(lv_subject_t * subject);
+
+/**
+ * Remove the min-max range from a float Subject.
+ * @param subject   pointer to Subject
+ */
+void lv_subject_remove_float_range(lv_subject_t * subject);
 
 #endif /*LV_USE_FLOAT*/
 

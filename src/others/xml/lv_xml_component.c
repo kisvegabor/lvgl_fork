@@ -447,6 +447,8 @@ static void process_subject_element(lv_xml_parser_state_t * state, const char * 
 {
     const char * name = lv_xml_get_value_of(attrs, "name");
     const char * value = lv_xml_get_value_of(attrs, "value");
+    const char * min_str = lv_xml_get_value_of(attrs, "min");
+    const char * max_str = lv_xml_get_value_of(attrs, "max");
 
     if(name == NULL) {
         LV_LOG_WARN("'name' is missing from a subject");
@@ -459,9 +461,31 @@ static void process_subject_element(lv_xml_parser_state_t * state, const char * 
 
     lv_subject_t * subject = lv_zalloc(sizeof(lv_subject_t));
 
-    if(lv_streq(type, "int")) lv_subject_init_int(subject, lv_xml_atoi(value));
+    if(lv_streq(type, "int")) {
+        int32_t init_value = lv_xml_atoi(value);
+        
+        /* Check if min/max range is specified */
+        if(min_str && max_str) {
+            int32_t min_value = lv_xml_atoi(min_str);
+            int32_t max_value = lv_xml_atoi(max_str);
+            lv_subject_init_int_range(subject, init_value, min_value, max_value);
+        } else {
+            lv_subject_init_int(subject, init_value);
+        }
+    }
 #if LV_USE_FLOAT
-    else if(lv_streq(type, "float")) lv_subject_init_float(subject, lv_xml_atof(value));
+    else if(lv_streq(type, "float")) {
+        float init_value = lv_xml_atof(value);
+        
+        /* Check if min/max range is specified */
+        if(min_str && max_str) {
+            float min_value = lv_xml_atof(min_str);
+            float max_value = lv_xml_atof(max_str);
+            lv_subject_init_float_range(subject, init_value, min_value, max_value);
+        } else {
+            lv_subject_init_float(subject, init_value);
+        }
+    }
 #endif
     else if(lv_streq(type, "color")) lv_subject_init_color(subject, lv_xml_to_color(value));
     else if(lv_streq(type, "string")) {
