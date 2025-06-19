@@ -14,6 +14,10 @@
 #include "../../core/lv_obj_private.h"
 #include "../../misc/lv_event_private.h"
 
+#if LV_USE_FLOAT
+#include <float.h>
+#endif
+
 /*********************
  *      DEFINES
  *********************/
@@ -133,6 +137,12 @@ void lv_subject_set_int(lv_subject_t * subject, int32_t value)
         return;
     }
 
+    /* Apply range clamping if range is set */
+    if(subject->has_range) {
+        lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+        value = LV_CLAMP(range->min_value.num, value, range->max_value.num);
+    }
+
     subject->prev_value.num = subject->value.num;
     subject->value.num = value;
     lv_subject_notify_if_changed(subject);
@@ -158,6 +168,92 @@ int32_t lv_subject_get_previous_int(lv_subject_t * subject)
     return subject->prev_value.num;
 }
 
+void lv_subject_init_int_range(lv_subject_t * subject, int32_t value, int32_t min_value, int32_t max_value)
+{
+    lv_subject_init_int(subject, value);
+    lv_subject_set_int_range(subject, min_value, max_value);
+}
+
+void lv_subject_set_int_range(lv_subject_t * subject, int32_t min_value, int32_t max_value)
+{
+    if(subject->type != LV_SUBJECT_TYPE_INT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_INT");
+        return;
+    }
+
+    lv_subject_range_t * range;
+    if(!subject->has_range) {
+        /* Allocate new range structure */
+        range = lv_malloc(sizeof(lv_subject_range_t));
+        LV_ASSERT_MALLOC(range);
+        if(range == NULL) {
+            LV_LOG_WARN("Failed to allocate range structure");
+            return;
+        }
+        range->original_user_data = subject->user_data;
+        subject->user_data = range;
+        subject->has_range = 1;
+    } else {
+        range = (lv_subject_range_t *)subject->user_data;
+    }
+
+    range->min_value.num = min_value;
+    range->max_value.num = max_value;
+
+    /* Clamp current value to new range */
+    int32_t clamped_value = LV_CLAMP(min_value, subject->value.num, max_value);
+    if(clamped_value != subject->value.num) {
+        lv_subject_set_int(subject, clamped_value);
+    }
+}
+
+int32_t lv_subject_get_int_min(lv_subject_t * subject)
+{
+    if(subject->type != LV_SUBJECT_TYPE_INT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_INT");
+        return INT32_MIN;
+    }
+
+    if(!subject->has_range) {
+        return INT32_MIN;
+    }
+
+    lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+    return range->min_value.num;
+}
+
+int32_t lv_subject_get_int_max(lv_subject_t * subject)
+{
+    if(subject->type != LV_SUBJECT_TYPE_INT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_INT");
+        return INT32_MAX;
+    }
+
+    if(!subject->has_range) {
+        return INT32_MAX;
+    }
+
+    lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+    return range->max_value.num;
+}
+
+void lv_subject_remove_int_range(lv_subject_t * subject)
+{
+    if(subject->type != LV_SUBJECT_TYPE_INT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_INT");
+        return;
+    }
+
+    if(!subject->has_range) {
+        return; /* No range to remove */
+    }
+
+    lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+    subject->user_data = range->original_user_data;
+    subject->has_range = 0;
+    lv_free(range);
+}
+
 #if LV_USE_FLOAT
 
 void lv_subject_init_float(lv_subject_t * subject, float value)
@@ -174,6 +270,12 @@ void lv_subject_set_float(lv_subject_t * subject, float value)
     if(subject->type != LV_SUBJECT_TYPE_FLOAT) {
         LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_FLOAT");
         return;
+    }
+
+    /* Apply range clamping if range is set */
+    if(subject->has_range) {
+        lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+        value = LV_CLAMP(range->min_value.float_v, value, range->max_value.float_v);
     }
 
     subject->prev_value.float_v = subject->value.float_v;
@@ -199,6 +301,92 @@ float lv_subject_get_previous_float(lv_subject_t * subject)
     }
 
     return subject->prev_value.float_v;
+}
+
+void lv_subject_init_float_range(lv_subject_t * subject, float value, float min_value, float max_value)
+{
+    lv_subject_init_float(subject, value);
+    lv_subject_set_float_range(subject, min_value, max_value);
+}
+
+void lv_subject_set_float_range(lv_subject_t * subject, float min_value, float max_value)
+{
+    if(subject->type != LV_SUBJECT_TYPE_FLOAT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_FLOAT");
+        return;
+    }
+
+    lv_subject_range_t * range;
+    if(!subject->has_range) {
+        /* Allocate new range structure */
+        range = lv_malloc(sizeof(lv_subject_range_t));
+        LV_ASSERT_MALLOC(range);
+        if(range == NULL) {
+            LV_LOG_WARN("Failed to allocate range structure");
+            return;
+        }
+        range->original_user_data = subject->user_data;
+        subject->user_data = range;
+        subject->has_range = 1;
+    } else {
+        range = (lv_subject_range_t *)subject->user_data;
+    }
+
+    range->min_value.float_v = min_value;
+    range->max_value.float_v = max_value;
+
+    /* Clamp current value to new range */
+    float clamped_value = LV_CLAMP(min_value, subject->value.float_v, max_value);
+    if(clamped_value != subject->value.float_v) {
+        lv_subject_set_float(subject, clamped_value);
+    }
+}
+
+float lv_subject_get_float_min(lv_subject_t * subject)
+{
+    if(subject->type != LV_SUBJECT_TYPE_FLOAT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_FLOAT");
+        return -FLT_MAX;
+    }
+
+    if(!subject->has_range) {
+        return -FLT_MAX;
+    }
+
+    lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+    return range->min_value.float_v;
+}
+
+float lv_subject_get_float_max(lv_subject_t * subject)
+{
+    if(subject->type != LV_SUBJECT_TYPE_FLOAT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_FLOAT");
+        return FLT_MAX;
+    }
+
+    if(!subject->has_range) {
+        return FLT_MAX;
+    }
+
+    lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+    return range->max_value.float_v;
+}
+
+void lv_subject_remove_float_range(lv_subject_t * subject)
+{
+    if(subject->type != LV_SUBJECT_TYPE_FLOAT) {
+        LV_LOG_WARN("Subject type is not LV_SUBJECT_TYPE_FLOAT");
+        return;
+    }
+
+    if(!subject->has_range) {
+        return; /* No range to remove */
+    }
+
+    lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+    subject->user_data = range->original_user_data;
+    subject->has_range = 0;
+    lv_free(range);
 }
 
 #endif /*LV_USE_FLOAT*/
@@ -384,6 +572,14 @@ void lv_subject_deinit(lv_subject_t * subject)
     }
 
     lv_ll_clear(&subject->subs_ll);
+
+    /* Clean up range data if it exists */
+    if(subject->has_range) {
+        lv_subject_range_t * range = (lv_subject_range_t *)subject->user_data;
+        subject->user_data = range->original_user_data;
+        subject->has_range = 0;
+        lv_free(range);
+    }
 }
 
 lv_subject_t * lv_subject_get_group_element(lv_subject_t * subject, int32_t index)
