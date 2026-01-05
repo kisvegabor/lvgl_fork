@@ -563,6 +563,7 @@ redirects = {
     "details/xml/tools/cli":                         "../../../xml/tools/cli.html"                          ,
     "details/xml/tools/figma":                       "../../../xml/tools/figma.html"                        ,
     "details/xml/xml/index":                         "../../../xml/xml/index.html"                          ,
+    "xml":                                           "https://docs.pro.lvgl.io/"                          ,
 }
 
 

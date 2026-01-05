@@ -41,7 +41,6 @@
 #include "osal/lv_os_private.h"
 #include "debugging/sysmon/lv_sysmon_private.h"
 #include "others/translation/lv_translation.h"
-#include "xml/lv_xml.h"
 #include "drivers/wayland/lv_wayland_private.h"
 
 #if LV_USE_SVG
@@ -414,10 +413,6 @@ void lv_init(void)
 
 #if LV_USE_TRANSLATION
     lv_translation_init();
-#endif
-
-#if LV_USE_XML
-    lv_xml_init();
 #endif
 
     lv_initialized = true;
