@@ -1181,7 +1181,6 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
     lv_chart_t * chart  = (lv_chart_t *)obj;
     if(chart->point_cnt < 2) return;
 
-    uint32_t i;
     int32_t border_width = lv_obj_get_style_border_width(obj, LV_PART_MAIN);
     int32_t pad_left = lv_obj_get_style_pad_left(obj, LV_PART_MAIN) + border_width;
     int32_t pad_top = lv_obj_get_style_pad_top(obj, LV_PART_MAIN) + border_width;
@@ -1230,94 +1229,92 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
         lv_draw_vector_dsc_set_stroke_width(ctx, 2.0f);
         if(dashes[0]) lv_draw_vector_dsc_set_stroke_dash(ctx, dashes, 2);
 
-        //        lv_fpoint_t fp[4] = {
-        //              {x_ofs + 10, y_ofs + 50},
-        //              {x_ofs + 30, y_ofs + 50},
-        //              {x_ofs + 30, y_ofs + 100},
-        //              {x_ofs + 60, y_ofs + 100},
-        //        };
-        //        lv_vector_path_move_to(path, &fp[0]);
-        //        lv_vector_path_cubic_to(path, &fp[1], &fp[2], &fp[3]);
-        //
-        //        lv_draw_vector_dsc_add_path(ctx, path); // draw a path
-        //
-        //        lv_draw_vector(ctx); // submit draw
-        //        lv_vector_path_delete(path);
-        //        lv_draw_vector_dsc_delete(ctx);
-        //
-        //        return;
-
         point_dsc_default.bg_color = ser->color;
         ctx->base.id2 = 0;
         point_dsc_default.base.id2 = 0;
 
         int32_t start_point = chart->update_mode == LV_CHART_UPDATE_MODE_SHIFT ? ser->start_point : 0;
 
-
         /*The X distance between points.
          *Just a rough calculation to know the extra area of interest around the chart*/
         int32_t max_dx = w / (chart->point_cnt - 1) + 1;
 
-        lv_fpoint_t points[3];
-        int32_t p_act = 0;
+        lv_fpoint_t scaled_points[3];
+        int32_t raw_points[3];
+        int32_t s_prev = 0; /*Previous steepness around N-1 (y_diff of N-2 and N) */
+        int32_t s_act = 0; /*Steepness around N (y_diff of N-1 and N+1)*/
         int32_t min_v = chart->ymin[ser->y_axis_sec];
         int32_t max_v = chart->ymax[ser->y_axis_sec];
 
+        int32_t i;
         int32_t valid_point_cnt = 0;
-        lv_fpoint_t next_c1;
-        for(i = 0; i <= chart->point_cnt; i++) {
-            int32_t p_x = (lv_value_precise_t)((w * i) / (chart->point_cnt - 1)) + x_ofs;
+        int32_t point_cnt = chart->point_cnt;
+        for(i = 0; i <= point_cnt; i++) {
+            int32_t p_x = ((w * i) / (point_cnt - 1)) + x_ofs;
 
             if(p_x > layer->_clip_area.x2 + 2 * max_dx + point_w + 1) break;
-            if(p_x < layer->_clip_area.x1 - 3 * max_dx - point_w - 1) {
+            if(p_x < layer->_clip_area.x1 - 2 * max_dx - point_w - 1) {
                 continue;
             }
 
             /*We need 3 points to draw the curves (N-1, N, N+1)*/
-            points[0] = points[1];
-            points[1] = points[2];
+            scaled_points[0] = scaled_points[1];
+            scaled_points[1] = scaled_points[2];
 
-            int32_t p_act = (start_point + i) % chart->point_cnt;
-            if(i == chart->point_cnt) {
-                points[2] = points[1];
+            raw_points[0] = raw_points[1];
+            raw_points[1] = raw_points[2];
+
+            int32_t p_next = (start_point + i) % point_cnt;
+            raw_points[2] = ser->y_points[p_next];
+            if(i > point_cnt - 1) {
+                s_act = 0;
             }
             else {
-                points[2].x = p_x;
-                points[2].y = (int32_t)lv_map(ser->y_points[p_act], min_v, max_v, y_ofs + h, y_ofs);
+                if(raw_points[2] == LV_CHART_POINT_NONE) {
+                    s_act = s_prev;
+                }
+                else {
+                    scaled_points[2].x = p_x;
+                    scaled_points[2].y = (int32_t)lv_map(ser->y_points[p_next], min_v, max_v, y_ofs + h, y_ofs);
+                    if(i == 0) {
+                        scaled_points[0] = scaled_points[2];
+                        scaled_points[1] = scaled_points[2];
+                    }
+
+                    if((scaled_points[2].y >= scaled_points[1].y && scaled_points[1].y >= scaled_points[0].y) ||
+                       (scaled_points[2].y <= scaled_points[1].y && scaled_points[1].y <= scaled_points[0].y)) {
+                        s_act = (scaled_points[2].y - scaled_points[0].y) / 2;
+                    }
+                    else {
+                        s_act = 0;
+                    }
+                }
             }
 
-            if(valid_point_cnt == 0) next_c1 = points[2];
-
             if(valid_point_cnt >= 2) {
-                lv_vector_path_move_to(path, &points[0]);
-                if(points[0].x == 0) {
-                    printf("%d: %f, %f\n", i, points[0].x, points[0].y);
-                }
-                if(ser->y_points[p_act] != LV_CHART_POINT_NONE) {
+                if(raw_points[0] != LV_CHART_POINT_NONE && raw_points[1] != LV_CHART_POINT_NONE) {
+                    lv_vector_path_move_to(path, &scaled_points[0]);
                     ctx->base.id2 = i;
 
                     /*Average slope*/
-                    int32_t dx = points[2].x - points[1].x;
-                    int32_t dy = 0;
-                    if((points[2].y >= points[1].y && points[1].y >= points[0].y) ||
-                       (points[2].y <= points[1].y && points[1].y <= points[0].y)) {
-                        dy = (points[2].y - points[0].y) / 2;
-                    }
+                    int32_t dx = scaled_points[1].x - scaled_points[0].x;
 
-                    lv_fpoint_t c2 = {points[1].x - dx / 3, points[1].y - dy / 3};
-                    lv_vector_path_cubic_to(path, &next_c1, &c2, &points[1]);
-
-                    next_c1.x = points[1].x + dx / 3;
-                    next_c1.y = points[1].y + dy / 3;
+                    lv_fpoint_t c1 = {scaled_points[0].x + dx / 3, scaled_points[0].y + s_prev / 3};
+                    lv_fpoint_t c2 = {scaled_points[1].x - dx / 3, scaled_points[1].y - s_act / 3};
+                    lv_vector_path_cubic_to(path, &c1, &c2, &scaled_points[1]);
+                }
+                else {
+                    s_act = 0;
                 }
             }
+            s_prev = s_act;
 
-            if(point_w && point_h && ser->y_points[p_act] != LV_CHART_POINT_NONE) {
+            if(point_w && point_h && ser->y_points[p_next] != LV_CHART_POINT_NONE) {
                 lv_area_t point_area;
-                point_area.x1 = (int32_t)points[2].x - point_w;
-                point_area.x2 = (int32_t)points[2].x + point_w;
-                point_area.y1 = (int32_t)points[2].y - point_h;
-                point_area.y2 = (int32_t)points[2].y + point_h;
+                point_area.x1 = (int32_t)scaled_points[2].x - point_w;
+                point_area.x2 = (int32_t)scaled_points[2].x + point_w;
+                point_area.y1 = (int32_t)scaled_points[2].y - point_h;
+                point_area.y2 = (int32_t)scaled_points[2].y + point_h;
                 point_dsc_default.base.id2 = i - 1;
                 lv_draw_rect(layer, &point_dsc_default, &point_area);
             }
