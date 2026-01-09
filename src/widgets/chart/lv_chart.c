@@ -1174,10 +1174,9 @@ static void draw_series_line(lv_obj_t * obj, lv_layer_t * layer)
     if(points) lv_free(points);
 }
 
-
 static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
 {
-
+#if LV_USE_VECTOR_GRAPHIC
     lv_chart_t * chart  = (lv_chart_t *)obj;
     if(chart->point_cnt < 2) return;
 
@@ -1207,15 +1206,15 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
     dashes[0] = lv_obj_get_style_line_dash_width(obj, LV_PART_ITEMS);
     dashes[1] = lv_obj_get_style_line_dash_gap(obj, LV_PART_ITEMS);
 
-    lv_draw_vector_dsc_t * ctx = lv_draw_vector_dsc_create(layer);
+    lv_draw_vector_dsc_t * dsc = lv_draw_vector_dsc_create(layer);
     lv_vector_path_t * path = lv_vector_path_create(LV_VECTOR_PATH_QUALITY_MEDIUM);
-    ctx->base.id1 = ser_cnt - 1;
-    point_dsc_default.base.id1 = ctx->base.id1;
+    dsc->base.id1 = ser_cnt - 1;
+    point_dsc_default.base.id1 = dsc->base.id1;
     /*Go through all data lines (series)*/
     LV_LL_READ_BACK(&chart->series_ll, ser) {
         if(ser->hidden) {
-            if(ctx->base.id1 > 0) {
-                ctx->base.id1--;
+            if(dsc->base.id1 > 0) {
+                dsc->base.id1--;
                 point_dsc_default.base.id1--;
             }
             continue;
@@ -1223,14 +1222,14 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
 
         lv_vector_path_clear(path);
 
-        lv_draw_vector_dsc_set_fill_opa(ctx, 0);
-        lv_draw_vector_dsc_set_stroke_color(ctx, ser->color);
-        lv_draw_vector_dsc_set_stroke_opa(ctx, LV_OPA_COVER);
-        lv_draw_vector_dsc_set_stroke_width(ctx, 2.0f);
-        if(dashes[0]) lv_draw_vector_dsc_set_stroke_dash(ctx, dashes, 2);
+        lv_draw_vector_dsc_set_fill_opa(dsc, 0);
+        lv_draw_vector_dsc_set_stroke_color(dsc, ser->color);
+        lv_draw_vector_dsc_set_stroke_opa(dsc, LV_OPA_COVER);
+        lv_draw_vector_dsc_set_stroke_width(dsc, 2.0f);
+        if(dashes[0]) lv_draw_vector_dsc_set_stroke_dash(dsc, dashes, 2);
 
         point_dsc_default.bg_color = ser->color;
-        ctx->base.id2 = 0;
+        dsc->base.id2 = 0;
         point_dsc_default.base.id2 = 0;
 
         int32_t start_point = chart->update_mode == LV_CHART_UPDATE_MODE_SHIFT ? ser->start_point : 0;
@@ -1283,7 +1282,7 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
 
                     if((scaled_points[2].y >= scaled_points[1].y && scaled_points[1].y >= scaled_points[0].y) ||
                        (scaled_points[2].y <= scaled_points[1].y && scaled_points[1].y <= scaled_points[0].y)) {
-                        s_act = (scaled_points[2].y - scaled_points[0].y) / 2;
+                        s_act = (int32_t)(scaled_points[2].y - scaled_points[0].y) / 2;
                     }
                     else {
                         s_act = 0;
@@ -1294,10 +1293,10 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
             if(valid_point_cnt >= 2) {
                 if(raw_points[0] != LV_CHART_POINT_NONE && raw_points[1] != LV_CHART_POINT_NONE) {
                     lv_vector_path_move_to(path, &scaled_points[0]);
-                    ctx->base.id2 = i;
+                    dsc->base.id2 = i;
 
                     /*Average slope*/
-                    int32_t dx = scaled_points[1].x - scaled_points[0].x;
+                    int32_t dx = (int32_t)(scaled_points[1].x - scaled_points[0].x);
 
                     lv_fpoint_t c1 = {scaled_points[0].x + dx / 3, scaled_points[0].y + s_prev / 3};
                     lv_fpoint_t c2 = {scaled_points[1].x - dx / 3, scaled_points[1].y - s_act / 3};
@@ -1321,17 +1320,21 @@ static void draw_series_curve(lv_obj_t * obj, lv_layer_t * layer)
             valid_point_cnt++;
         }
 
-        lv_draw_vector_dsc_add_path(ctx, path); // draw a path
+        lv_draw_vector_dsc_add_path(dsc, path); // draw a path
 
-        if(ctx->base.id1 > 0) {
+        if(dsc->base.id1 > 0) {
             point_dsc_default.base.id1--;
-            ctx->base.id1--;
+            dsc->base.id1--;
         }
     }
 
-    lv_draw_vector(ctx); // submit draw
+    lv_draw_vector(dsc);
     lv_vector_path_delete(path);
-    lv_draw_vector_dsc_delete(ctx);
+    lv_draw_vector_dsc_delete(dsc);
+#else
+    LV_LOG_WARN("LV_USE_VECTOR_GRAPHIC is not enabled for LV_CHART_TYPE_CURVE. Falling back to LV_CHART_TYPE_LINE");
+    draw_series_line(obj, layer);
+#endif /*LV_USE_VECTOR_GRAPHIC*/
 
 }
 
