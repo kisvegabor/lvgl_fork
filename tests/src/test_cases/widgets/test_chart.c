@@ -225,8 +225,11 @@ void test_chart_curve(void)
     lv_obj_set_size(chart, 400, 300);
     lv_obj_center(chart);
     lv_obj_set_style_bg_opa(chart, LV_OPA_50, LV_PART_INDICATOR);
+    lv_obj_set_style_line_dash_gap(chart, 5, LV_PART_ITEMS);
+    lv_obj_set_style_line_dash_width(chart, 10, LV_PART_ITEMS);
     lv_chart_set_type(chart, LV_CHART_TYPE_CURVE);
     lv_chart_set_point_count(chart, 15);
+
     lv_chart_series_t * ser1 = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_GREEN), LV_CHART_AXIS_PRIMARY_Y);
     lv_chart_series_t * ser2 = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_SECONDARY_Y);
 
