@@ -143,7 +143,7 @@ static inline int32_t lv_div_round_closest(int32_t dividend, int32_t divisor)
 
 void lv_grid_init(void)
 {
-    layout_list_def[LV_LAYOUT_GRID].callbacks.layout_update_cb = grid_update;
+    layout_list_def[LV_LAYOUT_GRID].callbacks.update_positions_cb = grid_update;
     layout_list_def[LV_LAYOUT_GRID].callbacks.get_min_size_cb = NULL;
     layout_list_def[LV_LAYOUT_GRID].user_data = NULL;
 }
@@ -213,14 +213,6 @@ static void grid_update(lv_obj_t * cont, void * user_data)
         item_repos(item, &c, &hint);
     }
     calc_free(&c);
-
-    int32_t w_set = lv_obj_get_style_width(cont, LV_PART_MAIN);
-    int32_t h_set = lv_obj_get_style_height(cont, LV_PART_MAIN);
-    if(w_set == LV_SIZE_CONTENT || h_set == LV_SIZE_CONTENT) {
-        lv_obj_refr_size(cont);
-    }
-
-    lv_obj_send_event(cont, LV_EVENT_LAYOUT_CHANGED, NULL);
 
     LV_TRACE_LAYOUT("finished");
 }

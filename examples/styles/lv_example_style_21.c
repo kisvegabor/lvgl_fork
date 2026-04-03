@@ -8,7 +8,7 @@
 
 #include "lv_example_style.h"
 
-#if LV_BUILD_EXAMPLES
+#if LV_BUILD_EXAMPLES && LV_USE_GRID
 
 /*********************
  *      DEFINES

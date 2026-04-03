@@ -73,7 +73,7 @@ uint32_t lv_layout_register(lv_layout_update_cb_t cb, void * user_data)
         LV_LOG_WARN("`lv_layout_register` is deprecated and replaced by `lv_layout_create`.");
         warned = true;
     }
-    lv_layout_callbacks_t cbs = {.layout_update_cb  = cb, . get_min_size_cb = NULL};
+    lv_layout_callbacks_t cbs = {.update_positions_cb  = cb, . get_min_size_cb = NULL};
     return lv_layout_create(cbs, user_data);
 }
 
@@ -90,31 +90,22 @@ bool lv_layout_get_min_size(lv_obj_t * obj, int32_t * size, bool width)
 }
 
 
-void lv_layout_apply(lv_obj_t * obj)
+void lv_layout_update_children_positions(lv_obj_t * obj)
 {
     lv_layout_t layout_id = lv_obj_get_style_layout(obj, LV_PART_MAIN);
     if(layout_id > 0 && layout_id < layout_cnt) {
         void  * user_data = layout_list_def[layout_id].user_data;
-        layout_list_def[layout_id].callbacks.layout_update_cb(obj, user_data);
+        layout_list_def[layout_id].callbacks.update_positions_cb(obj, user_data);
     }
 }
 
-void lv_layout_update_sizes(lv_obj_t * obj)
+void lv_layout_update_children_sizes(lv_obj_t * obj)
 {
     lv_layout_t layout_id = lv_obj_get_style_layout(obj, LV_PART_MAIN);
     if(layout_id > 0 && layout_id < layout_cnt) {
         void  * user_data = layout_list_def[layout_id].user_data;
         lv_layout_update_cb_t cb = layout_list_def[layout_id].callbacks.update_sizes_cb;
         if(cb) cb(obj, user_data);
-    }
-}
-
-void lv_layout_apply(lv_obj_t * obj)
-{
-    lv_layout_t layout_id = lv_obj_get_style_layout(obj, LV_PART_MAIN);
-    if(layout_id > 0 && layout_id < layout_cnt) {
-        void  * user_data = layout_list_def[layout_id].user_data;
-        layout_list_def[layout_id].callbacks.layout_update_cb(obj, user_data);
     }
 }
 

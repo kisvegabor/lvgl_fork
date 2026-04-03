@@ -66,7 +66,7 @@ static int32_t find_track_end(lv_obj_t * cont, flex_t * f, int32_t item_start_id
 static void children_set_grow(lv_obj_t * cont, flex_t * f, track_t * t);
 
 static void children_repos(lv_obj_t * cont, flex_t * f, int32_t item_first_id, int32_t item_last_id, int32_t abs_x,
-                           int32_t abs_y, int32_t max_main_size, int32_t item_gap, track_t * t, bool size_mode);
+                           int32_t abs_y, int32_t max_main_size, int32_t item_gap, track_t * t);
 static void place_content(lv_flex_align_t place, int32_t max_size, int32_t content_size, int32_t item_cnt,
                           int32_t * start_pos, int32_t * gap);
 static lv_obj_t * get_next_item(lv_obj_t * cont, bool rev, int32_t * item_id);
@@ -105,7 +105,7 @@ static inline int32_t div_round_closest(int32_t dividend, int32_t divisor)
 
 void lv_flex_init(void)
 {
-    layout_list_def[LV_LAYOUT_FLEX].callbacks.layout_update_cb = flex_update_position;
+    layout_list_def[LV_LAYOUT_FLEX].callbacks.update_positions_cb = flex_update_position;
     layout_list_def[LV_LAYOUT_FLEX].callbacks.update_sizes_cb = flex_update_size;
     layout_list_def[LV_LAYOUT_FLEX].callbacks.get_min_size_cb = calc_min_size;
     layout_list_def[LV_LAYOUT_FLEX].user_data = NULL;
@@ -221,7 +221,7 @@ static void flex_update_size(lv_obj_t * cont, void * user_data)
     }
 }
 
-static void flex_update_position(lv_obj_t * cont, void * user_data, bool size_mode)
+static void flex_update_position(lv_obj_t * cont, void * user_data)
 {
     LV_LOG_INFO("update %p container", (void *)cont);
     LV_UNUSED(user_data);
@@ -261,7 +261,7 @@ static void flex_update_position(lv_obj_t * cont, void * user_data, bool size_mo
     }
 
     int32_t total_track_cross_size = 0;
-    int32_t track_gap = 0;
+    int32_t final_track_gap = 0;
     uint32_t track_cnt = 0;
     int32_t track_first_item;
     int32_t next_track_first_item;
@@ -284,7 +284,7 @@ static void flex_update_position(lv_obj_t * cont, void * user_data, bool size_mo
 
         /*Place the tracks to get the start position*/
         int32_t max_cross_size = (f.row ? lv_obj_get_content_height(cont) : lv_obj_get_content_width(cont));
-        place_content(track_cross_place, max_cross_size, total_track_cross_size, track_cnt, cross_pos, &track_gap);
+        place_content(track_cross_place, max_cross_size, total_track_cross_size, track_cnt, cross_pos, &final_track_gap);
 
     }
 
@@ -492,7 +492,7 @@ static void children_set_grow(lv_obj_t * cont, flex_t * f, track_t * t)
  * Position the children in the same track
  */
 static void children_repos(lv_obj_t * cont, flex_t * f, int32_t item_first_id, int32_t item_last_id, int32_t abs_x,
-                           int32_t abs_y, int32_t max_main_size, int32_t item_gap, track_t * t, bool size_mode)
+                           int32_t abs_y, int32_t max_main_size, int32_t item_gap, track_t * t)
 {
     void (*area_set_main_size)(lv_area_t *, int32_t) = (f->row ? lv_area_set_width : lv_area_set_height);
     int32_t (*area_get_main_size)(const lv_area_t *) = (f->row ? lv_area_get_width : lv_area_get_height);
