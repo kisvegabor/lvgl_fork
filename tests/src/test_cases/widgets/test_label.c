@@ -890,6 +890,7 @@ void test_label_invalidate_area(void)
 {
     int i = 0;
     label = lv_label_create(lv_screen_active());
+<<<<<<< HEAD
 
     /* In FULL render mode lv_inv_area() requests a whole-screen redraw via
      * LV_EVENT_REFR_REQUEST and never emits LV_EVENT_INVALIDATE_AREA, so listen
@@ -898,44 +899,58 @@ void test_label_invalidate_area(void)
     lv_event_code_t inv_event = (lv_display_get_render_mode(disp) == LV_DISPLAY_RENDER_MODE_FULL)
                                 ? LV_EVENT_REFR_REQUEST : LV_EVENT_INVALIDATE_AREA;
     lv_display_add_event_cb(disp, display_invalidate_area_cb, inv_event, &i);
+=======
+    lv_display_add_event_cb(lv_display_get_default(), display_invalidate_area_cb, LV_EVENT_INVALIDATE_AREA, &i);
+
+    lv_refr_now(NULL);
+>>>>>>> 230af3689 (arch(layout): rework the layout calculation to make it more predicatble and faster)
     i = 0;
     lv_label_set_text_static(label, "Hello world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text(label, "Hello world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_fmt(label, "%s", "Hello world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_long_mode(label, LV_LABEL_LONG_MODE_SCROLL);
     TEST_ASSERT(i > 0);
 
 #if LV_LABEL_TEXT_SELECTION
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_selection_start(label, 1);
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_selection_end(label, 1);
     TEST_ASSERT(i > 0);
 #endif
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_recolor(label, true);
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_ins_text(label, 5, " world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_cut_text(label, 5, 5);
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_obj_set_style_align(label, LV_ALIGN_CENTER, 0);
     TEST_ASSERT(i > 0);

@@ -532,7 +532,6 @@ void lv_obj_set_hidden(lv_obj_t * obj, bool en)
 
     if((was_on_layout != lv_obj_is_layout_positioned(obj))) {
         lv_obj_mark_layout_as_dirty(lv_obj_get_parent(obj));
-        lv_obj_mark_layout_as_dirty(obj);
     }
 }
 
@@ -669,8 +668,13 @@ void lv_obj_set_ignore_layout(lv_obj_t * obj, bool en)
 
     obj->ignore_layout = en;
 
+<<<<<<< HEAD
     if((was_on_layout != lv_obj_is_layout_positioned(obj))) {
         lv_obj_mark_layout_as_dirty(lv_obj_get_parent(obj));
+=======
+    if(f & LV_OBJ_FLAG_HIDDEN) {
+        lv_obj_invalidate(obj);
+>>>>>>> 230af3689 (arch(layout): rework the layout calculation to make it more predicatble and faster)
         lv_obj_mark_layout_as_dirty(obj);
     }
 }
@@ -1493,6 +1497,7 @@ static void lv_obj_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
     }
 
     /*Set attributes*/
+<<<<<<< HEAD
     obj->clickable = 1;
     obj->snappable = 1;
     obj->click_focusable = 1;
@@ -1508,6 +1513,19 @@ static void lv_obj_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
     }
 
 #if LV_USE_OBJ_ID && LV_OBJ_ID_AUTO_ASSIGN
+=======
+    obj->flags = LV_OBJ_FLAG_CLICKABLE;
+    obj->flags |= LV_OBJ_FLAG_SNAPPABLE;
+    if(parent) obj->flags |= LV_OBJ_FLAG_PRESS_LOCK;
+    if(parent) obj->flags |= LV_OBJ_FLAG_SCROLL_CHAIN;
+    obj->flags |= LV_OBJ_FLAG_CLICK_FOCUSABLE;
+    obj->flags |= LV_OBJ_FLAG_SCROLLABLE;
+    obj->flags |= LV_OBJ_FLAG_SCROLL_ELASTIC;
+    obj->flags |= LV_OBJ_FLAG_SCROLL_MOMENTUM;
+    obj->flags |= LV_OBJ_FLAG_SCROLL_WITH_ARROW;
+    if(parent) obj->flags |= LV_OBJ_FLAG_GESTURE_BUBBLE;
+#if LV_OBJ_ID_AUTO_ASSIGN
+>>>>>>> 230af3689 (arch(layout): rework the layout calculation to make it more predicatble and faster)
     lv_obj_assign_id(class_p, obj);
 #endif
 
@@ -1847,11 +1865,11 @@ static void lv_obj_event(const lv_obj_class_t * class_p, lv_event_t * e)
         lv_obj_remove_state(obj, LV_STATE_PRESSED);
     }
     else if(code == LV_EVENT_STYLE_CHANGED) {
-        uint32_t child_cnt = lv_obj_get_child_count(obj);
-        for(uint32_t i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
-            lv_obj_mark_layout_as_dirty(child);
-        }
+        //        uint32_t child_cnt = lv_obj_get_child_count(obj);
+        //        for(uint32_t i = 0; i < child_cnt; i++) {
+        //            lv_obj_t * child = obj->spec_attr->children[i];
+        //            lv_obj_mark_layout_as_dirty(child);
+        //        }
     }
     else if(code == LV_EVENT_KEY) {
         if(lv_obj_is_checkable(obj)) {
@@ -1947,6 +1965,7 @@ static void lv_obj_event(const lv_obj_class_t * class_p, lv_event_t * e)
         lv_obj_remove_state(obj, LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_FOCUS_KEY);
     }
     else if(code == LV_EVENT_SIZE_CHANGED) {
+<<<<<<< HEAD
         int32_t align = lv_obj_get_style_align_internal(obj, LV_PART_MAIN);
         uint16_t layout = lv_obj_get_style_layout_internal(obj, LV_PART_MAIN);
         if(layout || align) {
@@ -1966,10 +1985,31 @@ static void lv_obj_event(const lv_obj_class_t * class_p, lv_event_t * e)
         if(layout || align || lv_obj_is_style_any_width_content(obj) || lv_obj_is_style_any_height_content(obj)) {
             lv_obj_mark_layout_as_dirty(obj);
         }
+=======
+        //        int32_t align = lv_obj_get_style_align(obj, LV_PART_MAIN);
+        //        uint16_t layout = lv_obj_get_style_layout(obj, LV_PART_MAIN);
+        //        if(layout || align) {
+        //            lv_obj_mark_layout_as_dirty(obj);
+        //        }
+        //
+        //        uint32_t i;
+        //        uint32_t child_cnt = lv_obj_get_child_count(obj);
+        //        for(i = 0; i < child_cnt; i++) {
+        //            lv_obj_t * child = obj->spec_attr->children[i];
+        //            lv_obj_mark_layout_as_dirty(child);
+        //        }
+    }
+    else if(code == LV_EVENT_CHILD_CHANGED) {
+        //        int32_t align = lv_obj_get_style_align(obj, LV_PART_MAIN);
+        //        uint16_t layout = lv_obj_get_style_layout(obj, LV_PART_MAIN);
+        //        if(layout || align || lv_obj_is_style_any_width_content(obj) || lv_obj_is_style_any_height_content(obj)) {
+        //            lv_obj_mark_layout_as_dirty(obj);
+        //        }
+>>>>>>> 230af3689 (arch(layout): rework the layout calculation to make it more predicatble and faster)
     }
     else if(code == LV_EVENT_CHILD_DELETED) {
         obj->readjust_scroll_after_layout = 1;
-        lv_obj_mark_layout_as_dirty(obj);
+        //        lv_obj_mark_layout_as_dirty(obj);
     }
     else if(code == LV_EVENT_REFR_EXT_DRAW_SIZE) {
         int32_t d = lv_obj_calculate_ext_draw_size(obj, LV_PART_MAIN);
@@ -2109,6 +2149,23 @@ static void obj_transition_states(lv_obj_t * obj, lv_state_t prev_state, lv_stat
     }
 
     lv_free(ts);
+<<<<<<< HEAD
+=======
+
+    if(cmp_res == LV_STYLE_STATE_CMP_DIFF_REDRAW) {
+        /*Invalidation is not enough, e.g. layer type needs to be updated too*/
+        lv_obj_invalidate(obj);
+    }
+    else if(cmp_res == LV_STYLE_STATE_CMP_DIFF_LAYOUT) {
+        lv_obj_refresh_style(obj, LV_PART_ANY, LV_STYLE_PROP_ANY);
+    }
+    else if(cmp_res == LV_STYLE_STATE_CMP_DIFF_DRAW_PAD) {
+        lv_obj_invalidate(obj);
+        lv_obj_refresh_ext_draw_size(obj);
+    }
+
+    lv_obj_send_event(obj, LV_EVENT_STATE_CHANGED, &prev_state);
+>>>>>>> 230af3689 (arch(layout): rework the layout calculation to make it more predicatble and faster)
 }
 
 /**

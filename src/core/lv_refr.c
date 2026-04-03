@@ -56,6 +56,7 @@ static bool alpha_test_area_on_obj(lv_obj_t * obj, const lv_area_t * area);
     static bool refr_check_obj_clip_overflow(lv_layer_t * layer, lv_obj_t * obj);
     static void refr_obj_matrix(lv_layer_t * layer, lv_obj_t * obj);
 #endif
+static void invalidate_current_area(lv_obj_t * obj);
 
 /**********************
  *  STATIC VARIABLES
@@ -343,7 +344,10 @@ lv_result_t lv_inv_area(lv_display_t * disp, const lv_area_t * area_p)
     disp->inv_areas[disp->inv_p] = *tmp_area_p;
     disp->inv_p++;
 
-    lv_display_send_event(disp, LV_EVENT_REFR_REQUEST, NULL);
+    /*Tell the display that there will be something to refresh*/
+    if(disp->inv_p == 1) {
+        lv_display_send_event(disp, LV_EVENT_REFR_REQUEST, NULL);
+    }
 
     return LV_RESULT_OK;
 }
@@ -416,6 +420,14 @@ void lv_display_refr_timer(lv_timer_t * timer)
     lv_obj_update_layout(disp_refr->top_layer);
     lv_obj_update_layout(disp_refr->sys_layer);
     LV_PROFILER_LAYOUT_END_TAG("layout");
+
+    LV_PROFILER_LAYOUT_BEGIN_TAG("invadiate_new");
+    invalidate_current_area(disp_refr->act_scr);
+    if(disp_refr->prev_scr) invalidate_current_area(disp_refr->prev_scr);
+    invalidate_current_area(disp_refr->top_layer);
+    invalidate_current_area(disp_refr->sys_layer);
+    invalidate_current_area(disp_refr->bottom_layer);
+    LV_PROFILER_LAYOUT_END_TAG("invadiate_new");
 
     /*Do nothing if there is no active screen*/
     if(disp_refr->act_scr == NULL) {
@@ -1553,4 +1565,35 @@ static void wait_for_syncing(lv_display_t * disp)
 
     LV_LOG_TRACE("end");
     LV_PROFILER_REFR_END;
+}
+
+static void clear_children_redraw_request_flag(lv_obj_t * obj)
+{
+    uint32_t child_cnt = lv_obj_get_child_count(obj);
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
+        child->redraw_requested = 0;
+        clear_children_redraw_request_flag(child);
+    }
+}
+
+static void invalidate_current_area(lv_obj_t * obj)
+{
+    /*Request a redraw on the new area too*/
+    if(obj->redraw_requested) {
+        obj->redraw_requested = 0;
+        lv_obj_invalidate(obj);
+        obj->redraw_requested = 0;
+
+        /*All children will be covered by this invalidation, so just clear their flag*/
+        clear_children_redraw_request_flag(obj);
+    }
+    else {
+        uint32_t child_cnt = lv_obj_get_child_count(obj);
+        for(uint32_t i = 0; i < child_cnt; i++) {
+            lv_obj_t * child = obj->spec_attr->children[i];
+            invalidate_current_area(child);
+        }
+
+    }
 }
