@@ -32,7 +32,7 @@
  **********************/
 static int32_t calc_content_width(lv_obj_t * obj);
 static int32_t calc_content_height(lv_obj_t * obj);
-static void update_coordinates(lv_obj_t * parent);
+static void update_coordinates(lv_obj_t * obj);
 static void transform_point_array(const lv_obj_t * obj, lv_point_t * p, size_t p_count, bool inv);
 static bool is_transformed(const lv_obj_t * obj);
 static lv_result_t invalidate_area_core(const lv_obj_t * obj, lv_area_t * area_tmp);
@@ -154,6 +154,9 @@ void update_layout_size_constrain(lv_obj_t * obj)
 void update_fixed_and_pct_size(lv_obj_t * obj)
 {
     lv_obj_t * parent = lv_obj_get_parent(obj);
+
+    /*Don't set the size of the screen as they always cover the whole display*/
+    if(parent == NULL) return;
 
     /*Don't update layout and content width now*/
     int32_t width = lv_obj_get_style_width(obj, 0);
@@ -614,14 +617,16 @@ bool lv_obj_refresh_self_size(lv_obj_t * obj)
 void update_content_size(lv_obj_t * obj)
 {
     lv_obj_t * parent = lv_obj_get_parent(obj);
+    /*Don't set the size of the screen as they always cover the whole display*/
+    if(parent == NULL) return;
 
     /*If the width or height is set by a layout do not modify them*/
-    int32_t w;
-    if(!obj->w_layout) {
-        w = calc_content_width(obj);
+    int32_t width = lv_obj_get_style_width(obj, LV_PART_MAIN);
+    if(!obj->w_layout && width == LV_SIZE_CONTENT) {
+        width = calc_content_width(obj);
         int32_t minw = lv_obj_calc_dynamic_width(obj, LV_STYLE_MIN_WIDTH);
         int32_t maxw = lv_obj_calc_dynamic_width(obj, LV_STYLE_MAX_WIDTH);
-        w = LV_CLAMP(minw, w, maxw);
+        width = LV_CLAMP(minw, width, maxw);
 
         /**
          * If the object style (after clamping) results in a width that is defined as a percentage of the parent,
@@ -629,10 +634,10 @@ void update_content_size(lv_obj_t * obj)
          * influence the parent's content width calculation. Thus, the `w_ignore_size` flag is set accordingly.
          */
         int32_t w_style;
-        if(w == minw) {
+        if(width == minw) {
             w_style = lv_obj_get_style_min_width(obj, LV_PART_MAIN);
         }
-        else if(w == maxw) {
+        else if(width == maxw) {
             w_style = lv_obj_get_style_max_width(obj, LV_PART_MAIN);
         }
         else {
@@ -641,15 +646,15 @@ void update_content_size(lv_obj_t * obj)
         obj->w_ignore_size =
             (LV_COORD_IS_PCT(w_style) && parent->w_layout == 0 && lv_obj_get_style_width(parent, 0) == LV_SIZE_CONTENT);
 
-        lv_area_set_width(&obj->coords, w);
+        lv_area_set_width(&obj->coords, width);
     }
 
-    int32_t h;
-    if(!obj->h_layout) {
-        h = calc_content_height(obj);
+    int32_t height = lv_obj_get_style_height(obj, LV_PART_MAIN);;
+    if(!obj->h_layout && height == LV_SIZE_CONTENT) {
+        height = calc_content_height(obj);
         int32_t minh = lv_obj_calc_dynamic_height(obj, LV_STYLE_MIN_HEIGHT);
         int32_t maxh = lv_obj_calc_dynamic_height(obj, LV_STYLE_MAX_HEIGHT);
-        h = LV_CLAMP(minh, h, maxh);
+        height = LV_CLAMP(minh, height, maxh);
 
         /**
          * If the object style (after clamping) results in a height that is defined as a percentage of the parent,
@@ -657,10 +662,10 @@ void update_content_size(lv_obj_t * obj)
          * influence the parent's content height calculation. Thus, the `h_ignore_size` flag is set accordingly.
          */
         int32_t h_style;
-        if(h == minh) {
+        if(height == minh) {
             h_style = lv_obj_get_style_min_height(obj, LV_PART_MAIN);
         }
-        else if(h == maxh) {
+        else if(height == maxh) {
             h_style = lv_obj_get_style_max_height(obj, LV_PART_MAIN);
         }
         else {
@@ -668,7 +673,7 @@ void update_content_size(lv_obj_t * obj)
         }
         obj->h_ignore_size = (LV_COORD_IS_PCT(h_style) && parent->h_layout == 0 &&
                               lv_obj_get_style_height(parent, 0) == LV_SIZE_CONTENT);
-        lv_area_set_height(&obj->coords, h);
+        lv_area_set_height(&obj->coords, height);
     }
 }
 
@@ -1329,63 +1334,63 @@ static int32_t calc_content_height(lv_obj_t * obj)
     return LV_MAX(self_h, child_res);
 }
 
-static void update_coordinates(lv_obj_t * parent)
+static void update_coordinates(lv_obj_t * obj)
 {
 
     /*
      Assumptions
-       - Parent size is always set when a children is updated
+       - Parent size is always set when a children is updated, except with content sized parent
        - Layouts (flex/grid) are applied last, when all other children sizes are set
        - min/max width/height can depend only on the parent (no content size)
      */
 
-    uint32_t child_cnt = lv_obj_get_child_count(parent);
-    if(child_cnt == 0) return;
+    /*Set obj->w/h_layout based on the the current style properties*/
+    update_layout_size_constrain(obj);
 
-    uint32_t i;
-    /*Update all the children's size position for whom the size doesn't depend
-     *on a layout (both obj->w_lyout and obj->h_layout are 0)*/
-    for(i = 0; i < child_cnt; i++) {
-        lv_obj_t * obj = parent->spec_attr->children[i];
+    /*Set only fixed and percentage width and/or height now as
+     *fixed doesn't depend on anything and percentage depends
+     *only on the parent that is already calculated*/
+    update_fixed_and_pct_size(obj);
 
-        /*Set obj->w/h_layout based on the the current style properties*/
-        update_layout_size_constrain(obj);
+    /*Content based and layout controlled sizes are not set yet.
+     *Content size needs to be calculated first, as layout size might depend on them.*/
+    uint32_t child_cnt = lv_obj_get_child_count(obj);
 
-        /*Set only fixed and percentage width and/or height now as
-         *fixed doesn't depend on anything and percentage depends
-         *only on the parent that is already calculated*/
-        update_fixed_and_pct_size(obj);
-
-        /*Content based and layout controlled sizes are not set yet.
-         *Content size needs to be calculated first, as layout size might depend on them.*/
+    for(uint32_t i = 0; i < child_cnt; i++) {
         if(obj->w_layout == 0 && obj->h_layout == 0) {
-            update_coordinates(obj);
-
-            update_content_size(obj);
+            /*Update all the children's size position for whom the size doesn't depend
+             *on a layout (both obj->w_lyout and obj->h_layout are 0)*/
+            lv_obj_t * child = obj->spec_attr->children[i];
+            update_coordinates(child);
         }
     }
+
 
     /*All non layout sized children's size are set. Now the layout can set the layout dependent sizes
      *E.g. with flex_grow calculate the size*/
-    lv_layout_update_children_sizes(parent);
+    lv_layout_update_children_sizes(obj);
 
-    for(i = 0; i < child_cnt; i++) {
-        lv_obj_t * obj = parent->spec_attr->children[i];
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
 
         /*The layout set all the sizes, now it's time to calculate missing content sizes*/
-        if(obj->w_layout || obj->h_layout) {
+        if(child->w_layout || child->h_layout) {
             /*Set the children size and position after this the CONTENT size can be set.*/
-            update_coordinates(obj);
-
-            update_content_size(obj);
+            update_coordinates(child);
         }
 
-        /*Size is set, set the position if defined by align, x, y (not layout)*/
-        update_align(obj);
     }
 
+    update_content_size(obj);
+
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
+
+        /*Size is set, set the position if defined by align, x, y (not layout)*/
+        update_align(child);
+    }
     /*Set the position by the layout*/
-    lv_layout_update_children_positions(parent);
+    lv_layout_update_children_positions(obj);
 }
 
 // invalidate
