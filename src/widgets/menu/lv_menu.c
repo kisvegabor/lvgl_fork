@@ -723,8 +723,9 @@ static void lv_menu_refr_sidebar_header_mode(lv_obj_t * obj)
             break;
     }
 
-    lv_obj_refr_size(menu->sidebar_header);
-    lv_obj_refr_size(menu->sidebar_page);
+    lv_obj_mark_layout_as_dirty(menu->sidebar_header);
+    lv_obj_mark_layout_as_dirty(menu->sidebar_page);
+    lv_obj_update_layout(menu->sidebar_page);
 
     if(lv_obj_get_content_height(menu->sidebar_header) == 0) {
         lv_obj_add_flag(menu->sidebar_header, LV_OBJ_FLAG_HIDDEN);
@@ -758,8 +759,8 @@ static void lv_menu_refr_main_header_mode(lv_obj_t * obj)
             break;
     }
 
-    lv_obj_refr_size(menu->main_header);
-    lv_obj_refr_size(menu->main_page);
+    lv_obj_mark_layout_as_dirty(menu->main_header);
+    lv_obj_mark_layout_as_dirty(menu->main_page);
     lv_obj_update_layout(menu->main_header);
 
     if(lv_obj_get_content_height(menu->main_header) == 0) {

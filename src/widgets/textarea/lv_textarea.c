@@ -370,9 +370,6 @@ void lv_textarea_set_cursor_pos(lv_obj_t * obj, int32_t pos)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     set_cursor_pos_internal(obj, pos);
 
-    /*Position the label to make the cursor visible*/
-    lv_obj_update_layout(obj);
-
     lv_textarea_scroll_to_cusor_pos(obj, pos);
 }
 
@@ -850,6 +847,7 @@ static void lv_textarea_constructor(const lv_obj_class_t * class_p, lv_obj_t * o
     lv_obj_add_event_cb(ta->label, label_event_cb, LV_EVENT_SIZE_CHANGED, NULL);
     lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_textarea_set_cursor_pos(obj, 0);
 
@@ -1411,14 +1409,19 @@ static inline bool is_valid_but_non_printable_char(const uint32_t letter)
 
 static void lv_textarea_scroll_to_cusor_pos(lv_obj_t * obj, int32_t pos)
 {
+    /*It's an expensive function as it need to resolve the layouts.
+     *Make the text area non-scrollable if possible to avoid it*/
+    if(!lv_obj_has_flag(obj, LV_OBJ_FLAG_SCROLLABLE)) return;
+
     lv_textarea_t * ta = (lv_textarea_t *)obj;
+    /*The text area and the label needs to have it's final size to see if
+     *the cursor is out of the area or not*/
+    lv_obj_update_layout(ta->label);
 
     lv_point_t cur_pos;
-    lv_obj_update_layout(ta->label);
     const lv_font_t * font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
     lv_label_get_letter_pos(ta->label, pos, &cur_pos);
 
-    /*The text area needs to have it's final size to see if the cursor is out of the area or not*/
 
     /*Check the top*/
     int32_t font_h = lv_font_get_line_height(font);
@@ -1484,7 +1487,6 @@ static void add_text(lv_obj_t * obj, const char * txt)
         return;
     }
 
-    lv_obj_update_layout(obj);
     lv_textarea_scroll_to_cusor_pos(obj, ta->cursor.pos);
     refr_cursor_area(obj);
     /*Move the cursor after the new character*/

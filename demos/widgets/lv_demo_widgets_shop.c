@@ -215,7 +215,7 @@ static lv_obj_t * create_shop_item(lv_obj_t * parent, const void * img_src, cons
                                    const char * price)
 {
     static int32_t grid_col_dsc[] = {LV_GRID_CONTENT, 5, LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
-    static int32_t grid_row_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+    static int32_t grid_row_dsc[] = {25, 5, 25, LV_GRID_TEMPLATE_LAST};
 
     lv_obj_t * cont = lv_obj_create(parent);
     lv_obj_remove_style_all(cont);
@@ -234,7 +234,7 @@ static lv_obj_t * create_shop_item(lv_obj_t * parent, const void * img_src, cons
     label = lv_label_create(cont);
     lv_label_set_text_static(label, category);
     lv_obj_add_style(label, &style_text_muted, 0);
-    lv_obj_set_grid_cell(label, LV_GRID_ALIGN_START, 2, 1, LV_GRID_ALIGN_START, 1, 1);
+    lv_obj_set_grid_cell(label, LV_GRID_ALIGN_START, 2, 1, LV_GRID_ALIGN_START, 2, 1);
 
     label = lv_label_create(cont);
     lv_label_set_text_static(label, price);

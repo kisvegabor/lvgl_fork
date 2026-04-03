@@ -378,6 +378,8 @@ static void lv_roller_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
 #if LV_WIDGETS_HAS_DEFAULT_VALUE
     lv_roller_set_options(obj, "Option 1\nOption 2\nOption 3\nOption 4\nOption 5", LV_ROLLER_MODE_NORMAL);
 #endif
+    lv_obj_set_style_bg_color(label, lv_color_hex(0xff0000), 0);
+    lv_obj_set_style_bg_opa(label, 100, 0);
     LV_LOG_TRACE("finished");
 }
 
@@ -397,14 +399,8 @@ static void lv_roller_event(const lv_obj_class_t * class_p, lv_event_t * e)
 
     if(code == LV_EVENT_GET_SELF_SIZE) {
         lv_point_t * p = lv_event_get_param(e);
-        p->x = get_selected_label_width(obj);
-    }
-    else if(code == LV_EVENT_STYLE_CHANGED) {
-        lv_obj_t * label = get_label(obj);
-        /*Be sure the label's style is updated before processing the roller*/
-        if(label) lv_obj_send_event(label, LV_EVENT_STYLE_CHANGED, NULL);
-        lv_obj_refresh_self_size(obj);
-        refr_position(obj, LV_ANIM_OFF);
+        lv_label_t * label = (lv_label_t *)get_label(obj);
+        if(label) p->x = LV_MAX(get_selected_label_width(obj), label->text_size.x);
     }
     else if(code == LV_EVENT_SIZE_CHANGED) {
         refr_position(obj, LV_ANIM_OFF);
@@ -534,7 +530,7 @@ static void lv_roller_label_event(const lv_obj_class_t * class_p, lv_event_t * e
         *s = LV_MAX(*s, sel_w - label_w);
     }
     else if(code == LV_EVENT_SIZE_CHANGED) {
-        refr_position(lv_obj_get_parent(label), LV_ANIM_OFF);
+        //        refr_position(lv_obj_get_parent(label), LV_ANIM_OFF);
     }
     else if(code == LV_EVENT_DRAW_MAIN) {
         draw_label(e);

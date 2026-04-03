@@ -157,7 +157,7 @@ void lv_obj_mark_layout_as_dirty(lv_obj_t * obj);
  * Update the layout of an object.
  * @param obj      pointer to an object whose position and size needs to be updated
  */
-void lv_obj_update_layout(const lv_obj_t * obj);
+void lv_obj_update_layout(lv_obj_t * obj);
 
 /**
  * Change the alignment of an object.
@@ -187,7 +187,7 @@ void lv_obj_align(lv_obj_t * obj, lv_align_t align, int32_t x_ofs, int32_t y_ofs
  * @param y_ofs     y coordinate offset after alignment
  * @note            if the position or size of `base` changes `obj` needs to be aligned manually again
  */
-void lv_obj_align_to(lv_obj_t * obj, const lv_obj_t * base, lv_align_t align, int32_t x_ofs,
+void lv_obj_align_to(lv_obj_t * obj, lv_obj_t * base, lv_align_t align, int32_t x_ofs,
                      int32_t y_ofs);
 
 /**
@@ -488,7 +488,7 @@ lv_result_t lv_obj_invalidate_area(const lv_obj_t * obj, const lv_area_t * area)
  * @return LV_RESULT_OK: the area is invalidated; LV_RESULT_INVALID: the area wasn't invalidated.
  *         (maybe it was off-screen or fully clipped)
  */
-lv_result_t lv_obj_invalidate(const lv_obj_t * obj);
+lv_result_t lv_obj_invalidate(lv_obj_t * obj);
 
 /**
  * Tell whether an area of an object is visible (even partially) now or not

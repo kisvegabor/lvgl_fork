@@ -37,7 +37,7 @@
  *  STATIC PROTOTYPES
  **********************/
 static void msgbox_close_click_event_cb(lv_event_t * e);
-static void msgbox_size_changed_event_cb(lv_event_t * e);
+static void msgbox_style_changed_event_cb(lv_event_t * e);
 
 /**********************
  *  STATIC VARIABLES
@@ -138,7 +138,7 @@ lv_obj_t * lv_msgbox_create(lv_obj_t * parent)
     }
     lv_obj_class_init_obj(mbox->content);
     lv_obj_set_flex_flow(mbox->content, LV_FLEX_FLOW_COLUMN);
-    lv_obj_add_event_cb(obj, msgbox_size_changed_event_cb, LV_EVENT_SIZE_CHANGED, 0);
+    lv_obj_add_event_cb(obj, msgbox_style_changed_event_cb, LV_EVENT_STYLE_CHANGED, 0);
 
     lv_obj_center(obj);
     return obj;
@@ -304,7 +304,7 @@ static void msgbox_close_click_event_cb(lv_event_t * e)
     lv_msgbox_close(mbox);
 }
 
-static void msgbox_size_changed_event_cb(lv_event_t * e)
+static void msgbox_style_changed_event_cb(lv_event_t * e)
 {
     lv_obj_t * mbox = lv_event_get_target(e);
     lv_obj_t * content = lv_msgbox_get_content(mbox);

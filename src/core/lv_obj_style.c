@@ -254,18 +254,10 @@ void lv_obj_refresh_style(lv_obj_t * obj, lv_part_t part, lv_style_prop_t prop)
     bool is_inheritable = lv_style_prop_has_flag(prop, LV_STYLE_PROP_FLAG_INHERITABLE);
     bool is_layer_refr = lv_style_prop_has_flag(prop, LV_STYLE_PROP_FLAG_LAYER_UPDATE);
 
-    if(is_layout_refr) {
-        if(part == LV_PART_ANY ||
-           part == LV_PART_MAIN ||
-           lv_obj_get_style_height(obj, LV_PART_MAIN) == LV_SIZE_CONTENT ||
-           lv_obj_get_style_width(obj, LV_PART_MAIN) == LV_SIZE_CONTENT) {
-            lv_obj_send_event(obj, LV_EVENT_STYLE_CHANGED, NULL);
-            lv_obj_mark_layout_as_dirty(obj);
-        }
-    }
-    if((part == LV_PART_ANY || part == LV_PART_MAIN) && (prop == LV_STYLE_PROP_ANY || is_layout_refr)) {
-        lv_obj_t * parent = lv_obj_get_parent(obj);
-        if(parent) lv_obj_mark_layout_as_dirty(parent);
+    if(is_layout_refr && (part == LV_PART_ANY || part == LV_PART_MAIN)) {
+
+        lv_obj_mark_layout_as_dirty(obj);
+        lv_obj_send_event(obj, LV_EVENT_STYLE_CHANGED, NULL);
     }
 
     /*Cache the layer type*/
@@ -276,6 +268,7 @@ void lv_obj_refresh_style(lv_obj_t * obj, lv_part_t part, lv_style_prop_t prop)
     if(prop == LV_STYLE_PROP_ANY || is_ext_draw) {
         lv_obj_refresh_ext_draw_size(obj);
     }
+
     lv_obj_invalidate(obj);
 
     if(prop == LV_STYLE_PROP_ANY || (is_inheritable && (is_ext_draw || is_layout_refr))) {
@@ -492,6 +485,10 @@ lv_style_value_t lv_obj_style_apply_color_filter(const lv_obj_t * obj, lv_part_t
 
 lv_style_state_cmp_t lv_obj_style_state_compare(lv_obj_t * obj, lv_state_t state1, lv_state_t state2)
 {
+    /*TODO
+     *Optimize by iterating the style props, and ORing the style prop flags.
+     *Based on the flags we can decide what to invalidate/update */
+
     lv_style_state_cmp_t res = LV_STYLE_STATE_CMP_SAME;
 
     /*Are there any new styles for the new state?*/

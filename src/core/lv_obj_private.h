@@ -71,7 +71,15 @@ struct _lv_obj_t {
     lv_area_t coords;
     lv_obj_flag_t flags;
     uint16_t state;
-    uint16_t layout_inv : 1;
+    /**
+     * Set if the coordinates of the widget or its children needs to be recalculated.
+     */
+    uint16_t coords_invalid : 1;
+    uint16_t child_coords_might_change: 1;
+    uint16_t child_coords_changed: 1;
+    uint16_t coords_changed   : 1;
+    uint16_t redraw_requested : 1;
+
     uint16_t readjust_scroll_after_layout : 1;
     uint16_t scr_layout_inv : 1;
     uint16_t skip_trans : 1;

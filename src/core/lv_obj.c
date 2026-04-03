@@ -1021,18 +1021,18 @@ static void lv_obj_event(const lv_obj_class_t * class_p, lv_event_t * e)
         lv_obj_remove_state(obj, LV_STATE_FOCUSED | LV_STATE_EDITED | LV_STATE_FOCUS_KEY);
     }
     else if(code == LV_EVENT_SIZE_CHANGED) {
-        int32_t align = lv_obj_get_style_align(obj, LV_PART_MAIN);
-        uint16_t layout = lv_obj_get_style_layout(obj, LV_PART_MAIN);
-        if(layout || align) {
-            lv_obj_mark_layout_as_dirty(obj);
-        }
-
-        uint32_t i;
-        uint32_t child_cnt = lv_obj_get_child_count(obj);
-        for(i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
-            lv_obj_mark_layout_as_dirty(child);
-        }
+        //        int32_t align = lv_obj_get_style_align(obj, LV_PART_MAIN);
+        //        uint16_t layout = lv_obj_get_style_layout(obj, LV_PART_MAIN);
+        //        if(layout || align) {
+        //            lv_obj_mark_layout_as_dirty(obj);
+        //        }
+        //
+        //        uint32_t i;
+        //        uint32_t child_cnt = lv_obj_get_child_count(obj);
+        //        for(i = 0; i < child_cnt; i++) {
+        //            lv_obj_t * child = obj->spec_attr->children[i];
+        //            lv_obj_mark_layout_as_dirty(child);
+        //        }
     }
     else if(code == LV_EVENT_CHILD_CHANGED) {
         int32_t align = lv_obj_get_style_align(obj, LV_PART_MAIN);
@@ -1151,7 +1151,7 @@ static void update_obj_state(lv_obj_t * obj, lv_state_t new_state)
 
     if(cmp_res == LV_STYLE_STATE_CMP_DIFF_REDRAW) {
         /*Invalidation is not enough, e.g. layer type needs to be updated too*/
-        lv_obj_refresh_style(obj, LV_PART_ANY, LV_STYLE_PROP_ANY);
+        lv_obj_invalidate(obj);
     }
     else if(cmp_res == LV_STYLE_STATE_CMP_DIFF_LAYOUT) {
         lv_obj_refresh_style(obj, LV_PART_ANY, LV_STYLE_PROP_ANY);

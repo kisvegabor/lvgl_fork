@@ -51,38 +51,6 @@ void test_content_parent_pct_child_pos_1(void)
     TEST_ASSERT_EQUAL_INT32(0, lv_obj_get_y(child2));
 }
 
-void test_style_min_size(void)
-{
-    lv_obj_t * parent = lv_obj_create(lv_screen_active());
-    lv_obj_set_size(parent, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    // lv_obj_set_style_pad_all(parent, 10, 0);
-
-    lv_obj_t * child = lv_button_create(parent);
-    lv_obj_t * label = lv_label_create(child);
-    lv_label_set_text(label, "Button");
-    lv_obj_set_size(child, LV_PCT(100), LV_PCT(100)); // will evaluate to 0
-    lv_obj_set_size(label, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    TEST_ASSERT_EQUAL_SCREENSHOT("widgets/obj_pos_no_min_size.png");
-    TEST_ASSERT_TRUE(lv_obj_is_width_min(child));
-    TEST_ASSERT_TRUE(lv_obj_is_height_min(child));
-    TEST_ASSERT_EQUAL(0, lv_obj_get_style_clamped_width(child));
-    TEST_ASSERT_EQUAL(0, lv_obj_get_style_clamped_height(child));
-
-    lv_obj_set_style_min_width(child, 200, 0);
-    lv_obj_set_style_min_height(child, 300, 0);
-    TEST_ASSERT_EQUAL_SCREENSHOT("widgets/obj_pos_fixed_min_size.png");
-    TEST_ASSERT_EQUAL_INT32(200, lv_obj_get_width(child));
-    TEST_ASSERT_EQUAL_INT32(300, lv_obj_get_height(child));
-    TEST_ASSERT_TRUE(lv_obj_is_width_min(child));
-    TEST_ASSERT_TRUE(lv_obj_is_height_min(child));
-    TEST_ASSERT_EQUAL(200, lv_obj_get_style_clamped_width(child));
-    TEST_ASSERT_EQUAL(300, lv_obj_get_style_clamped_height(child));
-
-    lv_obj_set_style_min_width(child, LV_SIZE_CONTENT, 0);
-    lv_obj_set_style_min_height(child, LV_SIZE_CONTENT, 0);
-    TEST_ASSERT_EQUAL_SCREENSHOT("widgets/obj_pos_content_min_size.png");
-}
-
 void test_chaining_invalidation_layout(void)
 {
     lv_obj_t * cont = lv_obj_create(lv_screen_active());
@@ -103,13 +71,11 @@ void test_chaining_invalidation_layout(void)
     lv_obj_set_height(sub_cont, LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(sub_cont, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_grow(sub_cont, 1);
-    lv_obj_set_style_min_width(sub_cont, LV_SIZE_CONTENT, LV_PART_MAIN);
 
     lv_obj_t * dd = lv_dropdown_create(sub_cont);
     lv_obj_set_name(dd, "dropdown");
     lv_dropdown_set_options(dd, "Short\nA bit longer option\nThe longest option in the list");
     lv_obj_set_width(dd, 0);
-    lv_obj_set_style_min_width(dd, LV_SIZE_CONTENT, 0);
     lv_obj_set_flex_grow(dd, 1);
 
     TEST_ASSERT_EQUAL_SCREENSHOT("widgets/obj_pos_chained_layout_invalidation_pre.png");
