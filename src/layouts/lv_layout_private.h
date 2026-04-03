@@ -49,6 +49,8 @@ bool lv_layout_get_min_size(lv_obj_t * obj, int32_t * size, bool width);
  */
 void lv_layout_apply(lv_obj_t * obj);
 
+void lv_layout_update_sizes(lv_obj_t * obj);
+
 /**********************
  *      MACROS
  **********************/

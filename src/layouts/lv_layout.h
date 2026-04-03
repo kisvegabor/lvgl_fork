@@ -28,6 +28,7 @@ typedef void (*lv_layout_update_cb_t)(lv_obj_t *, void * user_data);
 typedef bool (*lv_layout_get_min_size_cb_t)(lv_obj_t *, int32_t * req_size, bool width, void * user_data);
 
 typedef struct {
+    lv_layout_update_cb_t update_sizes_cb;
     lv_layout_update_cb_t layout_update_cb;
     lv_layout_get_min_size_cb_t get_min_size_cb;
 } lv_layout_callbacks_t;

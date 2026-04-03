@@ -89,6 +89,26 @@ bool lv_layout_get_min_size(lv_obj_t * obj, int32_t * size, bool width)
     return false;
 }
 
+
+void lv_layout_apply(lv_obj_t * obj)
+{
+    lv_layout_t layout_id = lv_obj_get_style_layout(obj, LV_PART_MAIN);
+    if(layout_id > 0 && layout_id < layout_cnt) {
+        void  * user_data = layout_list_def[layout_id].user_data;
+        layout_list_def[layout_id].callbacks.layout_update_cb(obj, user_data);
+    }
+}
+
+void lv_layout_update_sizes(lv_obj_t * obj)
+{
+    lv_layout_t layout_id = lv_obj_get_style_layout(obj, LV_PART_MAIN);
+    if(layout_id > 0 && layout_id < layout_cnt) {
+        void  * user_data = layout_list_def[layout_id].user_data;
+        lv_layout_update_cb_t cb = layout_list_def[layout_id].callbacks.update_sizes_cb;
+        if(cb) cb(obj, user_data);
+    }
+}
+
 void lv_layout_apply(lv_obj_t * obj)
 {
     lv_layout_t layout_id = lv_obj_get_style_layout(obj, LV_PART_MAIN);

@@ -32,7 +32,7 @@
  **********************/
 static int32_t calc_content_width(lv_obj_t * obj);
 static int32_t calc_content_height(lv_obj_t * obj);
-static void layout_update_core(lv_obj_t * obj);
+static void layout_update_core(lv_obj_t * parent);
 static void transform_point_array(const lv_obj_t * obj, lv_point_t * p, size_t p_count, bool inv);
 static bool is_transformed(const lv_obj_t * obj);
 static lv_result_t invalidate_area_core(const lv_obj_t * obj, lv_area_t * area_tmp);
@@ -171,6 +171,155 @@ int32_t lv_obj_calc_dynamic_height(lv_obj_t * obj, lv_style_prop_t prop)
 {
     return calc_dynamic_height(obj, prop, NULL);
 }
+
+
+
+void update_layout_size_constrain(lv_obj_t * obj)
+{
+    /*Assume no layout*/
+    obj->w_layout = 0;
+    obj->h_layout = 0;
+
+    /*If there is no parent it can't control the layout either*/
+    lv_obj_t * parent = obj->parent;
+    if(parent == NULL) return;
+
+    /*If there is no layout on the parent the child size not layout controlled for sure*/
+    lv_layout_t layout = lv_obj_get_style_layout(parent);
+    if(layout == LV_LAYOUT_NONE) return;
+
+    /*IF hidden, floating, etc, it's not affected by layout*/
+    if(!lv_obj_is_layout_positioned(obj)) return;
+
+    if(layout == LV_LAYOUT_FLEX) {
+        int32_t grow = lv_obj_get_style_flex_grow(obj, 0);
+        if(grow > 0) {
+            lv_flex_flow_t flow = lv_obj_get_style_flex_flow(obj, 0);
+            if(flow & LV_FLEX_FLOW_COLUMN) obj->h_layout = 1;
+            else obj->w_layout = 1;
+        }
+    }
+    else if(layout == LV_LAYOUT_GRID) {
+        if(lv_obj_get_style_grid_cell_column_pos(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->h_layout = 1;
+        if(lv_obj_get_style_grid_cell_row_pos(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->w_layout = 1;
+    }
+}
+
+
+void update_fixed_size(lv_obj_t * obj)
+{
+    lv_obj_t * parent = lv_obj_get_parent(obj);
+
+    /*Don't update layout and content width now*/
+    int32_t width = lv_obj_get_style_width(obj, 0);
+
+    if(obj->w_layout && width != LV_SIZE_CONTENT && width != LV_COORD_IS_PCT(width)) {
+        lv_clamp
+    }
+    /*Percentage width*/
+    if(LV_COORD_IS_PCT(width)) {
+        if(parent == NULL) {
+            LV_LOG_WARN("Can't set % width on screens");
+            width = 0;
+        }
+
+        int32_t parent_width = lv_obj_get_style_width(parent, 0);
+        width = (LV_COORD_GET_PCT(width) * parent_width) / 100;
+        width -= lv_obj_get_style_margin_left(obj, LV_PART_MAIN) + lv_obj_get_style_margin_right(obj, LV_PART_MAIN);
+    }
+    /*If fixed width, use the style property as it is*/
+
+    /*Clamp to min/max width*/
+    int32_t min_width = lv_obj_get_style_min_width(obj, 0);
+    int32_t max_width = lv_obj_get_style_max_width(obj, 0);
+    width = LV_CLAMP(min_width, width, max_width);
+    lv_area_set_width(&obj->coords, width);
+}
+
+/*Don't update layout and content width now*/
+int32_t height = lv_obj_get_style_height(obj, 0);
+if(!obj->h_layout && height != LV_SIZE_CONTENT)
+{
+    /*Percentage width*/
+    if(LV_COORD_IS_PCT(height)) {
+        if(parent == NULL) {
+            LV_LOG_WARN("Can't set % width on screens");
+            height = 0;
+        }
+
+        int32_t parent_height = lv_obj_get_style_height(parent, 0);
+        height = (LV_COORD_GET_PCT(height) * parent_height) / 100;
+        height -= lv_obj_get_style_margin_top(obj, LV_PART_MAIN) + lv_obj_get_style_margin_bottom(obj, LV_PART_MAIN);
+    }
+    /*If fixed width, use the style property as it is*/
+
+    /*Clamp to min/max width*/
+    int32_t min_height = lv_obj_get_style_min_width(obj, 0);
+    int32_t max_height = lv_obj_get_style_max_width(obj, 0);
+    height = LV_CLAMP(min_height, height, max_height);
+    lv_area_set_height(&obj->coords, height);
+}
+}
+
+bool update_pct_size(lv_obj_t * obj)
+{
+    lv_obj_t * parent = lv_obj_get_parent(obj);
+
+    lv_area_t ori_coords;
+    lv_obj_get_coords(obj, &ori_coords);
+
+    /*Don't update layout and content width now*/
+    int32_t width = lv_obj_get_style_width(obj, 0);
+    if(!obj->w_layout && width != LV_SIZE_CONTENT) {
+        /*Percentage width*/
+        if(LV_COORD_IS_PCT(width)) {
+            if(parent == NULL) {
+                LV_LOG_WARN("Can't set % width on screens");
+                width = 0;
+            }
+
+            int32_t parent_width = lv_obj_get_style_width(parent, 0);
+            width = (LV_COORD_GET_PCT(width) * parent_width) / 100;
+            width -= lv_obj_get_style_margin_left(obj, LV_PART_MAIN) + lv_obj_get_style_margin_right(obj, LV_PART_MAIN);
+        }
+        /*If fixed width, use the style property as it is*/
+
+        /*Clamp to min/max width*/
+        int32_t min_width = lv_obj_get_style_min_width(obj, 0);
+        int32_t max_width = lv_obj_get_style_max_width(obj, 0);
+        width = LV_CLAMP(min_width, width, max_width);
+        lv_area_set_width(&obj->coords, width);
+    }
+
+    /*Don't update layout and content width now*/
+    int32_t height = lv_obj_get_style_height(obj, 0);
+    if(!obj->h_layout && height != LV_SIZE_CONTENT) {
+        /*Percentage width*/
+        if(LV_COORD_IS_PCT(height)) {
+            if(parent == NULL) {
+                LV_LOG_WARN("Can't set % width on screens");
+                height = 0;
+            }
+
+            int32_t parent_height = lv_obj_get_style_height(parent, 0);
+            height = (LV_COORD_GET_PCT(height) * parent_height) / 100;
+            height -= lv_obj_get_style_margin_top(obj, LV_PART_MAIN) + lv_obj_get_style_margin_bottom(obj, LV_PART_MAIN);
+        }
+        /*If fixed width, use the style property as it is*/
+
+        /*Clamp to min/max width*/
+        int32_t min_height = lv_obj_get_style_min_width(obj, 0);
+        int32_t max_height = lv_obj_get_style_max_width(obj, 0);
+        height = LV_CLAMP(min_height, height, max_height);
+        lv_area_set_height(&obj->coords, height);
+    }
+
+    if(lv_area_get_width(&ori_coords) != lv_area_get_width(&obj->coords)) return true;
+    if(lv_area_get_height(&ori_coords) != lv_area_get_height(&obj->coords)) return true;
+
+    return false;
+}
+
 
 bool lv_obj_refr_size(lv_obj_t * obj)
 {
@@ -389,13 +538,13 @@ void lv_obj_update_layout(const lv_obj_t * obj)
 
     lv_obj_t * scr = lv_obj_get_screen(obj);
     /*Repeat until there are no more layout invalidations*/
-    while(scr->scr_layout_inv) {
-        LV_LOG_TRACE("Layout update begin");
-        scr->scr_layout_inv = 0;
-        layout_update_core(scr);
-        LV_LOG_TRACE("Layout update end");
-    }
+    //    while(scr->scr_layout_inv) {
+    LV_LOG_TRACE("Layout update begin");
+    layout_update_core(scr);
+    LV_LOG_TRACE("Layout update end");
+    //    }
 
+    scr->scr_layout_inv = 0;
     lv_display_t * disp = lv_obj_get_display(scr);
     lv_display_send_event(disp, LV_EVENT_UPDATE_LAYOUT_COMPLETED, NULL);
     update_layout_mutex = false;
@@ -790,7 +939,7 @@ bool lv_obj_refresh_self_size(lv_obj_t * obj)
         return false;
 
     /**
-     * Refresh the parent's layout, because the childs size is in some way dependent on its contents we need to force a
+     * Refresh the parent's layout, because the children size is in some way dependent on its contents we need to force a
      * recalculation of the parents layout
      */
     lv_obj_t * parent = lv_obj_get_parent(obj);
@@ -801,6 +950,80 @@ bool lv_obj_refresh_self_size(lv_obj_t * obj)
     }
     lv_obj_mark_layout_as_dirty(obj);
     return true;
+}
+
+bool update_content_size(lv_obj_t * obj)
+{
+    /*If the width or height is set by a layout do not modify them*/
+    if(obj->w_layout && obj->h_layout) return false;
+
+    lv_obj_t * parent = lv_obj_get_parent(obj);
+    if(parent == NULL) return false;
+
+    int32_t w;
+    if(obj->w_layout) {
+        w = lv_obj_get_width(obj);
+    }
+    else {
+        int32_t content_width = -1;
+        w = calc_dynamic_width(obj, LV_STYLE_WIDTH, &content_width);
+        int32_t minw = calc_dynamic_width(obj, LV_STYLE_MIN_WIDTH, &content_width);
+        int32_t maxw = calc_dynamic_width(obj, LV_STYLE_MAX_WIDTH, &content_width);
+        w = LV_CLAMP(minw, w, maxw);
+
+        /**
+         * If the object style (after clamping) results in a width that is defined as a percentage of the parent,
+         * and if the parent's width is set to LV_SIZE_CONTENT and not managed by a layout, this object should not
+         * influence the parent's content width calculation. Thus, the `w_ignore_size` flag is set accordingly.
+         */
+        int32_t w_style;
+        if(w == minw) {
+            w_style = lv_obj_get_style_min_width(obj, LV_PART_MAIN);
+        }
+        else if(w == maxw) {
+            w_style = lv_obj_get_style_max_width(obj, LV_PART_MAIN);
+        }
+        else {
+            w_style = lv_obj_get_style_width(obj, LV_PART_MAIN);
+        }
+        obj->w_ignore_size =
+            (LV_COORD_IS_PCT(w_style) && parent->w_layout == 0 && lv_obj_get_style_width(parent, 0) == LV_SIZE_CONTENT);
+    }
+
+    int32_t h;
+    if(obj->h_layout) {
+        h = lv_obj_get_height(obj);
+    }
+    else {
+        int32_t content_height = -1;
+        h = calc_dynamic_height(obj, LV_STYLE_HEIGHT, &content_height);
+        int32_t minh = calc_dynamic_height(obj, LV_STYLE_MIN_HEIGHT, &content_height);
+        int32_t maxh = calc_dynamic_height(obj, LV_STYLE_MAX_HEIGHT, &content_height);
+        h = LV_CLAMP(minh, h, maxh);
+
+        /**
+         * If the object style (after clamping) results in a height that is defined as a percentage of the parent,
+         * and if the parent's height is set to LV_SIZE_CONTENT and not managed by a layout, this object should not
+         * influence the parent's content height calculation. Thus, the `h_ignore_size` flag is set accordingly.
+         */
+        int32_t h_style;
+        if(h == minh) {
+            h_style = lv_obj_get_style_min_height(obj, LV_PART_MAIN);
+        }
+        else if(h == maxh) {
+            h_style = lv_obj_get_style_max_height(obj, LV_PART_MAIN);
+        }
+        else {
+            h_style = lv_obj_get_style_height(obj, LV_PART_MAIN);
+        }
+        obj->h_ignore_size = (LV_COORD_IS_PCT(h_style) && parent->h_layout == 0 &&
+                              lv_obj_get_style_height(parent, 0) == LV_SIZE_CONTENT);
+    }
+
+    /*Do nothing if the size is not changed*/
+    /*It is very important else recursive resizing can occur without size change*/
+    if(lv_obj_get_width(obj) == w && lv_obj_get_height(obj) == h) return false;
+    else return true;
 }
 
 void lv_obj_refr_pos(lv_obj_t * obj)
@@ -1245,20 +1468,6 @@ bool lv_obj_hit_test(lv_obj_t * obj, const lv_point_t * point)
     return res;
 }
 
-int32_t lv_clamp_width(int32_t width, int32_t min_width, int32_t max_width, int32_t ref_width)
-{
-    if(LV_COORD_IS_PCT(min_width)) min_width = (ref_width * LV_COORD_GET_PCT(min_width)) / 100;
-    if(LV_COORD_IS_PCT(max_width)) max_width = (ref_width * LV_COORD_GET_PCT(max_width)) / 100;
-    return LV_CLAMP(min_width, width, max_width);
-}
-
-int32_t lv_clamp_height(int32_t height, int32_t min_height, int32_t max_height, int32_t ref_height)
-{
-    if(LV_COORD_IS_PCT(min_height)) min_height = (ref_height * LV_COORD_GET_PCT(min_height)) / 100;
-    if(LV_COORD_IS_PCT(max_height)) max_height = (ref_height * LV_COORD_GET_PCT(max_height)) / 100;
-    return LV_CLAMP(min_height, height, max_height);
-}
-
 void lv_obj_center(lv_obj_t * obj)
 {
     lv_obj_align(obj, LV_ALIGN_CENTER, 0, 0);
@@ -1557,30 +1766,89 @@ static int32_t calc_content_height(lv_obj_t * obj)
     return LV_MAX(self_h, child_res);
 }
 
-static void layout_update_core(lv_obj_t * obj)
+static void layout_update_core(lv_obj_t * parent)
 {
+
+    /*Layout recalculation is a /\ shape process:
+     1. Start from the parent and set fixed size and % size
+     2. When reached a farthest children
+         a. Set layout on their children (update size and position)
+         b. Set their content size
+         c. Set their position
+     3. Go back to the parent and do 2)
+
+     Assumptions an limitation:
+     1. Percentage size:
+         - applied only if parent has fixed or % size.
+         - if the parent CONTENT size, set 0 size
+         - if the parent size is controlled by a layout (parent->w/h_layout = 1)
+
+     */
+
+
+    /*
+     Assumptions
+       - Parent size is always set when a children is updated
+
+     */
+
+    uint32_t child_cnt = lv_obj_get_child_count(parent);
+
     uint32_t i;
-    uint32_t child_cnt = lv_obj_get_child_count(obj);
+    /*Update all the children's size position for whom the size doesn't depend
+     *on a layout (both obj->w_lyout and obj->h_layout are 0)*/
     for(i = 0; i < child_cnt; i++) {
-        lv_obj_t * child = obj->spec_attr->children[i];
-        layout_update_core(child);
-    }
+        lv_obj_t * obj = parent->spec_attr->children[i];
 
-    if(obj->layout_inv) {
-        obj->layout_inv = 0;
-        lv_obj_refr_size(obj);
-        lv_obj_refr_pos(obj);
+        /*Set obj->w/h_layout based on the the current style properties*/
+        update_layout_size_constrain(obj);
 
-        if(child_cnt > 0) {
-            lv_layout_apply(obj);
+        /*Set only fixed and percentage sizes now as
+         *fixed doesn't depend on anything and percentage depends
+         *only on the parent that is already calculated*/
+        update_fixed_and_pct_size(obj);
+
+        /*All the children sizes and positions are set for non layout sized widgets.
+         *Now the content sizes can be updated too*/
+        if(obj->w_layout == 0 && obj->h_layout == 0) {
+            /*Set the children size and position after this the CONTENT size can be set.*/
+            layout_update_core(obj);
+
+            update_content_size(obj);
         }
     }
 
-    if(obj->readjust_scroll_after_layout) {
-        obj->readjust_scroll_after_layout = 0;
-        lv_obj_readjust_scroll(obj, LV_ANIM_OFF);
+    /*All non layout sized children's size is set. Now the layout can set the layout dependent sizes
+     *E.g. with flex_grow_calculate the size*/
+    lv_layout_update_sizes(parent);
+
+    for(i = 0; i < child_cnt; i++) {
+        lv_obj_t * obj = parent->spec_attr->children[i];
+
+        /*The layout set all the sizes, now it's time to calculate missing content sizes*/
+        if(obj->w_layout || obj->h_layout) {
+            /*Set the children size and position after this the CONTENT size can be set.*/
+            layout_update_core(obj);
+
+            update_content_size(obj);
+        }
+
+        /*Size is set, set the position if defined by align, x, y (not layout)*/
+        update_align(obj);
     }
+
+    /*Set the position by the layout*/
+    lv_layout_apply(parent);
 }
+
+
+// invalidate
+
+//    if(parent->readjust_scroll_after_layout) {
+//        parent->readjust_scroll_after_layout = 0;
+//        lv_obj_readjust_scroll(parent, LV_ANIM_OFF);
+//    }
+//}
 
 static void transform_point_array(const lv_obj_t * obj, lv_point_t * p, size_t p_count, bool inv)
 {
