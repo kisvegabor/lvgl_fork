@@ -138,15 +138,15 @@ void update_layout_size_constrain(lv_obj_t * obj)
     if(layout == LV_LAYOUT_FLEX) {
         int32_t grow = lv_obj_get_style_flex_grow(obj, 0);
         if(grow > 0) {
-            lv_flex_flow_t flow = lv_obj_get_style_flex_flow(obj, 0);
+            lv_flex_flow_t flow = lv_obj_get_style_flex_flow(parent, 0);
             if(flow & LV_FLEX_FLOW_COLUMN) obj->h_layout = 1;
             else obj->w_layout = 1;
         }
     }
 #if LV_USE_GRID
     else if(layout == LV_LAYOUT_GRID) {
-        if(lv_obj_get_style_grid_cell_column_pos(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->h_layout = 1;
-        if(lv_obj_get_style_grid_cell_row_pos(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->w_layout = 1;
+        if(lv_obj_get_style_grid_cell_x_align(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->w_layout = 1;
+        if(lv_obj_get_style_grid_cell_y_align(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->h_layout = 1;
     }
 #endif
 }
@@ -1357,10 +1357,10 @@ static void update_coordinates(lv_obj_t * obj)
     uint32_t child_cnt = lv_obj_get_child_count(obj);
 
     for(uint32_t i = 0; i < child_cnt; i++) {
-        if(obj->w_layout == 0 && obj->h_layout == 0) {
-            /*Update all the children's size position for whom the size doesn't depend
-             *on a layout (both obj->w_lyout and obj->h_layout are 0)*/
-            lv_obj_t * child = obj->spec_attr->children[i];
+        /*Update all the children's size position for whom the size doesn't depend
+         *on a layout (both obj->w_lyout and obj->h_layout are 0)*/
+        lv_obj_t * child = obj->spec_attr->children[i];
+        if(child->w_layout == 0 && child->h_layout == 0) {
             update_coordinates(child);
         }
     }

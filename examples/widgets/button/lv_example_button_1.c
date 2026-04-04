@@ -23,6 +23,7 @@ void lv_example_button_1(void)
     lv_obj_add_event_cb(btn1, event_handler, LV_EVENT_ALL, NULL);
     lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
     lv_obj_remove_flag(btn1, LV_OBJ_FLAG_PRESS_LOCK);
+    lv_obj_set_size(btn1, lv_pct(100), lv_pct(50));
 
     label = lv_label_create(btn1);
     lv_label_set_text(label, "Button");
@@ -33,6 +34,7 @@ void lv_example_button_1(void)
     lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
     lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
     lv_obj_set_height(btn2, LV_SIZE_CONTENT);
+    lv_obj_set_flex_grow(btn2, 1);
 
     label = lv_label_create(btn2);
     lv_label_set_text(label, "Toggle");
