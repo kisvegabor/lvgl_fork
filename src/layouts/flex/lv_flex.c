@@ -492,6 +492,7 @@ static void children_set_grow(flex_t * f, track_t * t)
             area_set_main_size(&item->coords, size);
 
             item->coords_changed = 1;
+            item->child_coords_might_change = 1;
             lv_obj_t * parent = lv_obj_get_parent(item);
             if(parent) parent->child_coords_changed = 1;
         }

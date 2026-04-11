@@ -173,6 +173,7 @@ static void update_fixed_and_pct_size(lv_obj_t * obj)
             lv_obj_invalidate(obj);
             lv_area_set_width(&obj->coords, width);
             obj->coords_changed = 1;
+            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -189,6 +190,7 @@ static void update_fixed_and_pct_size(lv_obj_t * obj)
             lv_obj_invalidate(obj);
             lv_area_set_height(&obj->coords, height);
             obj->coords_changed = 1;
+            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -693,6 +695,7 @@ static void update_content_size(lv_obj_t * obj)
             lv_area_set_width(&obj->coords, width);
 
             obj->coords_changed = 1;
+            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -727,6 +730,7 @@ static void update_content_size(lv_obj_t * obj)
             lv_area_set_height(&obj->coords, height);
 
             obj->coords_changed = 1;
+            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
