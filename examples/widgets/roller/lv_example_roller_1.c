@@ -11,13 +11,13 @@ static void event_handler(lv_event_t * e)
         LV_LOG_USER("Selected month: %s\n", buf);
     }
 }
-
+lv_obj_t * roller1;
 /**
  * An infinite roller with the name of the months
  */
 void lv_example_roller_1(void)
 {
-    lv_obj_t * roller1 = lv_roller_create(lv_screen_active());
+    roller1 = lv_roller_create(lv_screen_active());
     lv_roller_set_options(roller1,
                           "January\n"
                           "February\n"
@@ -31,10 +31,10 @@ void lv_example_roller_1(void)
                           "October\n"
                           "November\n"
                           "December",
-                          LV_ROLLER_MODE_INFINITE);
+                          LV_ROLLER_MODE_NORMAL);
 
     lv_roller_set_visible_row_count(roller1, 4);
-    lv_obj_center(roller1);
+    //    lv_obj_center(roller1);
     lv_obj_add_event_cb(roller1, event_handler, LV_EVENT_ALL, NULL);
 }
 

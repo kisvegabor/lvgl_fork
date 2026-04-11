@@ -118,13 +118,14 @@ int32_t lv_obj_calc_dynamic_height(lv_obj_t * obj, lv_style_prop_t prop)
 
 }
 
+#include "src/widgets/roller/lv_roller_private.h"
 
 static void update_coordinates_init(lv_obj_t * obj)
 {
     obj->w_layout = 0;
     obj->h_layout = 0;
     obj->child_coords_changed = 0;
-    obj->coords_changed = 0;
+    obj->size_changed = 0;
 
     /*If there is no parent it can't control the layout either*/
     lv_obj_t * parent = obj->parent;
@@ -134,9 +135,10 @@ static void update_coordinates_init(lv_obj_t * obj)
     lv_layout_t layout = lv_obj_get_style_layout(parent, 0);
     if(layout == LV_LAYOUT_NONE) return;
 
-    /*IF hidden, floating, etc, it's not affected by layout*/
+    /*If hidden, floating, etc, it's not affected by layout*/
     if(!lv_obj_is_layout_positioned(obj)) return;
 
+#if LV_USE_FLEX
     if(layout == LV_LAYOUT_FLEX) {
         int32_t grow = lv_obj_get_style_flex_grow(obj, 0);
         if(grow > 0) {
@@ -145,8 +147,10 @@ static void update_coordinates_init(lv_obj_t * obj)
             else obj->w_layout = 1;
         }
     }
+#endif
+
 #if LV_USE_GRID
-    else if(layout == LV_LAYOUT_GRID) {
+    if(layout == LV_LAYOUT_GRID) {
         if(lv_obj_get_style_grid_cell_x_align(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->w_layout = 1;
         if(lv_obj_get_style_grid_cell_y_align(obj, 0) == LV_GRID_ALIGN_STRETCH) obj->h_layout = 1;
     }
@@ -172,7 +176,7 @@ static void update_fixed_and_pct_size(lv_obj_t * obj)
         if(lv_area_get_width(&obj->coords) != width) {
             lv_obj_invalidate(obj);
             lv_area_set_width(&obj->coords, width);
-            obj->coords_changed = 1;
+            obj->size_changed = 1;
             obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
@@ -189,7 +193,7 @@ static void update_fixed_and_pct_size(lv_obj_t * obj)
         if(lv_area_get_height(&obj->coords) != height) {
             lv_obj_invalidate(obj);
             lv_area_set_height(&obj->coords, height);
-            obj->coords_changed = 1;
+            obj->size_changed = 1;
             obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
@@ -657,7 +661,7 @@ bool lv_obj_refresh_self_size(lv_obj_t * obj)
     lv_obj_mark_layout_as_dirty(obj);
     return true;
 }
-
+int content_size_cnt = 0;
 static void update_content_size(lv_obj_t * obj)
 {
     lv_obj_t * parent = lv_obj_get_parent(obj);
@@ -671,7 +675,7 @@ static void update_content_size(lv_obj_t * obj)
         int32_t minw = lv_obj_calc_dynamic_width(obj, LV_STYLE_MIN_WIDTH);
         int32_t maxw = lv_obj_calc_dynamic_width(obj, LV_STYLE_MAX_WIDTH);
         width = LV_CLAMP(minw, width, maxw);
-
+        content_size_cnt++;
         /**
          * If the object style (after clamping) results in a width that is defined as a percentage of the parent,
          * and if the parent's width is set to LV_SIZE_CONTENT and not managed by a layout, this object should not
@@ -694,7 +698,7 @@ static void update_content_size(lv_obj_t * obj)
             lv_obj_invalidate(obj);
             lv_area_set_width(&obj->coords, width);
 
-            obj->coords_changed = 1;
+            obj->size_changed = 1;
             obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
@@ -706,6 +710,7 @@ static void update_content_size(lv_obj_t * obj)
         int32_t minh = lv_obj_calc_dynamic_height(obj, LV_STYLE_MIN_HEIGHT);
         int32_t maxh = lv_obj_calc_dynamic_height(obj, LV_STYLE_MAX_HEIGHT);
         height = LV_CLAMP(minh, height, maxh);
+        content_size_cnt++;
 
         /**
          * If the object style (after clamping) results in a height that is defined as a percentage of the parent,
@@ -729,7 +734,7 @@ static void update_content_size(lv_obj_t * obj)
             lv_obj_invalidate(obj);
             lv_area_set_height(&obj->coords, height);
 
-            obj->coords_changed = 1;
+            obj->size_changed = 1;
             obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
@@ -1433,15 +1438,15 @@ static void update_children_coordinates(lv_obj_t * obj)
     uint32_t child_cnt = lv_obj_get_child_count(obj);
     /*If the direct children didn't change the indirect children might change, so
      *check them*/
-    if(obj->child_coords_might_change == false) {
+    if(0 && obj->child_coords_might_change == false) {
         for(uint32_t i = 0; i < child_cnt; i++) {
             lv_obj_t * child = obj->spec_attr->children[i];
+            update_coordinates_init(child);
             update_children_coordinates(child);
         }
     }
     /*Direct children might have changed, let's update them*/
     else {
-
         /*Step 1: Calculate what we can without layouts.*/
         for(uint32_t i = 0; i < child_cnt; i++) {
             lv_obj_t * child = obj->spec_attr->children[i];
@@ -1450,9 +1455,7 @@ static void update_children_coordinates(lv_obj_t * obj)
             /*Set only fixed and percentage width and/or height now as
              *fixed doesn't depend on anything and percentage depends
              *only on the parent that is already calculated*/
-            if(child->coords_invalid) {
-                update_fixed_and_pct_size(child);
-            }
+            update_fixed_and_pct_size(child);
 
             /*Update all the children's size and position where the size
              *doesn't depend on a layout. Is any of the sizes depend on the layout
@@ -1467,7 +1470,9 @@ static void update_children_coordinates(lv_obj_t * obj)
 
         /*In the first iteration of size calculation set sizes depending only on the siblings in the same direction.
          *Almost every size is set here. See the next itearation for more info. */
-        lv_layout_update_children_sizes(obj, 0);
+        if(child_cnt > 0) {
+            lv_layout_update_children_sizes(obj, 0);
+        }
 
         for(uint32_t i = 0; i < child_cnt; i++) {
             lv_obj_t * child = obj->spec_attr->children[i];
@@ -1485,7 +1490,9 @@ static void update_children_coordinates(lv_obj_t * obj)
          *E.g. when a grid row has CONTENT height it needs to know the content size of
          *the children first to set the STRETCHed items' height accordingly.
          *Only grid needs 2 iterations*/
-        lv_layout_update_children_sizes(obj, 1);
+        if(child_cnt > 0) {
+            lv_layout_update_children_sizes(obj, 1);
+        }
 
         for(uint32_t i = 0; i < child_cnt; i++) {
             lv_obj_t * child = obj->spec_attr->children[i];
@@ -1500,10 +1507,14 @@ static void update_children_coordinates(lv_obj_t * obj)
         /*Step 4: Finalizing*/
 
         /*All children sizes are set, now set their positions*/
-        lv_layout_update_children_positions(obj);
+        if(child_cnt > 0) {
+            lv_layout_update_children_positions(obj);
+        }
 
         /*All children are positioned too, set the content size of the widget (not the children)*/
-        update_content_size(obj);
+        if(obj->child_coords_might_change) {
+            update_content_size(obj);
+        }
 
         /*Content size is known, align the children*/
         for(uint32_t i = 0; i < child_cnt; i++) {
@@ -1513,7 +1524,7 @@ static void update_children_coordinates(lv_obj_t * obj)
             update_align(child);
         }
 
-        if(obj->coords_changed) {
+        if(obj->size_changed) {
             lv_obj_send_event(obj, LV_EVENT_SIZE_CHANGED, NULL);
         }
     }

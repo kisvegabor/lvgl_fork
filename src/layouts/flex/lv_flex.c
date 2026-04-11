@@ -491,7 +491,7 @@ static void children_set_grow(flex_t * f, track_t * t)
             lv_obj_invalidate(item);
             area_set_main_size(&item->coords, size);
 
-            item->coords_changed = 1;
+            item->size_changed = 1;
             item->child_coords_might_change = 1;
             lv_obj_t * parent = lv_obj_get_parent(item);
             if(parent) parent->child_coords_changed = 1;
@@ -573,7 +573,6 @@ static void children_repos(lv_obj_t * cont, flex_t * f, int32_t item_first_id, i
             item->coords.y2 += diff_y;
             lv_obj_move_children_by(item, diff_x, diff_y, false);
 
-            item->coords_changed = 1;
             lv_obj_t * parent = lv_obj_get_parent(item);
             if(parent) parent->child_coords_changed = 1;
         }

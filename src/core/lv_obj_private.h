@@ -77,7 +77,7 @@ struct _lv_obj_t {
     uint16_t coords_invalid : 1;
     uint16_t child_coords_might_change: 1;
     uint16_t child_coords_changed: 1;
-    uint16_t coords_changed   : 1;
+    uint16_t size_changed   : 1;
     uint16_t redraw_requested : 1;
 
     uint16_t readjust_scroll_after_layout : 1;

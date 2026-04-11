@@ -404,6 +404,7 @@ static void lv_roller_event(const lv_obj_class_t * class_p, lv_event_t * e)
     }
     else if(code == LV_EVENT_SIZE_CHANGED) {
         refr_position(obj, LV_ANIM_OFF);
+        printf("size\n");
     }
     else if(code == LV_EVENT_PRESSED) {
         if(roller->option_cnt <= 1) return;
@@ -530,7 +531,7 @@ static void lv_roller_label_event(const lv_obj_class_t * class_p, lv_event_t * e
         *s = LV_MAX(*s, sel_w - label_w);
     }
     else if(code == LV_EVENT_SIZE_CHANGED) {
-        //        refr_position(lv_obj_get_parent(label), LV_ANIM_OFF);
+        //          refr_position(lv_obj_get_parent(label), LV_ANIM_OFF);
     }
     else if(code == LV_EVENT_DRAW_MAIN) {
         draw_label(e);
@@ -908,6 +909,7 @@ static void scroll_anim_completed_cb(lv_anim_t * a)
 static void set_y_anim(void * obj, int32_t v)
 {
     lv_obj_set_y(obj, v);
+    printf("y: %d\n", v);
 }
 
 static void transform_vect_recursive(lv_obj_t * roller, lv_point_t * vect)

@@ -339,7 +339,10 @@ lv_result_t lv_inv_area(lv_display_t * disp, const lv_area_t * area_p)
     lv_area_copy(&disp->inv_areas[disp->inv_p], tmp_area_p);
     disp->inv_p++;
 
-    lv_display_send_event(disp, LV_EVENT_REFR_REQUEST, NULL);
+    /*Tell the display that there will be something to refresh*/
+    if(disp->inv_p == 1) {
+        lv_display_send_event(disp, LV_EVENT_REFR_REQUEST, NULL);
+    }
 
     return LV_RESULT_OK;
 }

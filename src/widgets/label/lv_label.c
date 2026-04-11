@@ -165,7 +165,8 @@ void lv_label_set_text_vfmt(lv_obj_t * obj, const char * fmt, va_list args)
     label->text = lv_text_set_text_vfmt(fmt, args);
     label->static_txt = 0; /*Now the text is dynamically allocated*/
 
-    lv_label_refr_text(obj);
+    //    lv_label_refr_text(obj);
+    lv_obj_mark_layout_as_dirty(obj);
 }
 
 void lv_label_set_text_static(lv_obj_t * obj, const char * text)
@@ -184,7 +185,8 @@ void lv_label_set_text_static(lv_obj_t * obj, const char * text)
         label->text       = (char *)text;
     }
 
-    lv_label_refr_text(obj);
+    lv_obj_mark_layout_as_dirty(obj);
+    //    lv_label_refr_text(obj);
 }
 
 #if LV_USE_TRANSLATION
@@ -999,7 +1001,8 @@ static void set_text_internal(lv_obj_t * obj, const char * text)
         label->static_txt = 0;
     }
 
-    lv_label_refr_text(obj);
+    lv_obj_mark_layout_as_dirty(obj);
+    //    lv_label_refr_text(obj);
 }
 
 static void remove_translation_tag(lv_obj_t * obj)
