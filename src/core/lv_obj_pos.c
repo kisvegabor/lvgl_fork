@@ -1422,6 +1422,7 @@ static void update_coordinates(lv_obj_t * obj)
     obj->child_coords_might_change = 0;
 }
 
+#include "src/lvgl_private.h"
 
 /**
  * Update the size and position of the children relative to `obj`.
@@ -1470,7 +1471,7 @@ static void update_children_coordinates(lv_obj_t * obj)
 
         /*In the first iteration of size calculation set sizes depending only on the siblings in the same direction.
          *Almost every size is set here. See the next itearation for more info. */
-        if(child_cnt > 0) {
+        if(child_cnt > 0 && obj->child_coords_might_change) {
             lv_layout_update_children_sizes(obj, 0);
         }
 
@@ -1490,7 +1491,7 @@ static void update_children_coordinates(lv_obj_t * obj)
          *E.g. when a grid row has CONTENT height it needs to know the content size of
          *the children first to set the STRETCHed items' height accordingly.
          *Only grid needs 2 iterations*/
-        if(child_cnt > 0) {
+        if(child_cnt > 0 && obj->child_coords_might_change) {
             lv_layout_update_children_sizes(obj, 1);
         }
 
@@ -1507,12 +1508,12 @@ static void update_children_coordinates(lv_obj_t * obj)
         /*Step 4: Finalizing*/
 
         /*All children sizes are set, now set their positions*/
-        if(child_cnt > 0) {
+        if(child_cnt > 0 && obj->child_coords_might_change) {
             lv_layout_update_children_positions(obj);
         }
 
         /*All children are positioned too, set the content size of the widget (not the children)*/
-        if(obj->child_coords_might_change) {
+        if(obj->child_coords_changed || obj->child_coords_might_change) {
             update_content_size(obj);
         }
 
