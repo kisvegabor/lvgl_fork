@@ -282,8 +282,6 @@ void lv_obj_mark_layout_as_dirty(lv_obj_t * obj)
         parent->update_children_coords = 1;
         parent = lv_obj_get_parent(parent);
     }
-
-    scr->update_children_coords = 1;
 }
 
 void lv_obj_update_layout(lv_obj_t * obj)
@@ -1412,102 +1410,91 @@ static void update_children_coordinates(lv_obj_t * obj)
     /*The widget and its children are ok, nothing to do here*/
     if(!obj->update_children_coords &&
        !obj->child_coords_changed &&
-       !obj->coords_invalid) {
+       !obj->coords_invalid &&
+       !obj->size_changed) {
         return;
     }
 
     uint32_t child_cnt = lv_obj_get_child_count(obj);
-    //    /*If the widget didn't change the children might change, so check them*/
-    //    if(!obj->coords_invalid && !obj->child_coords_changed) {
-    //        for(uint32_t i = 0; i < child_cnt; i++) {
-    //            lv_obj_t * child = obj->spec_attr->children[i];
-    //            update_coordinates_init(child);
-    //            update_children_coordinates(child);
-    //        }
-    //    }
-    //    /*The widget or the direct children might have changed, let's update them*/
-    //    else
-    {
-        /*Step 1: Calculate what we can without layouts.*/
-        for(uint32_t i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
-            update_coordinates_init(child);
+    /*Step 1: Calculate what we can without layouts.*/
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
+        update_coordinates_init(child);
 
-            /*Set only fixed and percentage width and/or height now as
-             *fixed doesn't depend on anything and percentage depends
-             *only on the parent that is already calculated*/
-            update_fixed_and_pct_size(child);
+        /*Set only fixed and percentage width and/or height now as
+         *fixed doesn't depend on anything and percentage depends
+         *only on the parent that is already calculated*/
+        update_fixed_and_pct_size(child);
 
-            /*Update all the children's size and position where the size
-             *doesn't depend on a layout. Is any of the sizes depend on the layout
-             *the layout needs to set the size first to update the children*/
-            if(child->w_layout == 0 && child->h_layout == 0) {
-                update_children_coordinates(child);
-            }
+        /*Update all the children's size and position where the size
+         *doesn't depend on a layout. Is any of the sizes depend on the layout
+         *the layout needs to set the size first to update the children*/
+        if(child->w_layout == 0 && child->h_layout == 0) {
+            update_children_coordinates(child);
         }
+    }
 
-        /*Step 2: Handle the simple case of layout sizing when only 1 size is layout controlled
-         *E.g. flex_grow*/
+    /*Step 2: Handle the simple case of layout sizing when only 1 size is layout controlled
+     *E.g. flex_grow*/
 
-        /*In the first iteration of size calculation set sizes depending only on the siblings in the same direction.
-         *Almost every size is set here. See the next itearation for more info. */
-        if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
-            lv_layout_update_children_sizes(obj, 0);
+    /*In the first iteration of size calculation set sizes depending only on the siblings in the same direction.
+     *Almost every size is set here. See the next itearation for more info. */
+    if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
+        lv_layout_update_children_sizes(obj, 0);
+    }
+
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
+
+        /*The layout set the sizes where it could, now it's time to calculate missing content sizes*/
+        if((child->w_layout && !child->h_layout) ||
+           (!child->w_layout && child->h_layout)) {
+            update_children_coordinates(child);
         }
+    }
 
-        for(uint32_t i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
+    /*Step 3: Complex layout case when both sizes are layout controlled*/
 
-            /*The layout set the sizes where it could, now it's time to calculate missing content sizes*/
-            if((child->w_layout && !child->h_layout) ||
-               (!child->w_layout && child->h_layout)) {
-                update_children_coordinates(child);
-            }
+    /*The second iteration of layout sizes are needed only in some special cases.
+     *E.g. when a grid row has CONTENT height it needs to know the content size of
+     *the children first to set the STRETCHed items' height accordingly.
+     *Only grid needs 2 iterations*/
+    if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
+        lv_layout_update_children_sizes(obj, 1);
+    }
+
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
+
+        /*The layout set all the sizes, now it's time to calculate missing content sizes*/
+        /*Set the children size and position after this the CONTENT size can be set.*/
+        if(child->w_layout && child->h_layout) {
+            update_children_coordinates(child);
         }
+    }
 
-        /*Step 3: Complex layout case when both sizes are layout controlled*/
+    /*Step 4: Finalizing*/
 
-        /*The second iteration of layout sizes are needed only in some special cases.
-         *E.g. when a grid row has CONTENT height it needs to know the content size of
-         *the children first to set the STRETCHed items' height accordingly.
-         *Only grid needs 2 iterations*/
-        if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
-            lv_layout_update_children_sizes(obj, 1);
-        }
+    /*All children sizes are set, now set their positions*/
+    if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
+        lv_layout_update_children_positions(obj);
+    }
 
-        for(uint32_t i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
+    /*All children are positioned too, set the content size of the widget (not the children)*/
+    if(obj->child_coords_changed || obj->coords_invalid) {
+        update_content_size(obj);
+    }
 
-            /*The layout set all the sizes, now it's time to calculate missing content sizes*/
-            /*Set the children size and position after this the CONTENT size can be set.*/
-            if(child->w_layout && child->h_layout) {
-                update_children_coordinates(child);
-            }
-        }
+    /*Content size is known, align the children*/
+    for(uint32_t i = 0; i < child_cnt; i++) {
+        lv_obj_t * child = obj->spec_attr->children[i];
 
-        /*Step 4: Finalizing*/
+        /*Size is set, set the position if defined by align, x, y (not layout)*/
+        update_align(child);
+    }
 
-        /*All children sizes are set, now set their positions*/
-        if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
-            lv_layout_update_children_positions(obj);
-        }
-
-        /*All children are positioned too, set the content size of the widget (not the children)*/
-        if(obj->child_coords_changed || obj->coords_invalid) {
-            update_content_size(obj);
-        }
-
-        /*Content size is known, align the children*/
-        for(uint32_t i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
-
-            /*Size is set, set the position if defined by align, x, y (not layout)*/
-            update_align(child);
-        }
-
-        if(obj->size_changed) {
-            lv_obj_send_event(obj, LV_EVENT_SIZE_CHANGED, NULL);
-        }
+    if(obj->size_changed) {
+        lv_obj_send_event(obj, LV_EVENT_SIZE_CHANGED, NULL);
     }
 
     /*All set on this widget*/
