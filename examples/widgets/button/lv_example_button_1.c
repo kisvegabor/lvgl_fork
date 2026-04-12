@@ -26,15 +26,21 @@ void lv_example_button_1(void)
     lv_label_set_text(label, "Button");
     lv_obj_center(label);
 
-    lv_obj_t * btn2 = lv_button_create(lv_screen_active());
-    lv_obj_add_event_cb(btn2, event_handler, LV_EVENT_ALL, NULL);
-    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
-    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
-    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
+    lv_obj_update_layout(label);
 
-    label = lv_label_create(btn2);
-    lv_label_set_text(label, "Toggle");
-    lv_obj_center(label);
+    lv_obj_set_width(label, 300);
+
+
+
+    //    lv_obj_t * btn2 = lv_button_create(lv_screen_active());
+    //    lv_obj_add_event_cb(btn2, event_handler, LV_EVENT_ALL, NULL);
+    //    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
+    //    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
+    //    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
+    //
+    //    label = lv_label_create(btn2);
+    //    lv_label_set_text(label, "Toggle");
+    //    lv_obj_center(label);
 
 }
 #endif

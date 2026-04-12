@@ -618,7 +618,6 @@ static void item_adjust(lv_obj_t * item, lv_grid_calc_t * c, item_repos_hint_t *
                 lv_area_set_width(&item->coords, item_w);
 
                 item->size_changed = 1;
-                item->child_coords_might_change = 1;
                 lv_obj_t * parent = lv_obj_get_parent(item);
                 if(parent) parent->child_coords_changed = 1;
             }
@@ -632,7 +631,7 @@ static void item_adjust(lv_obj_t * item, lv_grid_calc_t * c, item_repos_hint_t *
                 lv_obj_invalidate(item);
                 lv_area_set_height(&item->coords, item_h);
 
-                item->child_coords_might_change = 1;
+                item->size_changed = 1;
                 lv_obj_t * parent = lv_obj_get_parent(item);
                 if(parent) parent->child_coords_changed = 1;
             }

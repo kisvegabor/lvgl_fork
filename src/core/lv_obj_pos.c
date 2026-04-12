@@ -177,7 +177,6 @@ static void update_fixed_and_pct_size(lv_obj_t * obj)
             lv_obj_invalidate(obj);
             lv_area_set_width(&obj->coords, width);
             obj->size_changed = 1;
-            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -194,7 +193,6 @@ static void update_fixed_and_pct_size(lv_obj_t * obj)
             lv_obj_invalidate(obj);
             lv_area_set_height(&obj->coords, height);
             obj->size_changed = 1;
-            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -271,31 +269,21 @@ bool lv_obj_is_layout_positioned(const lv_obj_t * obj)
 
 void lv_obj_mark_layout_as_dirty(lv_obj_t * obj)
 {
-    obj->coords_invalid = 1;
-    obj->child_coords_might_change = 1;
-
-    lv_obj_t * parent = lv_obj_get_parent(obj);
-    if(parent) parent->child_coords_might_change = 1;
-    while(parent) {
-        if(lv_obj_get_style_width(parent, 0) == LV_SIZE_CONTENT || lv_obj_get_style_height(parent, 0) == LV_SIZE_CONTENT) {
-            parent->child_coords_might_change = 1;
-        }
-        else {
-            break;
-        }
-        parent = lv_obj_get_parent(parent);
-    }
-
     /*Mark the screen as dirty too to mark that there is something to do on this screen*/
     lv_obj_t * scr = lv_obj_get_screen(obj);
-
-    /*Make the display refreshing*/
-    if(scr->scr_layout_inv == 0) {
+    if(scr->update_children_coords == 0) {
         lv_display_t * disp = lv_obj_get_display(scr);
         lv_display_send_event(disp, LV_EVENT_REFR_REQUEST, NULL);
     }
+    obj->coords_invalid = 1;
 
-    scr->scr_layout_inv = 1;
+    lv_obj_t * parent = lv_obj_get_parent(obj);
+    while(parent) {
+        parent->update_children_coords = 1;
+        parent = lv_obj_get_parent(parent);
+    }
+
+    scr->update_children_coords = 1;
 }
 
 void lv_obj_update_layout(lv_obj_t * obj)
@@ -309,28 +297,15 @@ void lv_obj_update_layout(lv_obj_t * obj)
     update_layout_mutex = true;
 
     lv_obj_t * scr = lv_obj_get_screen(obj);
-    /*Repeat until there are no more layout invalidations*/
-    lv_obj_t * parent = obj;
-    lv_obj_t * start_obj = obj;
-    while(parent) {
-        if(parent->coords_invalid || parent->child_coords_might_change) {
-            start_obj = parent;
-        }
-        parent = lv_obj_get_parent(parent);
-    }
 
-    if(scr->scr_layout_inv) {
+    if(scr->update_children_coords) {
         LV_LOG_TRACE("Layout update begin");
-        update_coordinates(start_obj);
+        update_coordinates(scr);
 
         LV_LOG_TRACE("Layout update end");
     }
 
-    /*Mark the screen as clean only if its was updated. Otherwise smaller indirect children might remain invalid */
-    if(start_obj == scr) scr->scr_layout_inv = 0;
-
     lv_display_t * disp = lv_obj_get_display(scr);
-    lv_display_send_event(disp, LV_EVENT_UPDATE_LAYOUT_COMPLETED, NULL);
     update_layout_mutex = false;
     LV_PROFILER_LAYOUT_END;
 }
@@ -699,7 +674,6 @@ static void update_content_size(lv_obj_t * obj)
             lv_area_set_width(&obj->coords, width);
 
             obj->size_changed = 1;
-            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -735,7 +709,6 @@ static void update_content_size(lv_obj_t * obj)
             lv_area_set_height(&obj->coords, height);
 
             obj->size_changed = 1;
-            obj->child_coords_might_change = 1;
             parent->child_coords_changed = 1;
         }
     }
@@ -1419,7 +1392,7 @@ static void update_coordinates(lv_obj_t * obj)
 
     update_align(obj);
     obj->coords_invalid = 0;
-    obj->child_coords_might_change = 0;
+    obj->update_children_coords = 0;
 }
 
 #include "src/lvgl_private.h"
@@ -1436,18 +1409,25 @@ static void update_coordinates(lv_obj_t * obj)
  */
 static void update_children_coordinates(lv_obj_t * obj)
 {
-    uint32_t child_cnt = lv_obj_get_child_count(obj);
-    /*If the direct children didn't change the indirect children might change, so
-     *check them*/
-    if(0 && obj->child_coords_might_change == false) {
-        for(uint32_t i = 0; i < child_cnt; i++) {
-            lv_obj_t * child = obj->spec_attr->children[i];
-            update_coordinates_init(child);
-            update_children_coordinates(child);
-        }
+    /*The widget and its children are ok, nothing to do here*/
+    if(!obj->update_children_coords &&
+       !obj->child_coords_changed &&
+       !obj->coords_invalid) {
+        return;
     }
-    /*Direct children might have changed, let's update them*/
-    else {
+
+    uint32_t child_cnt = lv_obj_get_child_count(obj);
+    //    /*If the widget didn't change the children might change, so check them*/
+    //    if(!obj->coords_invalid && !obj->child_coords_changed) {
+    //        for(uint32_t i = 0; i < child_cnt; i++) {
+    //            lv_obj_t * child = obj->spec_attr->children[i];
+    //            update_coordinates_init(child);
+    //            update_children_coordinates(child);
+    //        }
+    //    }
+    //    /*The widget or the direct children might have changed, let's update them*/
+    //    else
+    {
         /*Step 1: Calculate what we can without layouts.*/
         for(uint32_t i = 0; i < child_cnt; i++) {
             lv_obj_t * child = obj->spec_attr->children[i];
@@ -1471,7 +1451,7 @@ static void update_children_coordinates(lv_obj_t * obj)
 
         /*In the first iteration of size calculation set sizes depending only on the siblings in the same direction.
          *Almost every size is set here. See the next itearation for more info. */
-        if(child_cnt > 0 && obj->child_coords_might_change) {
+        if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
             lv_layout_update_children_sizes(obj, 0);
         }
 
@@ -1491,7 +1471,7 @@ static void update_children_coordinates(lv_obj_t * obj)
          *E.g. when a grid row has CONTENT height it needs to know the content size of
          *the children first to set the STRETCHed items' height accordingly.
          *Only grid needs 2 iterations*/
-        if(child_cnt > 0 && obj->child_coords_might_change) {
+        if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
             lv_layout_update_children_sizes(obj, 1);
         }
 
@@ -1508,12 +1488,12 @@ static void update_children_coordinates(lv_obj_t * obj)
         /*Step 4: Finalizing*/
 
         /*All children sizes are set, now set their positions*/
-        if(child_cnt > 0 && obj->child_coords_might_change) {
+        if(child_cnt > 0 && (obj->child_coords_changed || obj->coords_invalid)) {
             lv_layout_update_children_positions(obj);
         }
 
         /*All children are positioned too, set the content size of the widget (not the children)*/
-        if(obj->child_coords_changed || obj->child_coords_might_change) {
+        if(obj->child_coords_changed || obj->coords_invalid) {
             update_content_size(obj);
         }
 
@@ -1532,7 +1512,8 @@ static void update_children_coordinates(lv_obj_t * obj)
 
     /*All set on this widget*/
     obj->coords_invalid = 0;
-    obj->child_coords_might_change = 0;
+    obj->child_coords_changed = 0;
+    obj->update_children_coords = 0;
 }
 
 // invalidate
