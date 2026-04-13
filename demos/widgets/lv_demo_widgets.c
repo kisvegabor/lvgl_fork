@@ -102,7 +102,7 @@ void lv_demo_widgets_with_args(const lv_demo_args_t * args)
     lv_demo_widgets_analytics_create(t2);
     lv_demo_widgets_shop_create(t3);
 
-    //    color_changer_create(tv);
+    color_changer_create(tv);
 }
 
 

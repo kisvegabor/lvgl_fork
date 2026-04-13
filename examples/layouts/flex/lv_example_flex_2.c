@@ -8,7 +8,7 @@ void lv_example_flex_2(void)
 {
     static lv_style_t style;
     lv_style_init(&style);
-    lv_style_set_flex_flow(&style, LV_FLEX_FLOW_ROW_WRAP);
+    lv_style_set_flex_flow(&style, LV_FLEX_FLOW_ROW);
     lv_style_set_flex_main_place(&style, LV_FLEX_ALIGN_SPACE_EVENLY);
     lv_style_set_layout(&style, LV_LAYOUT_FLEX);
 
@@ -27,6 +27,9 @@ void lv_example_flex_2(void)
         lv_label_set_text_fmt(label, "%" LV_PRIu32, i);
         lv_obj_center(label);
     }
+
+    lv_refr_now(NULL);
+    lv_obj_set_flex_flow(cont, LV_FLEX_FLOW_ROW_WRAP);
 }
 
 #endif

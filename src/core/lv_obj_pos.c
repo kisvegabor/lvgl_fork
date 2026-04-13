@@ -118,8 +118,6 @@ int32_t lv_obj_calc_dynamic_height(lv_obj_t * obj, lv_style_prop_t prop)
 
 }
 
-#include "src/widgets/roller/lv_roller_private.h"
-
 static void update_coordinates_init(lv_obj_t * obj)
 {
     obj->w_layout = 0;
@@ -277,7 +275,7 @@ void lv_obj_mark_layout_as_dirty(lv_obj_t * obj)
     }
     obj->coords_invalid = 1;
 
-    lv_obj_t * parent = lv_obj_get_parent(obj);
+    lv_obj_t * parent = obj;
     while(parent) {
         parent->update_children_coords = 1;
         parent = lv_obj_get_parent(parent);
@@ -303,7 +301,6 @@ void lv_obj_update_layout(lv_obj_t * obj)
         LV_LOG_TRACE("Layout update end");
     }
 
-    lv_display_t * disp = lv_obj_get_display(scr);
     update_layout_mutex = false;
     LV_PROFILER_LAYOUT_END;
 }
@@ -1393,8 +1390,6 @@ static void update_coordinates(lv_obj_t * obj)
     obj->update_children_coords = 0;
 }
 
-#include "src/lvgl_private.h"
-
 /**
  * Update the size and position of the children relative to `obj`.
  * It also updates layouts and size of `obj` if it was `LV_SIZE_CONTENT` in
@@ -1407,11 +1402,13 @@ static void update_coordinates(lv_obj_t * obj)
  */
 static void update_children_coordinates(lv_obj_t * obj)
 {
+    lv_obj_t * parent = lv_obj_get_parent(obj);
     /*The widget and its children are ok, nothing to do here*/
     if(!obj->update_children_coords &&
        !obj->child_coords_changed &&
        !obj->coords_invalid &&
-       !obj->size_changed) {
+       !obj->size_changed &&
+       (parent && !parent->size_changed)) {
         return;
     }
 
@@ -1480,8 +1477,9 @@ static void update_children_coordinates(lv_obj_t * obj)
         lv_layout_update_children_positions(obj);
     }
 
-    /*All children are positioned too, set the content size of the widget (not the children)*/
-    if(obj->child_coords_changed || obj->coords_invalid) {
+    /*All children are positioned too, set the content size of the widget (not the children)
+     *Also consider parent->size_changed as min/max_width/height can be % which depends on the parent*/
+    if(obj->child_coords_changed || obj->coords_invalid || obj->size_changed || (parent && parent->size_changed)) {
         update_content_size(obj);
     }
 

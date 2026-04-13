@@ -34,6 +34,7 @@ void test_obj_flag_overflow_visible_1(void)
     lv_obj_add_flag(obj_main, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
     lv_obj_center(obj_main);
     lv_obj_add_event_cb(obj_main, ext_draw_size_event_cb, LV_EVENT_REFR_EXT_DRAW_SIZE, NULL);
+    lv_obj_refresh_ext_draw_size(obj_main);
 
     lv_obj_t * obj_child_1 = lv_obj_create(obj_main);
     lv_obj_set_size(obj_child_1, 200, 200);
@@ -57,6 +58,7 @@ void test_obj_flag_overflow_visible_1(void)
     lv_obj_add_flag(obj_child_2, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
     lv_obj_align(obj_child_2, LV_ALIGN_RIGHT_MID, 100, 0);
     lv_obj_add_event_cb(obj_child_2, ext_draw_size_event_cb, LV_EVENT_REFR_EXT_DRAW_SIZE, NULL);
+    lv_obj_refresh_ext_draw_size(obj_child_2);
 
     lv_obj_t * btn_2 = lv_button_create(obj_child_2);
     lv_obj_set_size(btn_2, 100, 100);
@@ -68,6 +70,8 @@ void test_obj_flag_overflow_visible_1(void)
     lv_obj_t * label_2 = lv_label_create(btn_2);
     lv_label_set_text(label_2, "Button 2");
     lv_obj_center(label_2);
+
+    lv_obj_update_layout(obj_main);
 
     cnt_1 = 0;
     cnt_2 = 0;

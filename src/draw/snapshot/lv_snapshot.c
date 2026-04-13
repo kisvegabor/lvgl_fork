@@ -132,6 +132,7 @@ lv_result_t lv_snapshot_take_to_draw_buf(lv_obj_t * obj, lv_color_format_t cf, l
     lv_layer_t * layer_old = disp_new->layer_head;
     disp_new->layer_head = &layer;
 
+    lv_obj_update_layout(obj);
     lv_refr_set_disp_refreshing(disp_new);
 
     if(top_obj == obj) {

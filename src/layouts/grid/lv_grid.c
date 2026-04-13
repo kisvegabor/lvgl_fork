@@ -611,8 +611,6 @@ static void item_adjust(lv_obj_t * item, lv_grid_calc_t * c, item_repos_hint_t *
     if(size_iteration >= 0) {
         if(col_align == LV_GRID_ALIGN_STRETCH) {
             int32_t item_w = col_w - get_margin_hor(item);
-            lv_area_set_width(&item->coords, item_w);
-
             if(lv_area_get_width(&item->coords) != item_w) {
                 lv_obj_invalidate(item);
                 lv_area_set_width(&item->coords, item_w);
@@ -625,8 +623,6 @@ static void item_adjust(lv_obj_t * item, lv_grid_calc_t * c, item_repos_hint_t *
 
         if(row_align == LV_GRID_ALIGN_STRETCH) {
             int32_t item_h = row_h - get_margin_ver(item);
-            lv_area_set_height(&item->coords, item_h);
-
             if(lv_area_get_height(&item->coords) != item_h) {
                 lv_obj_invalidate(item);
                 lv_area_set_height(&item->coords, item_h);

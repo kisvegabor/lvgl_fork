@@ -1409,42 +1409,45 @@ static inline bool is_valid_but_non_printable_char(const uint32_t letter)
 
 static void lv_textarea_scroll_to_cusor_pos(lv_obj_t * obj, int32_t pos)
 {
+    lv_textarea_t * ta = (lv_textarea_t *)obj;
+    lv_point_t cur_pos;
+
     /*It's an expensive function as it need to resolve the layouts.
      *Make the text area non-scrollable if possible to avoid it*/
-    if(!lv_obj_has_flag(obj, LV_OBJ_FLAG_SCROLLABLE)) return;
-
-    lv_textarea_t * ta = (lv_textarea_t *)obj;
-    /*The text area and the label needs to have it's final size to see if
-     *the cursor is out of the area or not*/
-    lv_obj_update_layout(ta->label);
-
-    lv_point_t cur_pos;
-    const lv_font_t * font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
-    lv_label_get_letter_pos(ta->label, pos, &cur_pos);
-
-
-    /*Check the top*/
-    int32_t font_h = lv_font_get_line_height(font);
-    if(cur_pos.y < lv_obj_get_scroll_top(obj)) {
-        lv_obj_scroll_to_y(obj, cur_pos.y, LV_ANIM_ON);
-    }
-    /*Check the bottom*/
-    int32_t h = lv_obj_get_content_height(obj);
-    if(cur_pos.y + font_h - lv_obj_get_scroll_top(obj) > h) {
-        lv_obj_scroll_to_y(obj, cur_pos.y - h + font_h, LV_ANIM_ON);
-    }
-
-    /*Check the left*/
-    if(cur_pos.x < lv_obj_get_scroll_left(obj)) {
-        lv_obj_scroll_to_x(obj, cur_pos.x, LV_ANIM_ON);
-    }
-    /*Check the right*/
-    int32_t w = lv_obj_get_content_width(obj);
-    if(cur_pos.x + font_h > w) {
-        lv_obj_scroll_to_x(obj, cur_pos.x - w + font_h, LV_ANIM_ON);
+    if(!lv_obj_has_flag(obj, LV_OBJ_FLAG_SCROLLABLE)) {
+        lv_label_get_letter_pos(ta->label, pos, &cur_pos);
     }
     else {
-        lv_obj_scroll_to_x(obj, 0, LV_ANIM_ON);
+        /*The text area and the label needs to have it's final size to see if
+         *the cursor is out of the area or not*/
+        lv_obj_update_layout(ta->label);
+        lv_label_get_letter_pos(ta->label, pos, &cur_pos);
+
+        const lv_font_t * font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
+
+        /*Check the top*/
+        int32_t font_h = lv_font_get_line_height(font);
+        if(cur_pos.y < lv_obj_get_scroll_top(obj)) {
+            lv_obj_scroll_to_y(obj, cur_pos.y, LV_ANIM_ON);
+        }
+        /*Check the bottom*/
+        int32_t h = lv_obj_get_content_height(obj);
+        if(cur_pos.y + font_h - lv_obj_get_scroll_top(obj) > h) {
+            lv_obj_scroll_to_y(obj, cur_pos.y - h + font_h, LV_ANIM_ON);
+        }
+
+        /*Check the left*/
+        if(cur_pos.x < lv_obj_get_scroll_left(obj)) {
+            lv_obj_scroll_to_x(obj, cur_pos.x, LV_ANIM_ON);
+        }
+        /*Check the right*/
+        int32_t w = lv_obj_get_content_width(obj);
+        if(cur_pos.x + font_h > w) {
+            lv_obj_scroll_to_x(obj, cur_pos.x - w + font_h, LV_ANIM_ON);
+        }
+        else {
+            lv_obj_scroll_to_x(obj, 0, LV_ANIM_ON);
+        }
     }
 
     ta->cursor.valid_x = cur_pos.x;
