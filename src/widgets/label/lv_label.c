@@ -51,7 +51,7 @@ static void draw_main(lv_event_t * e);
 
 static void set_text_internal(lv_obj_t * obj, const char * text);
 static void remove_translation_tag(lv_obj_t * obj);
-static void lv_label_refr_text(lv_obj_t * obj);
+static void update_text_flow(lv_obj_t * obj);
 static void lv_label_revert_dots(lv_obj_t * label);
 static void lv_label_set_dots(lv_obj_t * label, uint32_t dot_begin);
 
@@ -141,6 +141,15 @@ void lv_label_set_text_fmt(lv_obj_t * obj, const char * fmt, ...)
     va_end(args);
 }
 
+
+static void request_text_flow_update(lv_obj_t * obj)
+{
+    lv_label_t * label = (lv_label_t *)obj;
+    lv_obj_mark_layout_as_dirty(obj);
+    label->text_flow_invalid = 1;
+    lv_obj_invalidate(obj);
+}
+
 void lv_label_set_text_vfmt(lv_obj_t * obj, const char * fmt, va_list args)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -152,20 +161,17 @@ void lv_label_set_text_vfmt(lv_obj_t * obj, const char * fmt, va_list args)
     lv_label_revert_dots(obj);
 
     /*If text is NULL then refresh*/
-    if(fmt == NULL) {
-        lv_label_refr_text(obj);
-        return;
+    if(fmt) {
+        if(label->text != NULL && label->static_txt == 0) {
+            lv_free(label->text);
+            label->text = NULL;
+        }
+
+        label->text = lv_text_set_text_vfmt(fmt, args);
+        label->static_txt = 0; /*Now the text is dynamically allocated*/
     }
 
-    if(label->text != NULL && label->static_txt == 0) {
-        lv_free(label->text);
-        label->text = NULL;
-    }
-
-    label->text = lv_text_set_text_vfmt(fmt, args);
-    label->static_txt = 0; /*Now the text is dynamically allocated*/
-
-    lv_label_refr_text(obj);
+    request_text_flow_update(obj);
 }
 
 void lv_label_set_text_static(lv_obj_t * obj, const char * text)
@@ -184,7 +190,7 @@ void lv_label_set_text_static(lv_obj_t * obj, const char * text)
         label->text       = (char *)text;
     }
 
-    lv_label_refr_text(obj);
+    request_text_flow_update(obj);
 }
 
 #if LV_USE_TRANSLATION
@@ -227,7 +233,7 @@ void lv_label_set_long_mode(lv_obj_t * obj, lv_label_long_mode_t long_mode)
         label->expand = 0;
 
     label->long_mode = long_mode;
-    lv_label_refr_text(obj);
+    request_text_flow_update(obj);
 }
 
 void lv_label_set_text_selection_start(lv_obj_t * obj, uint32_t index)
@@ -268,7 +274,8 @@ void lv_label_set_recolor(lv_obj_t * obj, bool en)
     label->recolor = en == false ? 0 : 1;
 
     /*Refresh the text because the potential color codes in text needs to be hidden or revealed*/
-    lv_label_refr_text(obj);
+    lv_obj_mark_layout_as_dirty(obj);
+    request_text_flow_update(obj);
 }
 
 /*=====================
@@ -707,7 +714,9 @@ void lv_label_ins_text(lv_obj_t * obj, uint32_t pos, const char * txt)
     }
 
     lv_text_ins(label->text, pos, txt);
-    lv_label_set_text(obj, NULL);
+
+    /*Refresh the label*/
+    request_text_flow_update(obj);
 }
 
 void lv_label_cut_text(lv_obj_t * obj, uint32_t pos, uint32_t cnt)
@@ -723,7 +732,7 @@ void lv_label_cut_text(lv_obj_t * obj, uint32_t pos, uint32_t cnt)
     lv_text_cut(label_txt, pos, cnt);
 
     /*Refresh the label*/
-    lv_label_refr_text(obj);
+    request_text_flow_update(obj);
 }
 
 
@@ -777,6 +786,32 @@ static void lv_label_destructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
 #endif /*LV_USE_TRANSLATION*/
 }
 
+static void update_self_size(lv_obj_t * obj)
+{
+    lv_label_t * label = (lv_label_t *)obj;
+
+    uint32_t dot_begin = label->dot_begin;
+    lv_label_revert_dots(obj);
+
+    lv_text_flag_t flag = LV_TEXT_FLAG_NONE;
+    if(label->recolor != 0) flag |= LV_TEXT_FLAG_RECOLOR;
+    if(label->expand != 0) flag |= LV_TEXT_FLAG_EXPAND;
+
+    int32_t w;
+    if(lv_obj_get_style_width(obj, LV_PART_MAIN) == LV_SIZE_CONTENT) w = LV_COORD_MAX;
+    else w = lv_obj_get_content_width(obj);
+
+    lv_text_attributes_t attributes = {0};
+    attributes.letter_space = lv_obj_get_style_text_letter_space(obj, LV_PART_MAIN);;
+    attributes.line_space = lv_obj_get_style_text_line_space(obj, LV_PART_MAIN);;
+    attributes.text_flags = flag;
+    attributes.max_width = w;
+
+    const lv_font_t * font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
+    lv_text_get_size_attributes(&label->text_size, label->text, font, &attributes);
+    lv_label_set_dots(obj, dot_begin);
+}
+
 static void lv_label_event(const lv_obj_class_t * class_p, lv_event_t * e)
 {
     LV_UNUSED(class_p);
@@ -789,7 +824,8 @@ static void lv_label_event(const lv_obj_class_t * class_p, lv_event_t * e)
     lv_obj_t * obj = lv_event_get_current_target(e);
 
     if(code == LV_EVENT_SIZE_CHANGED) {
-        lv_label_refr_text(obj);
+        lv_label_t * label = (lv_label_t *)obj;
+        label->text_flow_invalid = 1;
     }
     else if(code == LV_EVENT_REFR_EXT_DRAW_SIZE) {
         /* Italic or other non-typical letters can be drawn of out of the object.
@@ -802,29 +838,9 @@ static void lv_label_event(const lv_obj_class_t * class_p, lv_event_t * e)
     }
     else if(code == LV_EVENT_GET_SELF_SIZE) {
         lv_label_t * label = (lv_label_t *)obj;
-
-        uint32_t dot_begin = label->dot_begin;
-        lv_label_revert_dots(obj);
-
-        lv_text_flag_t flag = LV_TEXT_FLAG_NONE;
-        if(label->recolor != 0) flag |= LV_TEXT_FLAG_RECOLOR;
-        if(label->expand != 0) flag |= LV_TEXT_FLAG_EXPAND;
-
-        int32_t w;
-        if(lv_obj_get_style_width(obj, LV_PART_MAIN) == LV_SIZE_CONTENT) w = LV_COORD_MAX;
-        else w = lv_obj_get_content_width(obj);
-
-        lv_text_attributes_t attributes = {0};
-        attributes.letter_space = lv_obj_get_style_text_letter_space(obj, LV_PART_MAIN);;
-        attributes.line_space = lv_obj_get_style_text_line_space(obj, LV_PART_MAIN);;
-        attributes.text_flags = flag;
-        attributes.max_width = w;
-
-        lv_point_t * self_size = lv_event_get_param(e);
-        const lv_font_t * font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
-        lv_text_get_size_attributes(self_size, label->text, font, &attributes);
-        lv_label_set_dots(obj, dot_begin);
-        label->text_size = *self_size;
+        update_self_size(obj);
+        lv_point_t * p = lv_event_get_self_size_info(e);
+        *p = label->text_size;
     }
     else if(code == LV_EVENT_DRAW_MAIN) {
         draw_main(e);
@@ -845,6 +861,12 @@ static void draw_main(lv_event_t * e)
 {
     lv_obj_t * obj = lv_event_get_current_target(e);
     lv_label_t * label = (lv_label_t *)obj;
+
+    if(label->text_flow_invalid) {
+        update_text_flow(obj);
+        label->text_flow_invalid = 0;
+    }
+
     lv_layer_t * layer = lv_event_get_layer(e);
 
     lv_area_t txt_coords;
@@ -999,7 +1021,7 @@ static void set_text_internal(lv_obj_t * obj, const char * text)
         label->static_txt = 0;
     }
 
-    lv_label_refr_text(obj);
+    request_text_flow_update(obj);
 }
 
 static void remove_translation_tag(lv_obj_t * obj)
@@ -1043,16 +1065,16 @@ static void overwrite_anim_property(lv_anim_t * dest, const lv_anim_t * src, lv_
  * Refresh the label with its text stored in its extended data
  * @param label pointer to a label object
  */
-static void lv_label_refr_text(lv_obj_t * obj)
+static void update_text_flow(lv_obj_t * obj)
 {
     lv_label_t * label = (lv_label_t *)obj;
     if(label->text == NULL) return;
 
-    lv_obj_mark_layout_as_dirty(obj);
-
 #if LV_LABEL_LONG_TXT_HINT
     label->hint.line_start = -1; /*The hint is invalid if the text changes*/
 #endif
+
+    update_self_size(obj);
 
     lv_area_t txt_coords;
     lv_text_attributes_t attributes = {0};
@@ -1300,8 +1322,6 @@ static void lv_label_refr_text(lv_obj_t * obj)
     else if(label->long_mode == LV_LABEL_LONG_MODE_CLIP || label->long_mode == LV_LABEL_LONG_MODE_WRAP) {
         /*Do nothing*/
     }
-
-    lv_obj_invalidate(obj);
 }
 
 static void lv_label_revert_dots(lv_obj_t * obj)
@@ -1339,18 +1359,24 @@ static void lv_label_set_dots(lv_obj_t * obj, uint32_t dot_begin)
     }
 }
 
+#include "../../core/lv_refr_private.h"
+
 static void set_ofs_x_anim(void * obj, int32_t v)
 {
     lv_label_t * label = (lv_label_t *)obj;
     label->offset.x    = v;
-    lv_obj_invalidate(obj);
+    if(lv_refr_get_disp_refreshing() == NULL) {
+        lv_obj_invalidate(obj);
+    }
 }
 
 static void set_ofs_y_anim(void * obj, int32_t v)
 {
     lv_label_t * label = (lv_label_t *)obj;
     label->offset.y    = v;
-    lv_obj_invalidate(obj);
+    if(lv_refr_get_disp_refreshing() == NULL) {
+        lv_obj_invalidate(obj);
+    }
 }
 
 static size_t get_text_length(const char * text)

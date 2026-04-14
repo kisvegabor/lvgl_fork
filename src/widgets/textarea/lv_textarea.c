@@ -847,7 +847,7 @@ static void lv_textarea_constructor(const lv_obj_class_t * class_p, lv_obj_t * o
     lv_obj_add_event_cb(ta->label, label_event_cb, LV_EVENT_SIZE_CHANGED, NULL);
     lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
-    lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
+    //    lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_textarea_set_cursor_pos(obj, 0);
 

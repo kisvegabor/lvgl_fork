@@ -863,44 +863,55 @@ void test_label_invalidate_area(void)
     int i = 0;
     label = lv_label_create(lv_screen_active());
     lv_display_add_event_cb(lv_display_get_default(), display_invalidate_area_cb, LV_EVENT_INVALIDATE_AREA, &i);
+
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_static(label, "Hello world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text(label, "Hello world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_fmt(label, "%s", "Hello world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_long_mode(label, LV_LABEL_LONG_MODE_SCROLL);
     TEST_ASSERT(i > 0);
 
 #if LV_LABEL_TEXT_SELECTION
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_selection_start(label, 1);
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_text_selection_end(label, 1);
     TEST_ASSERT(i > 0);
 #endif
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_set_recolor(label, true);
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_ins_text(label, 5, " world");
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_label_cut_text(label, 5, 5);
     TEST_ASSERT(i > 0);
 
+    lv_refr_now(NULL);
     i = 0;
     lv_obj_set_style_align(label, LV_ALIGN_CENTER, 0);
     TEST_ASSERT(i > 0);

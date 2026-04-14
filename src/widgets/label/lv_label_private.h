@@ -52,7 +52,7 @@ struct _lv_label_t {
     uint8_t static_txt : 1;             /**< Flag to indicate the text is static */
     uint8_t recolor : 1;                /**< Enable in-line letter re-coloring*/
     uint8_t expand : 1;                 /**< Ignore real width (used by the library with LV_LABEL_LONG_MODE_SCROLL) */
-
+    uint8_t text_flow_invalid : 1;
     lv_point_t text_size;
 };
 
