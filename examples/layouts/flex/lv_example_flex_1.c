@@ -39,6 +39,8 @@ void lv_example_flex_1(void)
         lv_label_set_text_fmt(label, "Item: %" LV_PRIu32, i);
         lv_obj_center(label);
     }
+
+    lv_obj_delete(lv_obj_get_child(cont_row, 1));
 }
 
 #endif

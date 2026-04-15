@@ -749,8 +749,7 @@ static void lv_label_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
     lv_label_t * label = (lv_label_t *)obj;
 
     label->text       = NULL;
-    label->recolor    = 0;
-    label->static_txt = 0;
+    label->text_flow_invalid = 0;
     label->dot_begin  = LV_LABEL_DOT_BEGIN_INV;
     label->long_mode  = LV_LABEL_LONG_MODE_WRAP;
     lv_point_set(&label->offset, 0, 0);
@@ -823,7 +822,7 @@ static void lv_label_event(const lv_obj_class_t * class_p, lv_event_t * e)
     const lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t * obj = lv_event_get_current_target(e);
 
-    if(code == LV_EVENT_SIZE_CHANGED) {
+    if(code == LV_EVENT_SIZE_CHANGED || code == LV_EVENT_STYLE_CHANGED) {
         lv_label_t * label = (lv_label_t *)obj;
         label->text_flow_invalid = 1;
     }

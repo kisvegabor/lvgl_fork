@@ -28,6 +28,8 @@ void test_binding(void)
     /*Wait for the animation*/
     lv_test_wait(500);
 
+    lv_refr_now(NULL);
+
     TEST_ASSERT_EQUAL_SCREENSHOT("binding.png");
 }
 
@@ -152,14 +154,16 @@ static void create_ui(void)
 
         if(i == 3) {
             /*Start an infinite animation and delete this button later*/
-            lv_anim_t a;
-            lv_anim_init(&a);
-            lv_anim_set_var(&a, btn);
-            lv_anim_set_values(&a, LV_OPA_COVER, LV_OPA_50);
-            lv_anim_set_exec_cb(&a, opa_anim_cb);   /*Pass a callback*/
-            lv_anim_set_duration(&a, 300);
-            lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
-            lv_anim_start(&a);
+            //            lv_anim_t a;
+            //            lv_anim_init(&a);
+            //            lv_anim_set_var(&a, btn);
+            //            lv_anim_set_values(&a, LV_OPA_COVER, LV_OPA_50);
+            //            lv_anim_set_exec_cb(&a, opa_anim_cb);   /*Pass a callback*/
+            //            lv_anim_set_duration(&a, 300);
+            //            lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
+            //            lv_anim_start(&a);
+            //            lv_obj_delete(btn);
+
         }
     }
 

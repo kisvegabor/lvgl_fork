@@ -30,8 +30,8 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static int32_t calc_content_width(lv_obj_t * obj);
-static int32_t calc_content_height(lv_obj_t * obj);
+static int32_t calc_content_width(lv_obj_t * obj, const lv_point_t * self_size);
+static int32_t calc_content_height(lv_obj_t * obj, const lv_point_t * self_size);
 static void update_children_coordinates(lv_obj_t * obj);
 static void update_coordinates(lv_obj_t * obj);
 static void transform_point_array(const lv_obj_t * obj, lv_point_t * p, size_t p_count, bool inv);
@@ -638,10 +638,14 @@ static void update_content_size(lv_obj_t * obj)
     /*Don't set the size of the screen as they always cover the whole display*/
     if(parent == NULL) return;
 
+    lv_point_t p;
+    lv_obj_send_event(obj, LV_EVENT_GET_SELF_SIZE, &p);
+
+
     /*If the width or height is set by a layout do not modify them*/
     int32_t width = lv_obj_get_style_width(obj, LV_PART_MAIN);
     if(!obj->w_layout && width == LV_SIZE_CONTENT) {
-        width = calc_content_width(obj);
+        width = calc_content_width(obj, &p);
         int32_t minw = lv_obj_calc_dynamic_width(obj, LV_STYLE_MIN_WIDTH);
         int32_t maxw = lv_obj_calc_dynamic_width(obj, LV_STYLE_MAX_WIDTH);
         width = LV_CLAMP(minw, width, maxw);
@@ -675,7 +679,7 @@ static void update_content_size(lv_obj_t * obj)
 
     int32_t height = lv_obj_get_style_height(obj, LV_PART_MAIN);;
     if(!obj->h_layout && height == LV_SIZE_CONTENT) {
-        height = calc_content_height(obj);
+        height = calc_content_height(obj, &p);
         int32_t minh = lv_obj_calc_dynamic_height(obj, LV_STYLE_MIN_HEIGHT);
         int32_t maxh = lv_obj_calc_dynamic_height(obj, LV_STYLE_MAX_HEIGHT);
         height = LV_CLAMP(minh, height, maxh);
@@ -1187,7 +1191,7 @@ static bool is_transformed(const lv_obj_t * obj)
     return false;
 }
 
-static int32_t calc_content_width(lv_obj_t * obj)
+static int32_t calc_content_width(lv_obj_t * obj, const lv_point_t * self_size)
 {
     /*Assumptions:
      * - Child sizes are already set
@@ -1200,8 +1204,8 @@ static int32_t calc_content_width(lv_obj_t * obj)
     int32_t space_right = lv_obj_get_style_space_right(obj, LV_PART_MAIN);
     int32_t space_left = lv_obj_get_style_space_left(obj, LV_PART_MAIN);
 
-    int32_t self_w;
-    self_w = lv_obj_get_self_width(obj) + space_left + space_right;
+    int32_t self_w = self_size ? self_size->x : lv_obj_get_self_width(obj);
+    self_w += space_left + space_right;
 
     int32_t child_res = LV_COORD_MIN;
 
@@ -1302,7 +1306,7 @@ static int32_t calc_content_width(lv_obj_t * obj)
     return LV_MAX(child_res, self_w);
 }
 
-static int32_t calc_content_height(lv_obj_t * obj)
+static int32_t calc_content_height(lv_obj_t * obj, const lv_point_t * self_size)
 {
     /*Assumptions:
      * - Child sizes are already set
@@ -1315,8 +1319,8 @@ static int32_t calc_content_height(lv_obj_t * obj)
     int32_t space_top = lv_obj_get_style_space_top(obj, LV_PART_MAIN);
     int32_t space_bottom = lv_obj_get_style_space_bottom(obj, LV_PART_MAIN);
 
-    int32_t self_h;
-    self_h = lv_obj_get_self_height(obj) + space_top + space_bottom;
+    int32_t self_h = self_size ? self_size->y : lv_obj_get_self_height(obj);
+    self_h += space_top + space_bottom;
 
     int32_t child_res = LV_COORD_MIN;
 
