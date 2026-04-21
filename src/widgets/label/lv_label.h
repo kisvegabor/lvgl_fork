@@ -170,6 +170,21 @@ void lv_label_set_translation_tag(lv_obj_t * obj, const char * tag);
 
 #endif /*LV_USE_TRANSLATION*/
 
+/**
+ * Set a horizontal offset on the text. It doesn't affect
+ * the size of the label, just moves the text.
+ * @param obj           pointer to a label object
+ * @param x             the horizontal offset (>0 moves to the right)
+ */
+void lv_label_set_offset_x(lv_obj_t * obj, int32_t x);
+
+/**
+ * Set a vertical offset on the text. It doesn't affect
+ * the size of the label, just moves the text.
+ * @param obj           pointer to a label object
+ * @param y             the vertical offset (>0 moves to the down)
+ */
+void lv_label_set_offset_y(lv_obj_t * obj, int32_t y);
 
 /*=====================
  * Getter functions
@@ -236,6 +251,22 @@ uint32_t lv_label_get_text_selection_end(const lv_obj_t * obj);
  * @return          true: recoloring is enabled, false: recoloring is disabled
  */
 bool lv_label_get_recolor(const lv_obj_t * obj);
+
+/**
+ * Set a horizontal offset on the text
+ * the size of the label, just moves the text.
+ * @param obj           pointer to a label object
+ * @return              the horizontal offset (>0 moves to the right)
+ */
+int32_t lv_label_get_offset_x(lv_obj_t * obj);
+
+/**
+ * Get a vertical offset on the text.
+ * @param obj           pointer to a label object
+ * @return              the vertical offset (>0 moves to the down)
+ */
+int32_t lv_label_get_offset_y(lv_obj_t * obj);
+
 
 /*=====================
  * Other functions

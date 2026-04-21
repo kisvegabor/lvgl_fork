@@ -278,6 +278,24 @@ void lv_label_set_recolor(lv_obj_t * obj, bool en)
     request_text_flow_update(obj);
 }
 
+void lv_label_set_offset_x(lv_obj_t * obj, int32_t x)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_label_t * label = (lv_label_t *)obj;
+    label->offset.x = x;
+    lv_obj_invalidate(obj);
+}
+
+void lv_label_set_offset_y(lv_obj_t * obj, int32_t y)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_label_t * label = (lv_label_t *)obj;
+    label->offset.y = y;
+    lv_obj_invalidate(obj);
+}
+
 /*=====================
  * Getter functions
  *====================*/
@@ -651,6 +669,23 @@ bool lv_label_get_recolor(const lv_obj_t * obj)
 
     lv_label_t * label = (lv_label_t *)obj;
     return label->recolor == 0 ? false : true;
+}
+
+int32_t lv_label_get_offset_x(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_label_t * label = (lv_label_t *)obj;
+    return label->offset.x;
+
+}
+
+int32_t lv_label_get_offset_y(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_label_t * label = (lv_label_t *)obj;
+    return label->offset.y;
 }
 
 /*=====================
@@ -1358,12 +1393,12 @@ static void lv_label_set_dots(lv_obj_t * obj, uint32_t dot_begin)
     }
 }
 
-#include "../../core/lv_refr_private.h"
-
 static void set_ofs_x_anim(void * obj, int32_t v)
 {
     lv_label_t * label = (lv_label_t *)obj;
     label->offset.x    = v;
+    /*Since it can be called while drawing when reflowing the text,
+     * do not invalidate while rendering*/
     if(lv_refr_get_disp_refreshing() == NULL) {
         lv_obj_invalidate(obj);
     }
@@ -1373,6 +1408,8 @@ static void set_ofs_y_anim(void * obj, int32_t v)
 {
     lv_label_t * label = (lv_label_t *)obj;
     label->offset.y    = v;
+    /*Since it can be called while drawing when reflowing the text,
+     * do not invalidate while rendering*/
     if(lv_refr_get_disp_refreshing() == NULL) {
         lv_obj_invalidate(obj);
     }

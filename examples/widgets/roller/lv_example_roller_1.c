@@ -34,6 +34,8 @@ void lv_example_roller_1(void)
                           LV_ROLLER_MODE_NORMAL);
 
     lv_roller_set_visible_row_count(roller1, 4);
+    lv_roller_set_selected(roller1, 0, LV_ANIM_OFF);
+    lv_obj_set_style_text_font(roller1, &lv_font_montserrat_40, LV_PART_SELECTED);
     //    lv_obj_center(roller1);
     lv_obj_add_event_cb(roller1, event_handler, LV_EVENT_ALL, NULL);
 }
