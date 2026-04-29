@@ -638,7 +638,7 @@ static void update_content_size(lv_obj_t * obj)
     /*Don't set the size of the screen as they always cover the whole display*/
     if(parent == NULL) return;
 
-    lv_point_t p;
+    lv_point_t p = {0};
     lv_obj_send_event(obj, LV_EVENT_GET_SELF_SIZE, &p);
 
 
