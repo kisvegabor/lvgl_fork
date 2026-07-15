@@ -101,10 +101,10 @@
       "name": "RapidJSON (JSON parser/generator)",
       "paths": ["src/libs/thorvg/rapidjson"],
       "sources": [{"url": "https://github.com/Tencent/rapidjson"}],
-      "note": "Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG.",
+      "note": "Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG. The bundled msinttypes helper (rapidjson/msinttypes) is BSD-3-Clause (Copyright (c) 2006-2013 Alexander Chemeris), hence the combined license expression.",
       "version": "1.1.0",
-      "license": "MIT",
-      "copyright": "Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.",
+      "license": "MIT AND BSD-3-Clause",
+      "copyright": "Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.; Copyright (c) 2006-2013 Alexander Chemeris (msinttypes)",
       "purl": "pkg:github/Tencent/rapidjson@1.1.0",
       "purpose": "library",
       "supplier": {"name": "THL A29 Limited, a Tencent company", "type": "organization"}

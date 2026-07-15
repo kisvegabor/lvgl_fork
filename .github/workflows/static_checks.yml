@@ -29,8 +29,8 @@ jobs:
           python-version: 3.12
 
       - name: Install SBOM validator
-        # Pinned in sbom/requirements.txt so the compliance gate is reproducible
-        # and cannot change/break from an unreviewed upstream release.
+        # Version pinned in sbom/requirements.txt so an unreviewed upstream
+        # release cannot silently change or break the compliance gate.
         run: python3 -m pip install -r sbom/requirements.txt
 
       # ------------------------------------------------------------------

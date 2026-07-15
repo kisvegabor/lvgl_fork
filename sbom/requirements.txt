@@ -1,4 +1,4 @@
-# Pinned tooling for the SBOM compliance gate (see .github/workflows/static_checks.yml).
-# Pinning a reviewed version keeps the CI check reproducible: an upstream
-# release cannot silently change or break the gate without a change here.
+# Tooling for the SBOM compliance gate (see .github/workflows/static_checks.yml).
+# The validator version is pinned so the gate does not change or break from an
+# unreviewed upstream release; bump it here deliberately when updating.
 check-jsonschema==0.37.4

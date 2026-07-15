@@ -1,5 +1,5 @@
 LVGL uses the following third-party libraries.
-Each entry lists its SPDX license identifier below; the full license text ships in the corresponding library folder (see the paths). A machine-readable inventory is available in `sbom/`.
+Each entry lists its SPDX license identifier below. The full license text is, for most libraries, found in the corresponding library folder (see the paths); some libraries only reference their license rather than shipping the full text. A machine-readable inventory is available in `sbom/`.
 
 **Barcode (Barcode generator)**
 - Path: src/libs/barcode
@@ -41,8 +41,8 @@ Each entry lists its SPDX license identifier below; the full license text ships 
 **RapidJSON (JSON parser/generator)**
 - Path: src/libs/thorvg/rapidjson
 - Source: https://github.com/Tencent/rapidjson
-- License: MIT
-- Note: Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG.
+- License: MIT AND BSD-3-Clause
+- Note: Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG. The bundled msinttypes helper (rapidjson/msinttypes) is BSD-3-Clause (Copyright (c) 2006-2013 Alexander Chemeris), hence the combined license expression.
 
 **TinyTTF**
 - Path: src/libs/tiny_ttf

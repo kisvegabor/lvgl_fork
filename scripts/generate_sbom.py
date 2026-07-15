@@ -223,11 +223,13 @@ def build_document(data, version, spec_version, created):
             pkg["software_homePage"] = source_urls[0]
         if comp.get("purl"):
             purl = comp["purl"]
-            version = comp.get("version", "NOASSERTION")
+            # Note: use a distinct name here — do not reuse `version`, which
+            # holds the LVGL document version used further below.
+            comp_version = comp.get("version", "NOASSERTION")
             # Qualify the purl with the vendored version when one is known and
             # the purl does not already carry a version/qualifier of its own.
-            if version and version != "NOASSERTION" and "@" not in purl and "?" not in purl:
-                purl = "%s@%s" % (purl, version)
+            if comp_version and comp_version != "NOASSERTION" and "@" not in purl and "?" not in purl:
+                purl = "%s@%s" % (purl, comp_version)
             pkg["externalIdentifier"] = [{
                 "type": "ExternalIdentifier",
                 "externalIdentifierType": "packageUrl",
@@ -346,6 +348,10 @@ def main():
     out_path = os.path.join(args.output_dir, "lvgl-%s.spdx.json" % version)
 
     if args.date:
+        # strptime alone accepts non-zero-padded input like "2026-7-1", which
+        # would produce an invalid SPDX timestamp, so enforce the exact shape.
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", args.date):
+            parser.error("--date must be in YYYY-MM-DD format (zero-padded)")
         try:
             datetime.datetime.strptime(args.date, "%Y-%m-%d")
         except ValueError:

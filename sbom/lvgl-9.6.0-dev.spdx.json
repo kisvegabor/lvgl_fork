@@ -5,7 +5,7 @@
       "type": "CreationInfo",
       "@id": "_:creationinfo",
       "specVersion": "3.0.1",
-      "created": "2026-07-15T21:12:29Z",
+      "created": "2026-07-15T22:33:15Z",
       "createdBy": [
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#Agent-LVGL-Kft"
       ],
@@ -69,6 +69,12 @@
       "spdxId": "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT",
       "creationInfo": "_:creationinfo",
       "simplelicensing_licenseExpression": "MIT"
+    },
+    {
+      "type": "simplelicensing_LicenseExpression",
+      "spdxId": "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_AND_BSD_3_Clause",
+      "creationInfo": "_:creationinfo",
+      "simplelicensing_licenseExpression": "MIT AND BSD-3-Clause"
     },
     {
       "type": "simplelicensing_LicenseExpression",
@@ -260,9 +266,9 @@
       "creationInfo": "_:creationinfo",
       "name": "RapidJSON (JSON parser/generator)",
       "software_packageVersion": "1.1.0",
-      "software_copyrightText": "Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.",
+      "software_copyrightText": "Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.; Copyright (c) 2006-2013 Alexander Chemeris (msinttypes)",
       "software_primaryPurpose": "library",
-      "comment": "In-tree path: src/libs/thorvg/rapidjson | Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG.",
+      "comment": "In-tree path: src/libs/thorvg/rapidjson | Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG. The bundled msinttypes helper (rapidjson/msinttypes) is BSD-3-Clause (Copyright (c) 2006-2013 Alexander Chemeris), hence the combined license expression.",
       "suppliedBy": "https://lvgl.io/spdx/lvgl-9.6.0-dev#Agent-THL-A29-Limited-a-Tencent-company",
       "software_downloadLocation": "https://github.com/Tencent/rapidjson",
       "software_homePage": "https://github.com/Tencent/rapidjson",
@@ -661,7 +667,7 @@
       "from": "https://lvgl.io/spdx/lvgl-9.6.0-dev#Package-rapidjson",
       "relationshipType": "hasDeclaredLicense",
       "to": [
-        "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT"
+        "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_AND_BSD_3_Clause"
       ]
     },
     {
@@ -671,7 +677,7 @@
       "from": "https://lvgl.io/spdx/lvgl-9.6.0-dev#Package-rapidjson",
       "relationshipType": "hasConcludedLicense",
       "to": [
-        "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT"
+        "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_AND_BSD_3_Clause"
       ]
     },
     {
@@ -1055,6 +1061,7 @@
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-FTL_OR_GPL_2.0_or_later",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-LicenseRef_TJpgDec",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT",
+        "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_AND_BSD_3_Clause",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_OR_Unlicense",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MPL_2.0",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-OFL_1.1",
@@ -1149,7 +1156,7 @@
       "type": "SpdxDocument",
       "spdxId": "https://lvgl.io/spdx/lvgl-9.6.0-dev#SPDXDocument",
       "creationInfo": "_:creationinfo",
-      "name": "LVGL 1.0 SBOM",
+      "name": "LVGL 9.6.0-dev SBOM",
       "profileConformance": [
         "core",
         "software",
@@ -1168,6 +1175,7 @@
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-FTL_OR_GPL_2.0_or_later",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-LicenseRef_TJpgDec",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT",
+        "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_AND_BSD_3_Clause",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MIT_OR_Unlicense",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-MPL_2.0",
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#LicenseExpression-OFL_1.1",
