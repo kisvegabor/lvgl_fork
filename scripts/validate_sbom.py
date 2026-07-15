@@ -18,6 +18,7 @@ defaults to the official SPDX schema for --spec-version; pass a local path with
 
 import argparse
 import glob
+import importlib.util
 import os
 import subprocess
 import sys
@@ -47,16 +48,19 @@ def main():
         print("SBOM file(s) not found: %s" % ", ".join(missing))
         return 1
 
+    # Launching `python -m check_jsonschema` when the module is absent exits
+    # with the interpreter's own error code (not FileNotFoundError), so detect
+    # the module up front to surface the documented install instructions.
+    if importlib.util.find_spec("check_jsonschema") is None:
+        print("check-jsonschema is not installed. Install it with:\n"
+              "  python3 -m pip install check-jsonschema")
+        return 2
+
     schema = args.schema or (SCHEMA_URL % args.spec_version)
 
     cmd = [sys.executable, "-m", "check_jsonschema", "--schemafile", schema] + sboms
     print("Validating against SPDX %s schema:\n  %s\n" % (args.spec_version, schema))
-    try:
-        return subprocess.run(cmd).returncode
-    except FileNotFoundError:
-        print("check-jsonschema is not installed. Install it with:\n"
-              "  python3 -m pip install check-jsonschema")
-        return 2
+    return subprocess.run(cmd).returncode
 
 
 if __name__ == "__main__":

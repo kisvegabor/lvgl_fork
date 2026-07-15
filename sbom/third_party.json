@@ -36,6 +36,19 @@
       "supplier": {"name": "The FreeType Project", "type": "organization"}
     },
     {
+      "key": "liberation-sans",
+      "name": "Liberation Sans (default demo font)",
+      "paths": ["src/libs/freetype/LiberationSans-Regular.ttf"],
+      "sources": [{"url": "https://github.com/liberationfonts/liberation-fonts"}],
+      "note": "Font asset bundled alongside the FreeType interface; licensed separately from FreeType.",
+      "version": "NOASSERTION",
+      "license": "OFL-1.1",
+      "copyright": "Digitized data copyright (c) 2010 Google Corporation with Reserved Font Arimo, Tinos and Cousine; Copyright (c) 2012 Red Hat, Inc. with Reserved Font Name Liberation.",
+      "purl": "pkg:github/liberationfonts/liberation-fonts",
+      "purpose": "file",
+      "supplier": {"name": "Red Hat, Inc.", "type": "organization"}
+    },
+    {
       "key": "lodepng",
       "name": "LodePNG (PNG decoder)",
       "paths": ["src/libs/lodepng"],
@@ -66,7 +79,7 @@
       "sources": [{"url": "https://github.com/nayuki/QR-Code-generator"}],
       "version": "NOASSERTION",
       "license": "MIT",
-      "copyright": "Copyright (c) Project Nayuki",
+      "copyright": "Copyright (c) Project Nayuki. (MIT License)",
       "purl": "pkg:github/nayuki/QR-Code-generator",
       "purpose": "library",
       "supplier": {"name": "Project Nayuki", "type": "organization"}
@@ -78,10 +91,23 @@
       "sources": [{"url": "https://github.com/thorvg/thorvg"}],
       "version": "0.15.3",
       "license": "MIT",
-      "copyright": "Copyright (c) 2020 - 2025 the ThorVG project. All rights reserved.",
+      "copyright": "Copyright (c) 2020 - 2025 notice for the ThorVG Project (see CONTRIBUTORS)",
       "purl": "pkg:github/thorvg/thorvg",
       "purpose": "library",
       "supplier": {"name": "The ThorVG Project", "type": "organization"}
+    },
+    {
+      "key": "rapidjson",
+      "name": "RapidJSON (JSON parser/generator)",
+      "paths": ["src/libs/thorvg/rapidjson"],
+      "sources": [{"url": "https://github.com/Tencent/rapidjson"}],
+      "note": "Bundled inside the ThorVG tree (used by ThorVG's Lottie parser); licensed separately from ThorVG.",
+      "version": "1.1.0",
+      "license": "MIT",
+      "copyright": "Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.",
+      "purl": "pkg:github/Tencent/rapidjson@1.1.0",
+      "purpose": "library",
+      "supplier": {"name": "THL A29 Limited, a Tencent company", "type": "organization"}
     },
     {
       "key": "tiny_ttf",
@@ -103,10 +129,10 @@
       "name": "TJPGD (JPEG decoder)",
       "paths": ["src/libs/tjpgd"],
       "sources": [{"url": "http://elm-chan.org/fsw/tjpgd/00index.html"}],
-      "version": "NOASSERTION",
+      "version": "R0.03",
       "license": "LicenseRef-TJpgDec",
       "license_file": "src/libs/tjpgd/LICENSE.txt",
-      "copyright": "Copyright (C) 2021 ChaN, all right reserved.",
+      "copyright": "Copyright (C) 2021, ChaN, all right reserved.",
       "purl": "pkg:generic/tjpgd?download_url=http://elm-chan.org/fsw/tjpgd/00index.html",
       "purpose": "library",
       "supplier": {"name": "ChaN", "type": "person"}
@@ -116,7 +142,7 @@
       "name": "TLSF (Two-Level Segregate Fit memory allocator)",
       "paths": ["src/stdlib/builtin"],
       "sources": [{"url": "https://github.com/mattconte/tlsf"}],
-      "version": "NOASSERTION",
+      "version": "3.1",
       "license": "BSD-3-Clause",
       "copyright": "Copyright (c) 2006-2016 Matthew Conte",
       "purl": "pkg:github/mattconte/tlsf",
@@ -158,6 +184,19 @@
       "purl": "pkg:github/bitbank2/AnimatedGIF",
       "purpose": "library",
       "supplier": {"name": "BitBank Software, Inc.", "type": "organization"}
+    },
+    {
+      "key": "nanovg",
+      "name": "NanoVG (Anti-aliased vector graphics rendering)",
+      "paths": ["src/libs/nanovg"],
+      "sources": [{"url": "https://github.com/memononen/nanovg"}],
+      "note": "Compiled when LV_USE_NANOVG (or the LV_USE_DRAW_NANOVG backend) is enabled.",
+      "version": "NOASSERTION",
+      "license": "Zlib",
+      "copyright": "Copyright (c) 2013 Mikko Mononen memon@inside.org",
+      "purl": "pkg:github/memononen/nanovg",
+      "purpose": "library",
+      "supplier": {"name": "Mikko Mononen", "type": "person"}
     },
     {
       "key": "frogfs",

@@ -2,7 +2,7 @@
 """Generate a Software Bill of Materials (SBOM) for LVGL in SPDX 3.0 (JSON-LD).
 
 The component data comes from a single source of truth:
-    scripts/third_party.json
+    sbom/third_party.json
 which is also used to regenerate COPYRIGHTS.md (see generate_copyrights.py).
 
 The LVGL version is read at run time from include/lvgl/lv_version.h so the
@@ -111,6 +111,39 @@ def build_document(data, version, spec_version, created):
     })
 
     # --- Licensing elements ------------------------------------------------
+    # Custom (non-SPDX-list) licenses referenced by a LicenseRef-* need an
+    # explicit CustomLicense element so the reference resolves in-document.
+    # Build these first so their URIs can be wired into the LicenseExpression
+    # elements below via simplelicensing_customIdToUri.
+    custom_license_uris = {}  # "LicenseRef-*" -> CustomLicense element id
+    for comp in components:
+        ref = comp["license"]
+        if not ref.startswith("LicenseRef-"):
+            continue
+        if ref in custom_license_uris:
+            continue
+        license_file = comp.get("license_file")
+        if not license_file:
+            raise SystemExit(
+                "Custom license %r (component %r) needs a 'license_file' in "
+                "third_party.json so its text can be embedded." % (ref, comp["key"]))
+        text = read_file(license_file)
+        if text is None:
+            raise SystemExit(
+                "License file %r for custom license %r (component %r) is "
+                "missing; cannot embed its text." % (license_file, ref, comp["key"]))
+        cid = sid("CustomLicense-" + re.sub(r"[^A-Za-z0-9]+", "_", ref))
+        custom_license_uris[ref] = cid
+        graph.append({
+            "type": "expandedlicensing_CustomLicense",
+            "spdxId": cid,
+            "creationInfo": creation_info,
+            "name": ref,
+            # Schema requires the license text under simplelicensing_licenseText.
+            "simplelicensing_licenseText": text,
+            "expandedlicensing_isOsiApproved": False,
+        })
+
     # One LicenseExpression element per distinct expression; reused by relationships.
     all_licenses = sorted({c["license"] for c in components} | {project["license"]})
     license_expr_ids = {}
@@ -118,27 +151,22 @@ def build_document(data, version, spec_version, created):
         frag = "LicenseExpression-" + re.sub(r"[^A-Za-z0-9.]+", "_", expr)
         lid = sid(frag)
         license_expr_ids[expr] = lid
-        graph.append({
+        element = {
             "type": "simplelicensing_LicenseExpression",
             "spdxId": lid,
             "creationInfo": creation_info,
             "simplelicensing_licenseExpression": expr,
-        })
-
-    # Custom (non-SPDX-list) licenses referenced by a LicenseRef-* need an
-    # explicit CustomLicense element so the reference resolves in-document.
-    for comp in components:
-        if comp["license"].startswith("LicenseRef-") and comp.get("license_file"):
-            text = read_file(comp["license_file"]) or "See %s" % comp["license_file"]
-            graph.append({
-                "type": "expandedlicensing_CustomLicense",
-                "spdxId": sid("CustomLicense-" + re.sub(r"[^A-Za-z0-9]+", "_", comp["license"])),
-                "creationInfo": creation_info,
-                "name": comp["license"],
-                # Schema requires the license text under simplelicensing_licenseText.
-                "simplelicensing_licenseText": text,
-                "expandedlicensing_isOsiApproved": False,
-            })
+        }
+        # Map any LicenseRef-* tokens in this expression to their CustomLicense
+        # element so consumers can resolve the custom license text.
+        id_to_uri = [
+            {"type": "DictionaryEntry", "key": ref, "value": uri}
+            for ref, uri in sorted(custom_license_uris.items())
+            if re.search(r"\b%s\b" % re.escape(ref), expr)
+        ]
+        if id_to_uri:
+            element["simplelicensing_customIdToUri"] = id_to_uri
+        graph.append(element)
 
     # --- LVGL root package -------------------------------------------------
     graph.append({
@@ -167,10 +195,16 @@ def build_document(data, version, spec_version, created):
         cid = sid("Package-" + comp["key"])
         component_ids.append(cid)
 
-        source_urls = [s["url"] for s in comp.get("sources", [])]
+        sources = comp.get("sources", [])
+        source_urls = [s["url"] for s in sources]
         comment = "In-tree path: %s" % ", ".join(comp["paths"])
         if comp.get("note"):
             comment += " | " + comp["note"]
+        # The first source is the SPDX download location (below); preserve any
+        # additional upstream sources in the comment so they are not dropped.
+        for extra in sources[1:]:
+            suffix = " (%s)" % extra["note"] if extra.get("note") else ""
+            comment += " | Additional source: %s%s" % (extra["url"], suffix)
 
         pkg = {
             "type": "software_Package",
@@ -188,24 +222,31 @@ def build_document(data, version, spec_version, created):
             pkg["software_downloadLocation"] = source_urls[0]
             pkg["software_homePage"] = source_urls[0]
         if comp.get("purl"):
+            purl = comp["purl"]
+            version = comp.get("version", "NOASSERTION")
+            # Qualify the purl with the vendored version when one is known and
+            # the purl does not already carry a version/qualifier of its own.
+            if version and version != "NOASSERTION" and "@" not in purl and "?" not in purl:
+                purl = "%s@%s" % (purl, version)
             pkg["externalIdentifier"] = [{
                 "type": "ExternalIdentifier",
                 "externalIdentifierType": "packageUrl",
-                "identifier": comp["purl"],
+                "identifier": purl,
             }]
         graph.append(pkg)
 
-        # lvgl contains the vendored copy and depends on it (the latter is the
-        # NTIA dependency relationship).
-        for rel_type in ("contains", "dependsOn"):
-            relationships.append({
-                "type": "Relationship",
-                "spdxId": sid("Relationship-%s-%s" % (rel_type, comp["key"])),
-                "creationInfo": creation_info,
-                "from": root_id,
-                "relationshipType": rel_type,
-                "to": [cid],
-            })
+        # lvgl vendors (contains) the third-party copy. We deliberately do not
+        # emit a blanket `dependsOn` here: many of these libraries are optional
+        # (gated behind LV_USE_* toggles that are off by default), so claiming
+        # lvgl depends on all of them would overstate the dependency graph.
+        relationships.append({
+            "type": "Relationship",
+            "spdxId": sid("Relationship-contains-%s" % comp["key"]),
+            "creationInfo": creation_info,
+            "from": root_id,
+            "relationshipType": "contains",
+            "to": [cid],
+        })
         # component license (declared == concluded for a vendored copy)
         for rel_type in ("hasDeclaredLicense", "hasConcludedLicense"):
             relationships.append({
@@ -240,13 +281,17 @@ def build_document(data, version, spec_version, created):
         })
 
     # --- SBOM element ------------------------------------------------------
+    # Every element built so far (packages, licenses, relationships, agents,
+    # tool) is part of the SBOM's contents, so list them all here. Otherwise a
+    # consumer starting from the SBOM root cannot reach the relationships.
+    sbom_elements = [e["spdxId"] for e in graph if e.get("spdxId")]
     graph.append({
         "type": "software_Sbom",
         "spdxId": sbom_id,
         "creationInfo": creation_info,
         "software_sbomType": ["source"],
         "rootElement": [root_id],
-        "element": [root_id] + component_ids,
+        "element": sbom_elements,
     })
 
     # --- SpdxDocument (wraps everything) -----------------------------------
@@ -301,6 +346,10 @@ def main():
     out_path = os.path.join(args.output_dir, "lvgl-%s.spdx.json" % version)
 
     if args.date:
+        try:
+            datetime.datetime.strptime(args.date, "%Y-%m-%d")
+        except ValueError:
+            parser.error("--date must be a valid date in YYYY-MM-DD format")
         created = "%sT00:00:00Z" % args.date
     else:
         created = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")

@@ -10,6 +10,7 @@ single source of truth it is generated from.
 |------|-------------|
 | `third_party.json` | **Single source of truth** — every third-party dependency, its license, supplier and source |
 | `lvgl-<version>.spdx.json` | Generated SPDX 3.0.1 SBOM |
+| `requirements.txt` | Pinned tooling for validation / the CI gate |
 | `README.md` | This file |
 
 Two artifacts are **generated** from `third_party.json` — do not edit them by hand:
@@ -37,7 +38,7 @@ own recommended method) using
 [check-jsonschema](https://github.com/python-jsonschema/check-jsonschema):
 
 ```sh
-python3 -m pip install check-jsonschema
+python3 -m pip install -r sbom/requirements.txt
 python3 scripts/validate_sbom.py
 ```
 
@@ -69,7 +70,7 @@ Each entry in `components`:
 | `supplier`    | SBOM               | `{name, type}` where type is `person` or `organization` |
 | `purl`        | SBOM               | Package URL identifier |
 | `purpose`     | SBOM               | SPDX `software_primaryPurpose` |
-| `third_party` | both               | `false` marks LVGL's own code — omitted from the SBOM component list |
+| `third_party` | SBOM               | `false` marks LVGL's own code — omitted from the SBOM component list (COPYRIGHTS.md renders every entry) |
 
 ## Notes on the data
 

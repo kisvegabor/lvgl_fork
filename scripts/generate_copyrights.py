@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate COPYRIGHTS.md from the single source of truth.
 
-Component data lives in scripts/third_party.json, which is also used to
+Component data lives in sbom/third_party.json, which is also used to
 generate the SPDX SBOM (see generate_sbom.py). Edit that JSON, then run this
 script to refresh COPYRIGHTS.md.
 
@@ -21,8 +21,9 @@ DATA_FILE = os.path.join(REPO_ROOT, "sbom", "third_party.json")
 
 HEADER = (
     "LVGL uses the following third-party libraries.\n"
-    "For the licenses, see the corresponding `LICENSE.txt` file in each "
-    "library’s folder.\n"
+    "Each entry lists its SPDX license identifier below; the full license text "
+    "ships in the corresponding library folder (see the paths). A "
+    "machine-readable inventory is available in `sbom/`.\n"
 )
 
 
@@ -47,6 +48,9 @@ def render(data):
             for s in sources:
                 suffix = " (*%s*)" % s["note"] if s.get("note") else ""
                 lines.append("    - %s%s" % (s["url"], suffix))
+
+        if comp.get("license"):
+            lines.append("- License: %s" % comp["license"])
 
         if comp.get("note"):
             lines.append("- Note: %s" % comp["note"])

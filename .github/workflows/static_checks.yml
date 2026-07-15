@@ -29,7 +29,9 @@ jobs:
           python-version: 3.12
 
       - name: Install SBOM validator
-        run: python3 -m pip install check-jsonschema
+        # Pinned in sbom/requirements.txt so the compliance gate is reproducible
+        # and cannot change/break from an unreviewed upstream release.
+        run: python3 -m pip install -r sbom/requirements.txt
 
       # ------------------------------------------------------------------
       # Every header in include/lvgl/ must appear in include/lvgl/lvgl.h
