@@ -21,7 +21,7 @@ DATA_FILE = os.path.join(REPO_ROOT, "sbom", "third_party.json")
 
 HEADER = (
     "LVGL uses the following third-party libraries.\n"
-    "Each entry lists its SPDX license identifier below. The full license text "
+    "Each entry lists its SPDX license expression below. The full license text "
     "is, for most libraries, found in the corresponding library folder (see the "
     "paths); some libraries only reference their license rather than shipping "
     "the full text. A machine-readable inventory is available in `sbom/`.\n"

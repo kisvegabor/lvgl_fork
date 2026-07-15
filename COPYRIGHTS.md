@@ -1,5 +1,5 @@
 LVGL uses the following third-party libraries.
-Each entry lists its SPDX license identifier below. The full license text is, for most libraries, found in the corresponding library folder (see the paths); some libraries only reference their license rather than shipping the full text. A machine-readable inventory is available in `sbom/`.
+Each entry lists its SPDX license expression below. The full license text is, for most libraries, found in the corresponding library folder (see the paths); some libraries only reference their license rather than shipping the full text. A machine-readable inventory is available in `sbom/`.
 
 **Barcode (Barcode generator)**
 - Path: src/libs/barcode
