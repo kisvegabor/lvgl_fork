@@ -77,13 +77,13 @@ static void styles_init(void)
 
 static void show_page(lv_obj_t * page)
 {
-    if(menu_cur_page) lv_obj_add_flag(menu_cur_page, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_remove_flag(page, LV_OBJ_FLAG_HIDDEN);
+    if(menu_cur_page) lv_obj_set_hidden(menu_cur_page, true);
+    lv_obj_set_hidden(page, false);
     menu_cur_page = page;
 
     /*The back button is only useful when we left the root page*/
-    if(page == menu_root_page) lv_obj_add_flag(menu_back_btn, LV_OBJ_FLAG_HIDDEN);
-    else lv_obj_remove_flag(menu_back_btn, LV_OBJ_FLAG_HIDDEN);
+    if(page == menu_root_page) lv_obj_set_hidden(menu_back_btn, true);
+    else lv_obj_set_hidden(menu_back_btn, false);
 }
 
 static void load_page_event(lv_event_t * e)
@@ -144,7 +144,7 @@ static lv_obj_t * menu_page_create(void)
     lv_obj_set_size(page, lv_pct(100), lv_pct(100));
     lv_obj_set_flex_flow(page, LV_FLEX_FLOW_COLUMN);
     lv_obj_add_style(page, &style_flat, 0);
-    lv_obj_add_flag(page, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_hidden(page, true);
     return page;
 }
 
