@@ -62,10 +62,12 @@ Each entry in `components`:
 | `paths`       | SBOM + COPYRIGHTS  | in-tree locations |
 | `sources`     | SBOM + COPYRIGHTS  | `[{url, note?}]`; array because e.g. TinyTTF has two upstreams. First url is the SPDX download location |
 | `note`        | SBOM + COPYRIGHTS  | free-form note |
+| `version`     | SBOM               | vendored snapshot version (from an in-tree version macro/string), or `NOASSERTION` when the upstream copy carries no version |
 | `license`     | SBOM               | SPDX license expression (or `LicenseRef-*`) |
 | `license_file`| SBOM               | path to embed for a custom `LicenseRef-*` license |
+| `copyright`   | SBOM               | upstream copyright statement (from the library's LICENSE/source header) |
 | `supplier`    | SBOM               | `{name, type}` where type is `person` or `organization` |
-| `purl`        | SBOM               | Package URL, or `null` |
+| `purl`        | SBOM               | Package URL identifier |
 | `purpose`     | SBOM               | SPDX `software_primaryPurpose` |
 | `third_party` | both               | `false` marks LVGL's own code — omitted from the SBOM component list |
 

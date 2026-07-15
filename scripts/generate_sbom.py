@@ -148,6 +148,7 @@ def build_document(data, version, spec_version, created):
         "name": project["name"],
         "summary": project.get("summary", ""),
         "software_packageVersion": version,
+        "software_copyrightText": project.get("copyright", "NOASSERTION"),
         "software_downloadLocation": project["download_location"],
         "software_homePage": project.get("homepage", project["download_location"]),
         "software_primaryPurpose": "library",
@@ -176,6 +177,8 @@ def build_document(data, version, spec_version, created):
             "spdxId": cid,
             "creationInfo": creation_info,
             "name": comp["name"],
+            "software_packageVersion": comp.get("version", "NOASSERTION"),
+            "software_copyrightText": comp.get("copyright", "NOASSERTION"),
             "software_primaryPurpose": comp.get("purpose", "library"),
             "comment": comment,
         }
@@ -192,15 +195,17 @@ def build_document(data, version, spec_version, created):
             }]
         graph.append(pkg)
 
-        # lvgl CONTAINS component
-        relationships.append({
-            "type": "Relationship",
-            "spdxId": sid("Relationship-contains-" + comp["key"]),
-            "creationInfo": creation_info,
-            "from": root_id,
-            "relationshipType": "contains",
-            "to": [cid],
-        })
+        # lvgl contains the vendored copy and depends on it (the latter is the
+        # NTIA dependency relationship).
+        for rel_type in ("contains", "dependsOn"):
+            relationships.append({
+                "type": "Relationship",
+                "spdxId": sid("Relationship-%s-%s" % (rel_type, comp["key"])),
+                "creationInfo": creation_info,
+                "from": root_id,
+                "relationshipType": rel_type,
+                "to": [cid],
+            })
         # component license (declared == concluded for a vendored copy)
         for rel_type in ("hasDeclaredLicense", "hasConcludedLicense"):
             relationships.append({

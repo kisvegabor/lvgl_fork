@@ -1,9 +1,10 @@
 {
-  "$comment": "Single source of truth for LVGL's third-party dependencies. Edit this file when a dependency is added, removed, or relicensed, then run scripts/generate_copyrights.py and scripts/generate_sbom.py to regenerate COPYRIGHTS.md and the SPDX SBOM. 'supplier' names come from each library's copyright holder.",
+  "$comment": "Single source of truth for LVGL's third-party dependencies. Edit this file when a dependency is added, removed, or relicensed, then run scripts/generate_copyrights.py and scripts/generate_sbom.py to regenerate COPYRIGHTS.md and the SPDX SBOM. 'supplier' names come from each library's copyright holder. 'version' is the vendored snapshot version (from an in-tree version macro/string) or NOASSERTION when the upstream copy carries no version. 'copyright' is the upstream copyright statement from the library's LICENSE/source header.",
   "project": {
     "name": "lvgl",
     "summary": "Light and Versatile Graphics Library",
     "license": "MIT",
+    "copyright": "Copyright (c) 2025 LVGL Kft",
     "download_location": "https://github.com/lvgl/lvgl",
     "homepage": "https://lvgl.io",
     "supplier": {"name": "LVGL Kft", "type": "organization"}
@@ -14,7 +15,9 @@
       "name": "Barcode (Barcode generator)",
       "paths": ["src/libs/barcode"],
       "sources": [{"url": "https://github.com/fhunleth/code128"}],
+      "version": "NOASSERTION",
       "license": "BSD-2-Clause",
+      "copyright": "Copyright (c) 2013-2015 LKC Technologies, Inc.",
       "purl": "pkg:github/fhunleth/code128",
       "purpose": "library",
       "supplier": {"name": "LKC Technologies, Inc.", "type": "organization"}
@@ -25,7 +28,9 @@
       "paths": ["src/libs/freetype"],
       "sources": [{"url": "https://github.com/freetype/freetype"}],
       "note": "Only the interfaces are used; FreeType itself is not part of LVGL.",
+      "version": "NOASSERTION",
       "license": "FTL OR GPL-2.0-or-later",
+      "copyright": "Copyright (C) 1996-2022 by David Turner, Robert Wilhelm, and Werner Lemberg (The FreeType Project)",
       "purl": "pkg:github/freetype/freetype",
       "purpose": "library",
       "supplier": {"name": "The FreeType Project", "type": "organization"}
@@ -35,7 +40,9 @@
       "name": "LodePNG (PNG decoder)",
       "paths": ["src/libs/lodepng"],
       "sources": [{"url": "https://github.com/lvandeve/lodepng"}],
+      "version": "20230410",
       "license": "Zlib",
+      "copyright": "Copyright (c) 2005-2023 Lode Vandevenne",
       "purl": "pkg:github/lvandeve/lodepng",
       "purpose": "library",
       "supplier": {"name": "Lode Vandevenne", "type": "person"}
@@ -45,7 +52,9 @@
       "name": "LZ4 (Compression/Decompression)",
       "paths": ["src/libs/lz4"],
       "sources": [{"url": "https://github.com/lz4/lz4"}],
+      "version": "1.10.0",
       "license": "BSD-2-Clause",
+      "copyright": "Copyright (c) 2011-2023 Yann Collet",
       "purl": "pkg:github/lz4/lz4",
       "purpose": "library",
       "supplier": {"name": "Yann Collet", "type": "person"}
@@ -55,7 +64,9 @@
       "name": "QR Code (QR code generator)",
       "paths": ["src/libs/qrcode"],
       "sources": [{"url": "https://github.com/nayuki/QR-Code-generator"}],
+      "version": "NOASSERTION",
       "license": "MIT",
+      "copyright": "Copyright (c) Project Nayuki",
       "purl": "pkg:github/nayuki/QR-Code-generator",
       "purpose": "library",
       "supplier": {"name": "Project Nayuki", "type": "organization"}
@@ -65,7 +76,9 @@
       "name": "ThorVG (Vector graphics rendering)",
       "paths": ["src/libs/thorvg"],
       "sources": [{"url": "https://github.com/thorvg/thorvg"}],
+      "version": "0.15.3",
       "license": "MIT",
+      "copyright": "Copyright (c) 2020 - 2025 the ThorVG project. All rights reserved.",
       "purl": "pkg:github/thorvg/thorvg",
       "purpose": "library",
       "supplier": {"name": "The ThorVG Project", "type": "organization"}
@@ -78,7 +91,9 @@
         {"url": "https://github.com/nothings/stb", "note": "Only parts are integrated"},
         {"url": "https://github.com/codewitch-honey-crisis/tiny_ttf", "note": "Modified version of the original STB library"}
       ],
+      "version": "1.26",
       "license": "MIT OR Unlicense",
+      "copyright": "Copyright (c) 2017 Sean Barrett; Copyright (c) 2022 honey the codewitch",
       "purl": "pkg:github/nothings/stb",
       "purpose": "library",
       "supplier": {"name": "Sean Barrett", "type": "person"}
@@ -88,9 +103,11 @@
       "name": "TJPGD (JPEG decoder)",
       "paths": ["src/libs/tjpgd"],
       "sources": [{"url": "http://elm-chan.org/fsw/tjpgd/00index.html"}],
+      "version": "NOASSERTION",
       "license": "LicenseRef-TJpgDec",
       "license_file": "src/libs/tjpgd/LICENSE.txt",
-      "purl": null,
+      "copyright": "Copyright (C) 2021 ChaN, all right reserved.",
+      "purl": "pkg:generic/tjpgd?download_url=http://elm-chan.org/fsw/tjpgd/00index.html",
       "purpose": "library",
       "supplier": {"name": "ChaN", "type": "person"}
     },
@@ -99,7 +116,9 @@
       "name": "TLSF (Two-Level Segregate Fit memory allocator)",
       "paths": ["src/stdlib/builtin"],
       "sources": [{"url": "https://github.com/mattconte/tlsf"}],
+      "version": "NOASSERTION",
       "license": "BSD-3-Clause",
+      "copyright": "Copyright (c) 2006-2016 Matthew Conte",
       "purl": "pkg:github/mattconte/tlsf",
       "purpose": "library",
       "supplier": {"name": "Matthew Conte", "type": "person"}
@@ -109,7 +128,9 @@
       "name": "Printf (Printf formatting library)",
       "paths": ["src/stdlib/builtin"],
       "sources": [{"url": "https://github.com/mpaland/printf"}],
+      "version": "NOASSERTION",
       "license": "MIT",
+      "copyright": "Copyright (c) 2014 Marco Paland",
       "purl": "pkg:github/mpaland/printf",
       "purpose": "library",
       "supplier": {"name": "Marco Paland", "type": "person"}
@@ -119,7 +140,9 @@
       "name": "FT800-FT813 (EVE GPU driver)",
       "paths": ["src/libs/FT800-FT813"],
       "sources": [{"url": "https://github.com/RudolphRiedel/FT800-FT813"}],
+      "version": "5.0",
       "license": "MIT",
+      "copyright": "Copyright (c) 2016-2024 Rudolph Riedel",
       "purl": "pkg:github/RudolphRiedel/FT800-FT813",
       "purpose": "library",
       "supplier": {"name": "Rudolph Riedel", "type": "person"}
@@ -129,7 +152,9 @@
       "name": "AnimatedGIF (GIF decoder library)",
       "paths": ["src/libs/gif"],
       "sources": [{"url": "https://github.com/bitbank2/AnimatedGIF"}],
+      "version": "NOASSERTION",
       "license": "Apache-2.0",
+      "copyright": "Copyright (c) 2020 BitBank Software, Inc. All rights reserved.",
       "purl": "pkg:github/bitbank2/AnimatedGIF",
       "purpose": "library",
       "supplier": {"name": "BitBank Software, Inc.", "type": "organization"}
@@ -139,7 +164,9 @@
       "name": "FrogFS (read-only filesystem)",
       "paths": ["src/libs/frogfs"],
       "sources": [{"url": "https://github.com/jkent/frogfs"}],
+      "version": "1.0",
       "license": "MPL-2.0",
+      "copyright": "Copyright (c) Jeff Kent",
       "purl": "pkg:github/jkent/frogfs",
       "purpose": "library",
       "supplier": {"name": "Jeff Kent", "type": "person"}
