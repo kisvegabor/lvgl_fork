@@ -5,10 +5,6 @@ For the licenses, see the corresponding `LICENSE.txt` file in each library’s f
 - Path: src/libs/barcode
 - Source: https://github.com/fhunleth/code128
 
-**Expat (XML parser)**
-- Path: src/libs/expat
-- Source: https://github.com/libexpat/libexpat
-
 **FreeType (Font rendering library)**
 - Path: src/libs/freetype
 - Source: https://github.com/freetype/freetype
@@ -33,8 +29,8 @@ For the licenses, see the corresponding `LICENSE.txt` file in each library’s f
 **TinyTTF**
 - Path: src/libs/tiny_ttf
 - Source:
-  - https://github.com/nothings/stb (*Only parts are integrated*)
-  - https://github.com/codewitch-honey-crisis/tiny_ttf (*Modified version of the original STB library*)
+    - https://github.com/nothings/stb (*Only parts are integrated*)
+    - https://github.com/codewitch-honey-crisis/tiny_ttf (*Modified version of the original STB library*)
 
 **TJPGD (JPEG decoder)**
 - Path: src/libs/tjpgd
@@ -48,14 +44,8 @@ For the licenses, see the corresponding `LICENSE.txt` file in each library’s f
 - Path: src/stdlib/builtin
 - Source: https://github.com/mpaland/printf
 
-**LVGL's XML format**
-- Path:
-    - docs/src/auxiliary-modules/xml
-    - src/others/xml
-    - xmls
-
 **FT800-FT813 (EVE GPU driver)**
-- Path src/libs/FT800-FT813
+- Path: src/libs/FT800-FT813
 - Source: https://github.com/RudolphRiedel/FT800-FT813
 
 **AnimatedGIF (GIF decoder library)**

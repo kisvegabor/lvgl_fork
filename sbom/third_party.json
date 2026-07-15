@@ -1,0 +1,148 @@
+{
+  "$comment": "Single source of truth for LVGL's third-party dependencies. Edit this file when a dependency is added, removed, or relicensed, then run scripts/generate_copyrights.py and scripts/generate_sbom.py to regenerate COPYRIGHTS.md and the SPDX SBOM. 'supplier' names come from each library's copyright holder.",
+  "project": {
+    "name": "lvgl",
+    "summary": "Light and Versatile Graphics Library",
+    "license": "MIT",
+    "download_location": "https://github.com/lvgl/lvgl",
+    "homepage": "https://lvgl.io",
+    "supplier": {"name": "LVGL Kft", "type": "organization"}
+  },
+  "components": [
+    {
+      "key": "barcode",
+      "name": "Barcode (Barcode generator)",
+      "paths": ["src/libs/barcode"],
+      "sources": [{"url": "https://github.com/fhunleth/code128"}],
+      "license": "BSD-2-Clause",
+      "purl": "pkg:github/fhunleth/code128",
+      "purpose": "library",
+      "supplier": {"name": "LKC Technologies, Inc.", "type": "organization"}
+    },
+    {
+      "key": "freetype",
+      "name": "FreeType (Font rendering library)",
+      "paths": ["src/libs/freetype"],
+      "sources": [{"url": "https://github.com/freetype/freetype"}],
+      "note": "Only the interfaces are used; FreeType itself is not part of LVGL.",
+      "license": "FTL OR GPL-2.0-or-later",
+      "purl": "pkg:github/freetype/freetype",
+      "purpose": "library",
+      "supplier": {"name": "The FreeType Project", "type": "organization"}
+    },
+    {
+      "key": "lodepng",
+      "name": "LodePNG (PNG decoder)",
+      "paths": ["src/libs/lodepng"],
+      "sources": [{"url": "https://github.com/lvandeve/lodepng"}],
+      "license": "Zlib",
+      "purl": "pkg:github/lvandeve/lodepng",
+      "purpose": "library",
+      "supplier": {"name": "Lode Vandevenne", "type": "person"}
+    },
+    {
+      "key": "lz4",
+      "name": "LZ4 (Compression/Decompression)",
+      "paths": ["src/libs/lz4"],
+      "sources": [{"url": "https://github.com/lz4/lz4"}],
+      "license": "BSD-2-Clause",
+      "purl": "pkg:github/lz4/lz4",
+      "purpose": "library",
+      "supplier": {"name": "Yann Collet", "type": "person"}
+    },
+    {
+      "key": "qrcode",
+      "name": "QR Code (QR code generator)",
+      "paths": ["src/libs/qrcode"],
+      "sources": [{"url": "https://github.com/nayuki/QR-Code-generator"}],
+      "license": "MIT",
+      "purl": "pkg:github/nayuki/QR-Code-generator",
+      "purpose": "library",
+      "supplier": {"name": "Project Nayuki", "type": "organization"}
+    },
+    {
+      "key": "thorvg",
+      "name": "ThorVG (Vector graphics rendering)",
+      "paths": ["src/libs/thorvg"],
+      "sources": [{"url": "https://github.com/thorvg/thorvg"}],
+      "license": "MIT",
+      "purl": "pkg:github/thorvg/thorvg",
+      "purpose": "library",
+      "supplier": {"name": "The ThorVG Project", "type": "organization"}
+    },
+    {
+      "key": "tiny_ttf",
+      "name": "TinyTTF",
+      "paths": ["src/libs/tiny_ttf"],
+      "sources": [
+        {"url": "https://github.com/nothings/stb", "note": "Only parts are integrated"},
+        {"url": "https://github.com/codewitch-honey-crisis/tiny_ttf", "note": "Modified version of the original STB library"}
+      ],
+      "license": "MIT OR Unlicense",
+      "purl": "pkg:github/nothings/stb",
+      "purpose": "library",
+      "supplier": {"name": "Sean Barrett", "type": "person"}
+    },
+    {
+      "key": "tjpgd",
+      "name": "TJPGD (JPEG decoder)",
+      "paths": ["src/libs/tjpgd"],
+      "sources": [{"url": "http://elm-chan.org/fsw/tjpgd/00index.html"}],
+      "license": "LicenseRef-TJpgDec",
+      "license_file": "src/libs/tjpgd/LICENSE.txt",
+      "purl": null,
+      "purpose": "library",
+      "supplier": {"name": "ChaN", "type": "person"}
+    },
+    {
+      "key": "tlsf",
+      "name": "TLSF (Two-Level Segregate Fit memory allocator)",
+      "paths": ["src/stdlib/builtin"],
+      "sources": [{"url": "https://github.com/mattconte/tlsf"}],
+      "license": "BSD-3-Clause",
+      "purl": "pkg:github/mattconte/tlsf",
+      "purpose": "library",
+      "supplier": {"name": "Matthew Conte", "type": "person"}
+    },
+    {
+      "key": "printf",
+      "name": "Printf (Printf formatting library)",
+      "paths": ["src/stdlib/builtin"],
+      "sources": [{"url": "https://github.com/mpaland/printf"}],
+      "license": "MIT",
+      "purl": "pkg:github/mpaland/printf",
+      "purpose": "library",
+      "supplier": {"name": "Marco Paland", "type": "person"}
+    },
+    {
+      "key": "ft800-ft813",
+      "name": "FT800-FT813 (EVE GPU driver)",
+      "paths": ["src/libs/FT800-FT813"],
+      "sources": [{"url": "https://github.com/RudolphRiedel/FT800-FT813"}],
+      "license": "MIT",
+      "purl": "pkg:github/RudolphRiedel/FT800-FT813",
+      "purpose": "library",
+      "supplier": {"name": "Rudolph Riedel", "type": "person"}
+    },
+    {
+      "key": "gif",
+      "name": "AnimatedGIF (GIF decoder library)",
+      "paths": ["src/libs/gif"],
+      "sources": [{"url": "https://github.com/bitbank2/AnimatedGIF"}],
+      "license": "Apache-2.0",
+      "purl": "pkg:github/bitbank2/AnimatedGIF",
+      "purpose": "library",
+      "supplier": {"name": "BitBank Software, Inc.", "type": "organization"}
+    },
+    {
+      "key": "frogfs",
+      "name": "FrogFS (read-only filesystem)",
+      "paths": ["src/libs/frogfs"],
+      "sources": [{"url": "https://github.com/jkent/frogfs"}],
+      "license": "MPL-2.0",
+      "purl": "pkg:github/jkent/frogfs",
+      "purpose": "library",
+      "supplier": {"name": "Jeff Kent", "type": "person"}
+    }
+  ]
+}
