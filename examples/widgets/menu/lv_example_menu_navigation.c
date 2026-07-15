@@ -88,7 +88,7 @@ static void show_page(lv_obj_t * page)
 
 static void load_page_event(lv_event_t * e)
 {
-    lv_obj_t * target = lv_event_get_user_data(e);
+    lv_obj_t * target = (lv_obj_t *)lv_event_get_user_data(e);
     show_page(target);
 }
 

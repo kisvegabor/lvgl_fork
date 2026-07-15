@@ -192,7 +192,7 @@ static void table_event(lv_event_t * e)
 
 static void quick_access_event(lv_event_t * e)
 {
-    const char * path = lv_event_get_user_data(e);
+    const char * path = (const char *)lv_event_get_user_data(e);
     browser_open(path);
 }
 
