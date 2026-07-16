@@ -36,6 +36,9 @@
  *Time between `LV_EVENT_LONG_PRESSED_REPEAT*/
 #define LV_INDEV_DEF_LONG_PRESS_REP_TIME  100
 
+/*Max time between double click [ms].*/
+#define LV_INDEV_DEF_DOUBLE_CLICK_TIME      400
+
 /*Gesture threshold in pixels*/
 #define LV_INDEV_DEF_GESTURE_LIMIT        50
 
@@ -132,6 +135,7 @@ lv_indev_t * lv_indev_create(void)
     indev->scroll_throw           = LV_INDEV_DEF_SCROLL_THROW;
     indev->long_press_time        = LV_INDEV_DEF_LONG_PRESS_TIME;
     indev->long_press_repeat_time = LV_INDEV_DEF_LONG_PRESS_REP_TIME;
+    indev->double_click_time      = LV_INDEV_DEF_DOUBLE_CLICK_TIME;
     indev->gesture_min_distance   = LV_INDEV_DEF_GESTURE_LIMIT;
     indev->gesture_min_velocity   = LV_INDEV_DEF_GESTURE_MIN_VELOCITY;
     indev->rotary_sensitivity     = LV_INDEV_DEF_ROTARY_SENSITIVITY;
