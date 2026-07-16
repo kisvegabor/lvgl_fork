@@ -1594,7 +1594,7 @@ static lv_result_t indev_proc_short_click(lv_indev_t * indev)
 {
     /*Update streak for clicks within small distance and short time*/
     indev->pointer.short_click_streak++;
-    if(lv_tick_diff(indev->timestamp, indev->pointer.last_short_click_timestamp) > indev->long_press_time) {
+    if(lv_tick_diff(indev->timestamp, indev->pointer.last_short_click_timestamp) > indev->double_click_time) {
         indev->pointer.short_click_streak = 1;
     }
     else if(indev->type == LV_INDEV_TYPE_POINTER || indev->type == LV_INDEV_TYPE_BUTTON) {
