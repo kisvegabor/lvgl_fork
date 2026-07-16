@@ -36,7 +36,7 @@
  *Time between `LV_EVENT_LONG_PRESSED_REPEAT*/
 #define LV_INDEV_DEF_LONG_PRESS_REP_TIME  100
 
-/*Max time between double click [ms].*/
+ /*Max time between consecutive clicks for a multi-click (double/triple) gesture [ms].*
 #define LV_INDEV_DEF_DOUBLE_CLICK_TIME      400
 
 /*Gesture threshold in pixels*/
