@@ -394,6 +394,13 @@ void lv_indev_set_long_press_repeat_time(lv_indev_t * indev, uint16_t long_press
     indev->long_press_repeat_time = long_press_repeat_time;
 }
 
+void lv_indev_set_double_click_time(lv_indev_t * indev, uint16_t double_click_time)
+{
+    if(indev == NULL) return;
+
+    indev->double_click_time = double_click_time;
+}
+
 void lv_indev_set_scroll_limit(lv_indev_t * indev, uint8_t scroll_limit)
 {
     if(indev == NULL) return;
