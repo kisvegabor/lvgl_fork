@@ -9,13 +9,13 @@ single source of truth it is generated from.
 | File | Description |
 |------|-------------|
 | `third_party.json` | **Single source of truth** — every third-party dependency, its license, supplier and source |
-| `lvgl-<version>.spdx.json` | Generated SPDX 3.0.1 SBOM |
+| `lvgl.spdx.json` | Generated SPDX 3.0.1 SBOM |
 | `requirements.txt` | Pinned tooling for validation / the CI gate |
 | `README.md` | This file |
 
 Two artifacts are **generated** from `third_party.json` — do not edit them by hand:
 
-- `sbom/lvgl-<version>.spdx.json` (this folder)
+- `sbom/lvgl.spdx.json` (this folder)
 - `COPYRIGHTS.md` (repo root)
 
 ## Regenerating
@@ -25,11 +25,13 @@ When a dependency is added, removed, or relicensed, edit
 
 ```sh
 python3 scripts/generate_copyrights.py    # -> COPYRIGHTS.md
-python3 scripts/generate_sbom.py          # -> sbom/lvgl-<version>.spdx.json
+python3 scripts/generate_sbom.py          # -> sbom/lvgl.spdx.json
 ```
 
-The LVGL version is read from `include/lvgl/lv_version.h`, so the SBOM file
-name and package version always track the checked-out tree.
+The LVGL version is read from `include/lvgl/lv_version.h` and recorded inside
+the document, so the package version always tracks the checked-out tree. The
+file name itself is unversioned — the SBOM is bundled inside a given LVGL
+version anyway.
 
 ## Validating
 

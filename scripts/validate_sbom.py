@@ -11,7 +11,7 @@ Usage:
     python3 scripts/validate_sbom.py [SBOM ...]
         [--schema URL_OR_PATH] [--spec-version 3.0.1]
 
-With no SBOM argument every sbom/lvgl-*.spdx.json file is validated. The schema
+With no SBOM argument sbom/lvgl.spdx.json is validated. The schema
 defaults to the official SPDX schema for --spec-version; pass a local path with
 --schema to validate offline.
 """
@@ -32,14 +32,14 @@ def main():
     parser = argparse.ArgumentParser(
         description="Validate LVGL's SPDX SBOM against the official SPDX JSON Schema.")
     parser.add_argument("sboms", nargs="*",
-                        help="SBOM file(s) to validate (default: sbom/lvgl-*.spdx.json).")
+                        help="SBOM file(s) to validate (default: sbom/lvgl.spdx.json).")
     parser.add_argument("--spec-version", default="3.0.1",
                         help="SPDX spec version whose schema to use (default: 3.0.1).")
     parser.add_argument("--schema", default=None,
                         help="Override the schema URL or local file path.")
     args = parser.parse_args()
 
-    sboms = args.sboms or sorted(glob.glob(os.path.join(SBOM_DIR, "lvgl-*.spdx.json")))
+    sboms = args.sboms or sorted(glob.glob(os.path.join(SBOM_DIR, "lvgl.spdx.json")))
     if not sboms:
         print("No SBOM files found in %s (run scripts/generate_sbom.py first)." % SBOM_DIR)
         return 1

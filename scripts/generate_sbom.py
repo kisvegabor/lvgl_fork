@@ -345,7 +345,9 @@ def main():
         data = json.load(fh)
 
     version = read_version()
-    out_path = os.path.join(args.output_dir, "lvgl-%s.spdx.json" % version)
+    # The file name carries no version: the SBOM is bundled inside a given LVGL
+    # version anyway, and the version is recorded inside the document.
+    out_path = os.path.join(args.output_dir, "lvgl.spdx.json")
 
     if args.date:
         # strptime alone accepts non-zero-padded input like "2026-7-1", which

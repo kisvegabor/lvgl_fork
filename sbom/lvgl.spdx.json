@@ -5,7 +5,7 @@
       "type": "CreationInfo",
       "@id": "_:creationinfo",
       "specVersion": "3.0.1",
-      "created": "2026-07-15T22:33:15Z",
+      "created": "2026-07-20T16:40:55Z",
       "createdBy": [
         "https://lvgl.io/spdx/lvgl-9.6.0-dev#Agent-LVGL-Kft"
       ],
