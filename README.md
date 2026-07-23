@@ -9,43 +9,40 @@
 </p>
 
 <h1 align="center">Light and Versatile Graphics Library</h1>
+<p align="center">
+  <a href="..." title="...">📖 Docs</a>
+  <a href="..." title="...">🤗 Forum</a>
+  <a href="..." title="...">🪶 Blog</a>
+  <a href="..." title="...">🤝 Services</a>
+</p>
 
 <br/>
 
 <div align="center">
-  <img src="https://lvgl.io/github-assets/smartwatch-demo.gif">
+  <img src="2d demo gif">
   &nbsp;
-  <img border="1px" src="https://lvgl.io/github-assets/widgets-demo.gif">
+  <img src="3d demo gif">
 </div>
 
 <br/>
 
+
+
+### Table of Content
+
 <p align="center">
-  <a href="https://lvgl.io" title="Homepage of LVGL">Website</a> |
-  <a href="https://pro.lvgl.io" title="LVGL Pro XML based UI Editor">LVGL Pro Editor</a> |
-  <a href="https://docs.lvgl.io/" title="Detailed documentation with 100+ examples">Docs</a> |
-  <a href="https://forum.lvgl.io" title="Get help and help others">Forum</a> |
-  <a href="https://lvgl.io/demos" title="Demos running in your browser">Demos</a> |
-<a href="https://lvgl.io/services" title="Graphics design, UI implementation and consulting">Services</a>
+  <a href="#..." title="...">Overview</a> •
+  <a href="#..." title="...">LVGL Pro</a> •
+  <a href="#..." title="...">Features</a> •
+  <a href="#..." title="...">Examples</a> •
+  <a href="#..." title="...">Integration</a> •
+  <a href="#..." title="...">Contributing</a>
 </p>
 
 <br/>
 
-### Table of Contents
-<p>
-  <a href="#ledger-overview">Overview</a> <br/>
-  <a href="#-features">Features</a> <br/>
-  <a href="#%EF%B8%8F-platform-support">Platform Support</a> <br/>
-  <a href="#-lvgl-pro-editor">LVGL Pro Editor</a> <br/>
-  <a href="#-commercial-services">Commercial Services</a> <br/>
-  <a href="#%E2%80%8D-integrating-lvgl">Integrating LVGL</a> <br/>
-  <a href="#-examples">Examples</a> <br/>
-  <a href="#-contributing">Contributing</a>
-</p>
+## Overview
 
-<br/>
-
-## 📒 Overview
 
 **LVGL** is a free and open-source UI library that enables you to create graphical user interfaces
 for any MCUs and MPUs from any vendor on any platform.
@@ -56,15 +53,31 @@ from small MCUs to multi-core Linux-based MPUs with 3D support. For a simple UI,
 
 **To get started**, pick a ready-to-use VSCode, Eclipse, or any other project and try out LVGL
 on your PC. The LVGL UI code is fully platform-independent, so you can use the same UI code
-on embedded targets too.
+on embedded targets too. Need help? Our [Docs](https://lvgl.io/docs/open) is AI ready! Just click <img src="docs/src/_static/images/ask_ai.png"/>
+ask anything!
 
-**LVGL Pro** is a complete toolkit to help you build, test, share, and ship UIs faster.
-It comes with an XML Editor where you can quickly create and test reusable components,
-export C code, or load the XMLs at runtime. Learn more here.
+**LVGL is widely adopted** by chip vendors (like NXP, ESP-IDF, Renesas, and so on), RTOS projects (Zephyr, Nuttx, etc),
+Board manufaturers (Riverdi, Seeed Studio, Viewer, Electrow, etc). If a developent board has display its very likely that vedor
+offers LVGL support too.
+
+### LVGL Pro
+
+You can build any UIs with LVGL in C, however with [LVGL Pro](https://lvgl.io/pro) you can build UI in a much more professionals and maintainable way.
+You can quickly create reusable components and screens, preview them instantly, and export normal LVGL C code that you can integrate anywhere.
+
+LVGL Pro consists of four tightly related tools:
+
+1. **Editor**: The heart of LVGL Pro. A desktop app to build components and screens in XML, manage data bindings, translations, animations, tests, and more. Learn more about the [XML Format](https://lvgl.io/docs/pro/syntax) and the [Widgets](https://lvgl.io/docs/pro/built_in_widgets).
+2. **Online Viewer**: Run the Editor in your browser, open GitHub projects, and share easily without setting up a developer environment. Visit [https://viewer.lvgl.io](https://viewer.lvgl.io).
+3. **Figma Plugin**: Move Fige design with one click to LVGL Pro. See how it works [here](https://lvgl.io/docs/pro/figma).
+4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/syntax/cli).
+
+It comes with a **Free Community and Evaluation licences**, so you can jump [Download](https://lvgl.io/pro#download) it, and start using immediately.
+
 
 ## 💡 Features
 
-**Free and Portable**
+**Free, Portable, and Scalable**
   - A fully portable C (C++ compatible) library with no external dependencies.
   - Can be compiled for any MCU or MPU, with any (RT)OS. Make, CMake, and simple globbing are all supported.
   - Supports monochrome, ePaper, OLED, or TFT displays, or even monitors. [Displays](https://docs.lvgl.io/master/main-modules/display/index.html)
@@ -83,49 +96,73 @@ export C code, or load the XMLs at runtime. Learn more here.
   - Supports Mouse, Touchpad, Keypad, Keyboard, External buttons, Encoder [Input devices](https://docs.lvgl.io/master/main-modules/indev.html).
   - [Multiple display](https://docs.lvgl.io/master/main-modules/display/overview.html#how-many-displays-can-lvgl-use) support.
 
-## 📦️ Platform Support
+## 🤖 Examples
 
-LVGL has no external dependencies, so it can be easily compiled for any devices and it's  also available in many package managers and RTOSes:
+You can check out more than 100 C and XML examples at https://lvgl.io/docs/open/examples
 
-- [Arduino library](https://docs.lvgl.io/master/integration/framework/arduino.html)
-- [PlatformIO package](https://registry.platformio.org/libraries/lvgl/lvgl)
-- [Zephyr library](https://docs.lvgl.io/master/integration/os/zephyr.html)
-- [ESP-IDF(ESP32) component](https://components.espressif.com/components/lvgl/lvgl)
-- [NXP MCUXpresso component](https://www.nxp.com/design/software/embedded-software/lvgl-open-source-graphics-library:LITTLEVGL-OPEN-SOURCE-GRAPHICS-LIBRARY)
-- [NuttX library](https://docs.lvgl.io/master/integration/os/nuttx.html)
-- [RT-Thread RTOS](https://docs.lvgl.io/master/integration/os/rt-thread.html)
-- CMSIS-Pack
-- [RIOT OS package](https://doc.riot-os.org/group__pkg__lvgl.html#details)
+The [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro also contains many Tutorials and the same Examples that you can play with interactively.
 
-## 🚀 LVGL Pro Editor
+## 🤖 Examples
 
-LVGL Pro is a complete toolkit to build, test, share, and ship embedded UIs efficiently.
+You can check out more than 100 examples at https://docs.lvgl.io/master/examples.html
 
-It consists of four tightly related tools:
+The Online Viewer also contains tutorials to easily learn XML: https://viewer.lvgl.io/
 
-1. **XML Editor**: The heart of LVGL Pro. A desktop app to build components and screens in XML, manage data bindings, translations, animations, tests, and more. Learn more about the [XML Format](https://docs.lvgl.io/master/xml/xml/index.html) and the [Editor](https://docs.lvgl.io/master/xml/editor/index.html).
-2. **Online Viewer**: Run the Editor in your browser, open GitHub projects, and share easily without setting up a developer environment. Visit [https://viewer.lvgl.io](https://viewer.lvgl.io).
-3. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://docs.lvgl.io/master/xml/tools/cli.html).
-4. **Figma Plugin**: Sync and extract styles directly from Figma. See how it works [here](https://docs.lvgl.io/master/xml/tools/figma.html).
+As teaser here you can find a simple example too.
+<img width="311" height="232" alt="image" src="https://github.com/user-attachments/assets/5948b485-e3f7-4a63-bb21-984381417c4a" />
 
-Together, these tools let developers build UIs efficiently, test them reliably, and collaborate with team members and customers.
+<!-- show these side by side-->
+<div>
+```c
+static void button_clicked_cb(lv_event_t * e)
+{
+	printf("Clicked\n");
+}
 
-Learn more at https://pro.lvgl.io
+[...]
 
-## 🤝 Commercial Services
+  lv_obj_t * button = lv_button_create(lv_screen_active());
+  lv_obj_center(button);
+  lv_obj_add_event_cb(button, button_clicked_cb, LV_EVENT_CLICKED, NULL);
 
-LVGL LLC provides several types of commercial services to help you with UI development. With 15+ years of experience in the user interface and graphics industry, we can help bring your UI to the next level.
+  lv_obj_t * label = lv_label_create(button);
+  lv_label_set_text(label, "Hello from LVGL!");
+```
 
-- **Graphics design**: Our in-house graphic designers are experts in creating beautiful modern designs that fit your product and the capabilities of your hardware.
-- **UI implementation**: We can implement your UI based on the design you or we have created. You can be sure that we will make the most of your hardware and LVGL. If a feature or widget is missing from LVGL, don't worry, we will implement it for you.
-- **Consulting and Support**: We also offer consulting to help you avoid costly and time-consuming mistakes during UI development.
-- **Board certification**: For companies offering development boards or production-ready kits, we provide board certification to show how the board can run LVGL.
+```xml
+<screen>
+	<view>
+		<lv_button align="center">
+			<event_cb callback="button_clicked_cb" />
+			<lv_label text="Hello from LVGL!" />
+		</lv_button>
+	</view>
+</screen>
+```
 
-Check out our [Demos](https://lvgl.io/demos) as references. For more information, take a look at the [Services page](https://lvgl.io/services).
+</div>
 
-[Contact us](https://lvgl.io/#contact) and tell us how we can help.
 
-## 🧑‍💻 Integrating LVGL
+
+## Integration
+
+LVGL has no external dependencies, so it can be easily compiled for any devices. It comes with buuilt-in drviers, available in many package managers and RTOSes, but also easy port toany new devices.
+
+### Pre integrated
+<!-- Consider an other formtat with logos -->
+Chip vendors: [ESP-IDF(ESP32) component](https://components.espressif.com/components/lvgl/lvgl), [NXP MCUXpresso component](https://www.nxp.com/design/software/embedded-software/lvgl-open-source-graphics-library:LITTLEVGL-OPEN-SOURCE-GRAPHICS-LIBRARY), Renesas FSP, ???
+
+RTOS-es: [Zephyr library](https://docs.lvgl.io/master/integration/os/zephyr.html), [NuttX library](https://docs.lvgl.io/master/integration/os/nuttx.html), [RT-Thread RTOS](https://docs.lvgl.io/master/integration/os/rt-thread.html), ???
+
+Frameworks: [Arduino library](https://docs.lvgl.io/master/integration/framework/arduino.html), [PlatformIO package](https://registry.platformio.org/libraries/lvgl/lvgl), CMSIS-Pack,  ???
+
+Board manufaturers: Seeed, Electrow, Riverdi, ???
+
+### Built-in driver
+write something here based on https://lvgl.io/docs/open/integration
+simulator, MCU, linux, GPU, etc drivers
+
+### Porting manually
 
 Integrating LVGL is very simple. Just drop it into any project and compile it as you would compile other files.
 To configure LVGL, copy `lv_conf_template.h` as `lv_conf.h`, enable the first `#if 0`, and adjust the configs as needed.
@@ -203,184 +240,13 @@ void main(void)
 }
 ```
 
-## 🤖 Examples
 
-You can check out more than 100 examples at https://docs.lvgl.io/master/examples.html
-
-The Online Viewer also contains tutorials to easily learn XML: https://viewer.lvgl.io/
-
-
-### Hello World Button with an Event
-
-<img width="311" height="232" alt="image" src="https://github.com/user-attachments/assets/5948b485-e3f7-4a63-bb21-984381417c4a" />
-
-<details>
-  <summary>C code</summary>
-
-  ```c
-static void button_clicked_cb(lv_event_t * e)
-{
-	printf("Clicked\n");
-}
-
-[...]
-
-  lv_obj_t * button = lv_button_create(lv_screen_active());
-  lv_obj_center(button);
-  lv_obj_add_event_cb(button, button_clicked_cb, LV_EVENT_CLICKED, NULL);
-
-  lv_obj_t * label = lv_label_create(button);
-  lv_label_set_text(label, "Hello from LVGL!");
-```
-</details>
-
-<details>
-  <summary>In XML with LVGL Pro</summary>
-
-```xml
-<screen>
-	<view>
-		<lv_button align="center">
-			<event_cb callback="button_clicked_cb" />
-			<lv_label text="Hello from LVGL!" />
-		</lv_button>
-	</view>
-</screen>
-```
-
-</details>
-
-### Styled Slider with Data-binding
-
-<img width="314" height="233" alt="image" src="https://github.com/user-attachments/assets/268db1a0-946c-42e2-aee4-9550bdf5f4f9" />
-
-<details>
-  <summary>C code</summary>
-
-```c
-static void my_observer_cb(lv_observer_t * observer, lv_subject_t * subject)
-{
-	printf("Slider value: %d\n", lv_subject_get_int(subject));
-}
-
-[...]
-
-static lv_subject_t subject_value;
-lv_subject_init_int(&subject_value, 35);
-lv_subject_add_observer(&subject_value, my_observer_cb, NULL);
-
-lv_style_t style_base;
-lv_style_init(&style_base);
-lv_style_set_bg_color(&style_base, lv_color_hex(0xff8800));
-lv_style_set_bg_opa(&style_base, 255);
-lv_style_set_radius(&style_base, 4);
-
-lv_obj_t * slider = lv_slider_create(lv_screen_active());
-lv_obj_center(slider);
-lv_obj_set_size(slider, lv_pct(80), 16);
-lv_obj_add_style(slider, &style_base, LV_PART_INDICATOR);
-lv_obj_add_style(slider, &style_base, LV_PART_KNOB);
-lv_obj_add_style(slider, &style_base, 0);
-lv_obj_set_style_bg_opa(slider, LV_OPA_50, 0);
-lv_obj_set_style_border_width(slider, 3, LV_PART_KNOB);
-lv_obj_set_style_border_color(slider, lv_color_hex3(0xfff), LV_PART_KNOB);
-lv_slider_bind_value(slider, &subject_value);
-
-lv_obj_t * label = lv_label_create(lv_screen_active());
-lv_obj_align(label, LV_ALIGN_CENTER, 0, -30);
-lv_label_bind_text(label, &subject_value, "Temperature: %d °C");
-```
-
-</details>
-
-<details>
-  <summary>In XML with LVGL Pro</summary>
-
-```xml
-<screen>
-	<styles>
-		<style name="style_base" bg_opa="100%" bg_color="0xff8800" radius="4" />
-		<style name="style_border" border_color="0xfff" border_width="3" />
-	</styles>
-
-	<view>
-		<lv_label bind_text="value" bind_text-fmt="Temperature: %d °C" align="center" y="-30" />
-		<lv_slider align="center" bind_value="value" style_bg_opa="30%">
-			<style name="style_base" />
-			<style name="style_base" selector="knob" />
-			<style name="style_base" selector="indicator" />
-			<style name="style_border" selector="knob" />
-		</lv_slider>
-	</view>
-</screen>
-```
-
-</details>
-
-### Checkboxes in a Layout
-
-<img width="311" height="231" alt="image" src="https://github.com/user-attachments/assets/ba9af647-2ea1-4bc8-b53d-c7b43ce24b6e" />
-
-<details>
-  <summary>C code</summary>
-
-  ```c
-/*Create a new screen and load it*/
-lv_obj_t * scr = lv_obj_create(NULL);
-lv_screen_load(scr);
-
-/*Set a column layout*/
-lv_obj_set_flex_flow(scr, LV_FLEX_FLOW_COLUMN);
-lv_obj_set_flex_align(scr, LV_FLEX_ALIGN_SPACE_EVENLY, /*Vertical alignment*/
-						   LV_FLEX_ALIGN_START,	       /*Horizontal alignment in the track*/
-						   LV_FLEX_ALIGN_CENTER);      /*Horizontal alignment of the track*/
-
-/*Create 5 checkboxes*/
-const char * texts[5] = {"Input 1", "Input 2", "Input 3", "Output 1", "Output 2"};
-for(int i = 0; i < 5; i++) {
-	lv_obj_t * cb = lv_checkbox_create(scr);
-	lv_checkbox_set_text(cb, texts[i]);
-}
-
-/*Change some states*/
-lv_obj_add_state(lv_obj_get_child(scr, 1), LV_STATE_CHECKED);
-lv_obj_add_state(lv_obj_get_child(scr, 3), LV_STATE_DISABLED);
-```
-
-</details>
-
-<details>
-  <summary>In XML with LVGL Pro</summary>
-
-```xml
-<screen>
-	<view
-		flex_flow="column"
-		style_flex_main_place="space_evenly"
-		style_flex_cross_place="start"
-		style_flex_track_place="center"
-	>
-		<lv_checkbox text="Input 1"/>
-		<lv_checkbox text="Input 2"/>
-		<lv_checkbox text="Input 3" checked="true"/>
-		<lv_checkbox text="Output 1"/>
-		<lv_checkbox text="Output 2" disabled="true"/>
-   </view>
-</screen>
-```
-
-</details>
-
-
-## 🌟 Contributing
+## Contributing
 
 LVGL is an open project, and contributions are very welcome. There are many ways to contribute, from simply speaking about your project, writing examples, improving the documentation, fixing bugs, or even hosting your own project under the LVGL organization.
 
 For a detailed description of contribution opportunities, visit the [Contributing](https://docs.lvgl.io/master/contributing/index.html)
 section of the documentation.
 
-More than 600 people have already left their fingerprint on LVGL. Be one of them! See you here! 🙂
+Hundreds of people have already left their fingerprint on LVGL. Be one of them! See you here! 🙂
 
-<a href="https://github.com/lvgl/lvgl/graphs/contributors"> <img src="https://contrib.rocks/image?repo=lvgl/lvgl&max=48" /> </a>
-
-... and many more.
