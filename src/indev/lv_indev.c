@@ -36,6 +36,9 @@
  *Time between `LV_EVENT_LONG_PRESSED_REPEAT*/
 #define LV_INDEV_DEF_LONG_PRESS_REP_TIME  100
 
+/*Max time between consecutive clicks for a multi-click (double/triple) gesture [ms].*/
+#define LV_INDEV_DEF_DOUBLE_CLICK_TIME      400
+
 /*Gesture threshold in pixels*/
 #define LV_INDEV_DEF_GESTURE_LIMIT        50
 
@@ -132,6 +135,7 @@ lv_indev_t * lv_indev_create(void)
     indev->scroll_throw           = LV_INDEV_DEF_SCROLL_THROW;
     indev->long_press_time        = LV_INDEV_DEF_LONG_PRESS_TIME;
     indev->long_press_repeat_time = LV_INDEV_DEF_LONG_PRESS_REP_TIME;
+    indev->double_click_time      = LV_INDEV_DEF_DOUBLE_CLICK_TIME;
     indev->gesture_min_distance   = LV_INDEV_DEF_GESTURE_LIMIT;
     indev->gesture_min_velocity   = LV_INDEV_DEF_GESTURE_MIN_VELOCITY;
     indev->rotary_sensitivity     = LV_INDEV_DEF_ROTARY_SENSITIVITY;
@@ -388,6 +392,13 @@ void lv_indev_set_long_press_repeat_time(lv_indev_t * indev, uint16_t long_press
     if(indev == NULL) return;
 
     indev->long_press_repeat_time = long_press_repeat_time;
+}
+
+void lv_indev_set_double_click_time(lv_indev_t * indev, uint16_t double_click_time)
+{
+    if(indev == NULL) return;
+
+    indev->double_click_time = double_click_time;
 }
 
 void lv_indev_set_scroll_limit(lv_indev_t * indev, uint8_t scroll_limit)
@@ -1590,7 +1601,7 @@ static lv_result_t indev_proc_short_click(lv_indev_t * indev)
 {
     /*Update streak for clicks within small distance and short time*/
     indev->pointer.short_click_streak++;
-    if(lv_tick_diff(indev->timestamp, indev->pointer.last_short_click_timestamp) > indev->long_press_time) {
+    if(lv_tick_diff(indev->timestamp, indev->pointer.last_short_click_timestamp) > indev->double_click_time) {
         indev->pointer.short_click_streak = 1;
     }
     else if(indev->type == LV_INDEV_TYPE_POINTER || indev->type == LV_INDEV_TYPE_BUTTON) {
