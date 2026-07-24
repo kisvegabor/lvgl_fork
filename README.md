@@ -3,11 +3,7 @@
   <a href="https://forum.lvgl.io" title="Community forum">Forum</a> |
   <a href="https://blog.lvgl.io" title="News and articles">Blog</a> |
   <a href="https://lvgl.io/services" title="Professional services">Services</a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/lvgl/lvgl/releases"><img src="https://img.shields.io/github/v/release/lvgl/lvgl?label=version" alt="Latest release"></a>
-  <a href="https://github.com/lvgl/lvgl/blob/master/LICENCE.txt"><img src="https://img.shields.io/github/license/lvgl/lvgl" alt="License: MIT"></a>
-  <a href="https://github.com/lvgl/lvgl/graphs/contributors"><img src="https://img.shields.io/github/contributors/lvgl/lvgl" alt="Contributors"></a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="400px" height="1px">
   <b>EN</b> •
   <a href="./docs/README_zh.md">中文</a> •
   <a href="./docs/README_jp.md">日本語</a> •
@@ -15,14 +11,12 @@
   <a href="./docs/README_he.md">עברית</a>
 </p>
 
-<br>
-
-<p align="center">
-  <img src="https://lvgl.io/github-assets/logo-colored.png" width=300px>
+<p align="center"> 
+  <a href="https//lvgl.io"><img src="https://lvgl.io/github-assets/logo-colored.png" height=50px/></a> 
+  <h1 align="center">  Light and Versatile Graphics Library</h1>
 </p>
 
-<h1 align="center">Light and Versatile Graphics Library</h1>
-
+<br/>
 <br/>
 
 <div align="center">
@@ -32,9 +26,8 @@
 </div>
 
 <br/>
+<br/>
 
-
-<p align="center">
   <a href="#overview" title="What LVGL is">Overview</a> •
   <a href="#lvgl-pro" title="The professional toolchain">LVGL Pro</a> •
   <a href="#features" title="What LVGL can do">Features</a> •
@@ -42,9 +35,6 @@
   <a href="#integration" title="How to add LVGL to your project">Integration</a> •
   <a href="#contributing" title="How to get involved">Contributing</a> •
   <a href="#license" title="Licensing terms">License</a>
-</p>
-
-<br/>
 
 ## Overview
 
