@@ -3,7 +3,7 @@
   <a href="https://forum.lvgl.io" title="Community forum">Forum</a> |
   <a href="https://blog.lvgl.io" title="News and articles">Blog</a> |
   <a href="https://lvgl.io/services" title="Professional services">Services</a>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="400px" height="1px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="550px" height="1px">
   <b>EN</b> •
   <a href="./docs/README_zh.md">中文</a> •
   <a href="./docs/README_jp.md">日本語</a> •
@@ -27,7 +27,9 @@
 
 <br/>
 <br/>
+<br/>
 
+<p align="center">
   <a href="#overview" title="What LVGL is">Overview</a> •
   <a href="#features" title="What LVGL can do">Features</a> •
   <a href="#lvgl-pro" title="The professional toolchain">LVGL Pro</a> •
@@ -35,6 +37,7 @@
   <a href="#integration" title="How to add LVGL to your project">Integration</a> •
   <a href="#contributing" title="How to get involved">Contributing</a> •
   <a href="#license" title="Licensing terms">License</a>
+</p>
 
 ## Overview
 
@@ -45,11 +48,13 @@ for any MCUs and MPUs from any vendor on any platform.
 from small MCUs to multi-core Linux-based MPUs with 3D support. For a *typical* UI, you need only ~100kB RAM,
 ~200–300kB flash, and a buffer size of 1/10 of the screen for rendering.
 
-**LVGL is widely adopted** by chip vendors (like NXP, Espressif, Renesas, and so on), RTOS projects (Zephyr, NuttX, etc.),
-and board manufacturers (Riverdi, Seeed Studio, VIEWE, Elecrow, etc.). If a development board has a display, it's very likely
+**Wide adoption**: Chip vendors (like NXP, Espressif, Renesas, and so on), RTOS projects (Zephyr, NuttX, etc.),
+and board manufacturers (Riverdi, Seeed Studio, VIEWE, Elecrow, etc.) all integreted LVGL alredy. If a development board has a display, it's very likely
 the vendor offers LVGL support too.
 
-**To get started**, browse the [Examples](#examples), spin up a [Simulator project](https://lvgl.io/docs/open/integration/pc), explore the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, or dive into our AI-ready [Docs](https://lvgl.io/docs/open). Just click [**Ask AI**](https://lvgl.io/docs/open)
+**Professional tools**: Insted of writing C code, you can hugely speed up and simplify the UI development by using [LVGL Pro](#lvgl-pro), a complete toolkit with Editor, Figma integration, Online viewer and CLI. It exports pure LVGL C code from XML, with no extra runtime or hidden magic. It's free for non comemrtial use and evaluation.   
+
+**To get started**, browse the [Examples](#examples), spin up a [Simulator project](https://lvgl.io/docs/open/integration/pc), explore the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, compile and run a UI in a window in [LVGL Pro](https://lvgl.io/docs/pro/integration/simulator) with one click, or dive into our AI-ready [Docs](https://lvgl.io/docs/open). Just click [**Ask AI**](https://lvgl.io/docs/open)
 and ask anything!
 
 ## Features
@@ -101,7 +106,6 @@ LVGL Pro consists of four tightly related tools:
 4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/syntax/cli).
 
 The Community and Evaluation tiers are free to use; see [licensing](#license) for commercial use.
-
 
 ## Examples
 
@@ -181,6 +185,11 @@ LVGL ships with ready-to-use drivers, so on common platforms you don't have to w
 - **GPU / accelerators**: VG-Lite, NXP PXP, ThinkSilicon NemaGFX, Arm-2D  and [OpenGL ES](https://lvgl.io/docs/open/integration/embedded_linux/drivers/opengl_driver)
 
 See the full list and setup guides in the [Integration docs](https://lvgl.io/docs/open/integration).
+
+### In LVGL Pro
+
+In LVGL Pro you can create ready to use UI only, VSCode, Zephyr, and Linux projects with a single click. 
+<img width="600" alt="image" src="https://github.com/user-attachments/assets/5aadb850-6b40-49d1-ba96-2296041c7e27" />
 
 ### Porting manually
 
