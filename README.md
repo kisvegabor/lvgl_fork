@@ -3,7 +3,7 @@
   <a href="https://forum.lvgl.io" title="Community forum">Forum</a> |
   <a href="https://blog.lvgl.io" title="News and articles">Blog</a> |
   <a href="https://lvgl.io/services" title="Professional services">Services</a>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="450px" height="1px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="350px" height="1px">
   <b>EN</b> •
   <a href="./docs/README_zh.md">中文</a> •
   <a href="./docs/README_ja.md">日本語</a> •
@@ -21,9 +21,9 @@
 <br/>
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="250" alt="Ebike demo with vector graphics">
+  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="200" alt="Ebike demo with vector graphics">
   &nbsp;
-  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="250" alt="ECG demo with animated 3D model">
+  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="200" alt="ECG demo with animated 3D model">
 </div>
 
 <br/>
