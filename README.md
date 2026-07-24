@@ -11,9 +11,9 @@
   <a href="./docs/README_he.md">עברית</a>
 </p>
 
-<p align="center"> 
-  <a href="https//lvgl.io"><img src="https://lvgl.io/github-assets/logo-colored.png" height=50px/></a> 
-  <h1 align="center">  Light and Versatile Graphics Library</h1>
+<p align="center">
+  <a href="https://lvgl.io"><img src="https://lvgl.io/github-assets/logo-colored.png" height=50px/></a>
+  <h1 align="center">Light and Versatile Graphics Library</h1>
 </p>
 
 <br/>
@@ -49,10 +49,10 @@ from small MCUs to multi-core Linux-based MPUs with 3D support. For a *typical* 
 ~200–300kB flash, and a buffer size of 1/10 of the screen for rendering.
 
 **Wide adoption**: Chip vendors (like NXP, Espressif, Renesas, and so on), RTOS projects (Zephyr, NuttX, etc.),
-and board manufacturers (Riverdi, Seeed Studio, VIEWE, Elecrow, etc.) all integreted LVGL alredy. If a development board has a display, it's very likely
+and board manufacturers (Riverdi, Seeed Studio, VIEWE, Elecrow, etc.) have all integrated LVGL already. If a development board has a display, it's very likely
 the vendor offers LVGL support too.
 
-**Professional tools**: Insted of writing C code, you can hugely speed up and simplify the UI development by using [LVGL Pro](#lvgl-pro), a complete toolkit with Editor, Figma integration, Online viewer and CLI. It exports pure LVGL C code from XML, with no extra runtime or hidden magic. It's free for non comemrtial use and evaluation.   
+**Professional tools**: Instead of writing C code, you can hugely speed up and simplify UI development by using [LVGL Pro](#lvgl-pro), a complete toolkit with Editor, Figma integration, Online Viewer, and CLI. It exports pure LVGL C code from XML, with no extra runtime or hidden magic. It's free for non-commercial use and evaluation.
 
 **To get started**, browse the [Examples](#examples), spin up a [Simulator project](https://lvgl.io/docs/open/integration/pc), explore the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, compile and run a UI in a window in [LVGL Pro](https://lvgl.io/docs/pro/integration/simulator) with one click, or dive into our AI-ready [Docs](https://lvgl.io/docs/open). Just click [**Ask AI**](https://lvgl.io/docs/open)
 and ask anything!
@@ -103,7 +103,7 @@ LVGL Pro consists of four tightly related tools:
 1. **Editor**: The heart of LVGL Pro. A desktop app to build components and screens in XML, manage data bindings, translations, animations, tests, and more. Learn more about the [XML Format](https://lvgl.io/docs/pro/syntax) and the [Widgets](https://lvgl.io/docs/pro/built_in_widgets).
 2. **Online Viewer**: Run the Editor in your browser, open GitHub projects, and share easily without setting up a developer environment. Visit [https://viewer.lvgl.io](https://viewer.lvgl.io).
 3. **Figma Plugin**: Move a Figma design to LVGL Pro with one click. See how it works [here](https://lvgl.io/docs/pro/figma).
-4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/syntax/cli).
+4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/cli).
 
 The Community and Evaluation tiers are free to use; see [licensing](#license) for commercial use.
 
@@ -188,7 +188,7 @@ See the full list and setup guides in the [Integration docs](https://lvgl.io/doc
 
 ### In LVGL Pro
 
-In LVGL Pro you can create ready to use UI only, VSCode, Zephyr, and Linux projects with a single click. 
+In LVGL Pro you can create ready-to-use UI-only, VSCode, Zephyr, and Linux projects with a single click.
 <img width="600" alt="image" src="https://github.com/user-attachments/assets/5aadb850-6b40-49d1-ba96-2296041c7e27" />
 
 ### Porting manually
