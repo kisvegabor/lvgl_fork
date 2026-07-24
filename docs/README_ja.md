@@ -3,7 +3,7 @@
   <a href="https://forum.lvgl.io" title="Community forum">フォーラム</a> |
   <a href="https://blog.lvgl.io" title="News and articles">ブログ</a> |
   <a href="https://lvgl.io/services" title="Professional services">サービス</a>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="550px" height="1px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="450px" height="1px">
   <a href="../README.md">EN</a> •
   <a href="./README_zh.md">中文</a> •
   <b>日本語</b> •
