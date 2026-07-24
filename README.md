@@ -26,16 +26,13 @@
 <br/>
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="264" alt="Ebike demo with vector graphics">
+  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="250" alt="Ebike demo with vector graphics">
   &nbsp;
-  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="264" alt="ECG demo with animated 3D model">
+  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="250" alt="ECG demo with animated 3D model">
 </div>
 
 <br/>
 
-
-
-### Table of Contents
 
 <p align="center">
   <a href="#overview" title="What LVGL is">Overview</a> •
@@ -76,7 +73,7 @@ Pro exports plain LVGL C code: the same LVGL you already use, with no extra runt
 into an existing project without changing how you build or ship.
 
 <p align="center">
-  <img height="400" alt="Building a UI in the LVGL Pro editor with live preview" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
+  <img height="500" alt="Building a UI in the LVGL Pro editor with live preview" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
 </p>
 
 You can try it in the browser at [viewer.lvgl.io](https://viewer.lvgl.io) without installing anything, or
