@@ -1,5 +1,18 @@
-<p align="right">
-  <b>English</b> | <a href="./docs/README_zh.md">中文</a> | <a href="./docs/README_pt_BR.md">Português do Brasil</a> | <a href="./docs/README_jp.md">日本語</a> | <a href="./docs/README_he.md">עברית</a>
+<p align="center">
+  <a href="https://lvgl.io/docs" title="Documentation">Docs</a> |
+  <a href="https://forum.lvgl.io" title="Community forum">Forum</a> |
+  <a href="https://blog.lvgl.io" title="News and articles">Blog</a> |
+  <a href="https://lvgl.io/services" title="Professional services">Services</a> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/lvgl/lvgl/releases"><img src="https://img.shields.io/github/v/release/lvgl/lvgl?label=version" alt="Latest release"></a>
+  <a href="https://github.com/lvgl/lvgl/blob/master/LICENCE.txt"><img src="https://img.shields.io/github/license/lvgl/lvgl" alt="License: MIT"></a>
+  <a href="https://github.com/lvgl/lvgl/graphs/contributors"><img src="https://img.shields.io/github/contributors/lvgl/lvgl" alt="Contributors"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>EN</b> • 
+  <a href="./docs/README_zh.md">中文</a> • 
+  <a href="./docs/README_jp.md">日本語</a> • 
+  <a href="./docs/README_pt_BR.md">PT</a> • 
+  <a href="./docs/README_he.md">עברית</a>
 </p>
 
 <br>
@@ -9,30 +22,13 @@
 </p>
 
 <h1 align="center">Light and Versatile Graphics Library</h1>
-<p align="center">
-  <a href="https://lvgl.io/docs" title="Documentation">📖 Docs</a> •
-  <a href="https://forum.lvgl.io" title="Community forum">🤗 Forum</a> •
-  <a href="https://blog.lvgl.io" title="News and articles">🪶 Blog</a> •
-  <a href="https://lvgl.io/services" title="Professional services">🤝 Services</a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/lvgl/lvgl/releases"><img src="https://img.shields.io/github/v/release/lvgl/lvgl?label=version" alt="Latest release"></a>
-  <a href="https://github.com/lvgl/lvgl/blob/master/LICENCE.txt"><img src="https://img.shields.io/github/license/lvgl/lvgl" alt="License: MIT"></a>
-  <a href="https://github.com/lvgl/lvgl/stargazers"><img src="https://img.shields.io/github/stars/lvgl/lvgl?style=flat" alt="GitHub stars"></a>
-  <a href="https://github.com/lvgl/lvgl/network/members"><img src="https://img.shields.io/github/forks/lvgl/lvgl?style=flat" alt="GitHub forks"></a>
-  <a href="https://github.com/lvgl/lvgl/graphs/contributors"><img src="https://img.shields.io/github/contributors/lvgl/lvgl" alt="Contributors"></a>
-</p>
 
 <br/>
 
 <div align="center">
-  <!-- TODO(assets): replace the two src URLs with the real demo GIFs.
-       Host them under https://lvgl.io/github-assets/ like the logo above,
-       or drag-drop into a GitHub issue to get github.com/user-attachments/... URLs. -->
-  <img src="docs/src/_static/images/ebike.jpg" height="264" alt="Ebike demo with vector graphics">
+  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="264" alt="Ebike demo with vector graphics">
   &nbsp;
-  <img src="docs/src/_static/images/ecg.jpg" height="264" alt="ECG demo with animated 3D model">
+  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="264" alt="ECG demo with animated 3D model">
 </div>
 
 <br/>
@@ -63,20 +59,19 @@ for any MCUs and MPUs from any vendor on any platform.
 from small MCUs to multi-core Linux-based MPUs with 3D support. For a *typical* UI, you need only ~100kB RAM,
 ~200–300kB flash, and a buffer size of 1/10 of the screen for rendering.
 
-**To get started**, pick a ready-to-use VSCode, Eclipse, or any other project and try out LVGL
-on your PC. The LVGL UI code is fully platform-independent, so you can use the same UI code
-on embedded targets too. Need help? Our [Docs](https://lvgl.io/docs/open) is AI ready! Just click <img src="docs/src/_static/images/ask_ai.png"/>
-ask anything!
-
 **LVGL is widely adopted** by chip vendors (like NXP, Espressif, Renesas, and so on), RTOS projects (Zephyr, NuttX, etc.),
 and board manufacturers (Riverdi, Seeed Studio, VIEWE, Elecrow, etc.). If a development board has a display, it's very likely
 the vendor offers LVGL support too.
 
+**To get started**, Juck out the [Examples](#examples), pick a [Simulator project](https://lvgl.io/docs/open/integration/pc), check out the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, or check out our AI Ready [Docs](https://lvgl.io/docs/open)! Just click [**Ask AI**](https://lvgl.io/docs/open)
+and ask anything!
 
 ## LVGL Pro
 
-You can build any UI with LVGL in C, but with [LVGL Pro](https://lvgl.io/pro) you can build UIs in a much more professional and maintainable way.
+You can build any UI with LVGL in C, but with [LVGL Pro](https://lvgl.io/pro) you can build UIs in a much faster, professional and maintainable way.
 You can quickly create reusable components and screens, preview them instantly, and export normal LVGL C code that you can integrate anywhere.
+
+<img height="400" alt="LVGL Pro in action" align="center" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
 
 LVGL Pro consists of four tightly related tools:
 
@@ -140,7 +135,8 @@ static void button_clicked_cb(lv_event_t * e)
 
 lv_obj_t * button = lv_button_create(lv_screen_active());
 lv_obj_center(button);
-lv_obj_add_event_cb(button, button_clicked_cb, LV_EVENT_CLICKED, NULL);
+lv_obj_add_event_cb(button, button_clicked_cb,
+                    LV_EVENT_CLICKED, NULL);
 
 lv_obj_t * label = lv_label_create(button);
 lv_label_set_text(label, "Hello from LVGL!");
@@ -151,12 +147,12 @@ lv_label_set_text(label, "Hello from LVGL!");
 
 ```xml
 <screen>
-    <view>
-        <lv_button align="center">
-            <event_cb callback="button_clicked_cb" />
-            <lv_label text="Hello from LVGL!" />
-        </lv_button>
-    </view>
+  <view>
+    <lv_button align="center">
+      <event_cb callback="button_clicked_cb" />
+      <lv_label text="Hello from LVGL!" />
+    </lv_button>
+  </view>
 </screen>
 ```
 
@@ -172,23 +168,22 @@ LVGL has no external dependencies, so it can be easily compiled for any device. 
 many package managers and RTOSes, and is also easy to port to any new device.
 
 ### Pre-integrated
-<!-- TODO(design): consider replacing these text lists with a grid of vendor logos. -->
-Chip vendors: [ESP-IDF (ESP32) component](https://components.espressif.com/components/lvgl/lvgl), [NXP MCUXpresso component](https://www.nxp.com/design/software/embedded-software/lvgl-open-source-graphics-library:LITTLEVGL-OPEN-SOURCE-GRAPHICS-LIBRARY), [Renesas FSP](https://lvgl.io/docs/open/integration/chip/renesas), [STM32](https://lvgl.io/docs/open/integration/chip/stm32)
 
-RTOSes: [Zephyr library](https://lvgl.io/docs/open/integration/os/zephyr), [NuttX library](https://lvgl.io/docs/open/integration/os/nuttx), [RT-Thread RTOS](https://lvgl.io/docs/open/integration/os/rt-thread)
+- **Chip vendors**: [ESP32](https://components.espressif.com/components/lvgl/lvgl), [NXP MCUXpresso component](https://www.nxp.com/design/software/embedded-software/lvgl-open-source-graphics-library:LITTLEVGL-OPEN-SOURCE-GRAPHICS-LIBRARY), [Renesas FSP](https://lvgl.io/docs/open/integration/chip/renesas), [STM32](https://lvgl.io/docs/open/integration/chip/stm32)
 
-Frameworks: [Arduino library](https://lvgl.io/docs/open/integration/framework/arduino), [PlatformIO package](https://registry.platformio.org/libraries/lvgl/lvgl), [CMSIS-Pack](https://lvgl.io/docs/open/integration/framework/cmsis-pack)
+- **RTOSes**: [Zephyr](https://lvgl.io/docs/open/integration/os/zephyr), [NuttX](https://lvgl.io/docs/open/integration/os/nuttx), [RT-Thread](https://lvgl.io/docs/open/integration/os/rt-thread)
 
-Board manufacturers: Seeed Studio, Elecrow, Riverdi, VIEWE
+- **Frameworks**: [Arduino](https://lvgl.io/docs/open/integration/framework/arduino), [PlatformIO](https://registry.platformio.org/libraries/lvgl/lvgl), [CMSIS-Pack](https://lvgl.io/docs/open/integration/framework/cmsis-pack)
+
+- **Board manufacturers**: Seeed Studio, Elecrow, Riverdi, VIEWE
 
 ### Built-in drivers
-<!-- TODO(review): confirm this driver list against https://lvgl.io/docs/open/integration -->
 LVGL ships with ready-to-use drivers, so on common platforms you don't have to write display and input handling yourself:
 
 - **Simulator / desktop**: [SDL](https://lvgl.io/docs/open/integration/pc/sdl), X11, and [Wayland](https://lvgl.io/docs/open/integration/embedded_linux/drivers/wayland) windows to develop and preview your UI on a PC.
-- **[Embedded Linux](https://lvgl.io/docs/open/integration/embedded_linux)**: framebuffer (fbdev), DRM/KMS, Wayland, and `libinput`/`evdev` for touch and pointer input.
-- **Display controllers**: generic MIPI-DBI/SPI LCDs ([ILI9341](https://lvgl.io/docs/open/integration/external_display_controllers/ili9341), ST7789, and similar), plus vendor controllers like ST's [LTDC](https://lvgl.io/docs/open/integration/chip_vendors/stm32/ltdc) and NXP's [eLCDIF](https://lvgl.io/docs/open/integration/chip_vendors/nxp/elcdif).
-- **GPU / accelerators**: [OpenGL/OpenGL ES](https://lvgl.io/docs/open/integration/embedded_linux/drivers/opengl_driver), and vendor accelerators such as VG-Lite, NXP PXP, ThinkSilicon NemaGFX, and Arm-2D.
+- **Display controllers**: Generic MIPI-DBI/SPI LCDs ([ILI9341](https://lvgl.io/docs/open/integration/external_display_controllers/ili9341), ST7789, and similar), plus vendor controllers like ST's [LTDC](https://lvgl.io/docs/open/integration/chip_vendors/stm32/ltdc) and NXP's [eLCDIF](https://lvgl.io/docs/open/integration/chip_vendors/nxp/elcdif).
+- **Embedded Linux**: framebuffer (fbdev), DRM/KMS, Wayland, and `libinput`/`evdev` for touch and pointer input. Learn more [here](https://lvgl.io/docs/open/integration/embedded_linux).
+- **GPU / accelerators**: VG-Lite, NXP PXP, ThinkSilicon NemaGFX, Arm-2D  and [OpenGL ES](https://lvgl.io/docs/open/integration/embedded_linux/drivers/opengl_driver)
 
 See the full list and setup guides in the [Integration docs](https://lvgl.io/docs/open/integration).
 
@@ -292,5 +287,5 @@ so you can use LVGL and its dependencies with confidence.
 **[LVGL Pro](https://lvgl.io/pro)** has separate licensing:
 - The **Community** and **Evaluation** tiers are **free for non-commercial use**, perfect for
   learning, hobby projects, and evaluating the tools.
-- Commercial use of LVGL Pro requires a paid license. See the [pricing and details](https://lvgl.io/pro#pricing).
+- Commercial use of LVGL Pro requires a paid license. See the [Pricing and Details](https://lvgl.io/pro#pricing).
 
