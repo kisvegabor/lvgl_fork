@@ -291,7 +291,7 @@ Centenas de pessoas já deixaram sua marca no LVGL. Seja uma delas! Vejo você p
 ## Licença
 
 A biblioteca LVGL é distribuída sob a **licença MIT**, então você pode usá-la livremente tanto em
-produtos de código aberto quanto comerciais sem royalties. Veja [`LICENCE.txt`](LICENCE.txt).
+produtos de código aberto quanto comerciais sem royalties. Veja [`LICENCE.txt`](../LICENCE.txt).
 
 Todas as bibliotecas de terceiros incluídas no LVGL também são lançadas sob licenças compatíveis com a MIT,
 então você pode usar o LVGL e suas dependências com confiança.
