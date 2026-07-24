@@ -1,9 +1,9 @@
 <p align="center">
-  <a href="https://lvgl.io/docs" title="Documentation">תיעוד</a> |
-  <a href="https://forum.lvgl.io" title="Community forum">פורום</a> |
-  <a href="https://blog.lvgl.io" title="News and articles">בלוג</a> |
+  <a href="https://lvgl.io/docs" title="Documentation">תיעוד</a> •
+  <a href="https://forum.lvgl.io" title="Community forum">פורום</a> •
+  <a href="https://blog.lvgl.io" title="News and articles">בלוג</a> •
   <a href="https://lvgl.io/services" title="Professional services">שירותים</a>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="450px" height="1px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="250px" height="1px">
   <a href="../README.md">EN</a> •
   <a href="./README_zh.md">中文</a> •
   <a href="./README_ja.md">日本語</a> •
@@ -21,9 +21,9 @@
 <br/>
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="250" alt="הדגמת אופניים חשמליים עם גרפיקה וקטורית">
+  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="220" alt="הדגמת אופניים חשמליים עם גרפיקה וקטורית">
   &nbsp;
-  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="250" alt="הדגמת ECG עם מודל תלת-ממדי מונפש">
+  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="220" alt="הדגמת ECG עם מודל תלת-ממדי מונפש">
 </div>
 
 <br/>

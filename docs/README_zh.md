@@ -1,9 +1,9 @@
 <p align="center">
-  <a href="https://lvgl.io/docs" title="Documentation">文档</a> |
-  <a href="https://forum.lvgl.io" title="Community forum">论坛</a> |
-  <a href="https://blog.lvgl.io" title="News and articles">博客</a> |
+  <a href="https://lvgl.io/docs" title="Documentation">文档</a> •
+  <a href="https://forum.lvgl.io" title="Community forum">论坛</a> •
+  <a href="https://blog.lvgl.io" title="News and articles">博客</a> •
   <a href="https://lvgl.io/services" title="Professional services">服务</a>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="450px" height="1px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="250px" height="1px">
   <a href="../README.md">EN</a> •
   <b>中文</b> •
   <a href="./README_ja.md">日本語</a> •
@@ -21,9 +21,9 @@
 <br/>
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="250" alt="采用矢量图形的电动自行车演示">
+  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="220" alt="采用矢量图形的电动自行车演示">
   &nbsp;
-  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="250" alt="带动画 3D 模型的心电图演示">
+  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="220" alt="带动画 3D 模型的心电图演示">
 </div>
 
 <br/>

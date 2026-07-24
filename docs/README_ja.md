@@ -1,9 +1,9 @@
 <p align="center">
-  <a href="https://lvgl.io/docs" title="Documentation">ドキュメント</a> |
-  <a href="https://forum.lvgl.io" title="Community forum">フォーラム</a> |
-  <a href="https://blog.lvgl.io" title="News and articles">ブログ</a> |
+  <a href="https://lvgl.io/docs" title="Documentation">ドキュメント</a> •
+  <a href="https://forum.lvgl.io" title="Community forum">フォーラム</a> •
+  <a href="https://blog.lvgl.io" title="News and articles">ブログ</a> •
   <a href="https://lvgl.io/services" title="Professional services">サービス</a>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="450px" height="1px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="250px" height="1px">
   <a href="../README.md">EN</a> •
   <a href="./README_zh.md">中文</a> •
   <b>日本語</b> •
@@ -21,9 +21,9 @@
 <br/>
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="250" alt="ベクターグラフィックスを使ったEbikeデモ">
+  <img src="https://github.com/user-attachments/assets/965e8b8b-d240-45ed-9744-bdd81785967d" height="220" alt="ベクターグラフィックスを使ったEbikeデモ">
   &nbsp;
-  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="250" alt="アニメーション3Dモデルを使ったECGデモ">
+  <img src="https://github.com/user-attachments/assets/d83820ed-5448-494e-94c8-3ca1b4ddceb0" height="220" alt="アニメーション3Dモデルを使ったECGデモ">
 </div>
 
 <br/>
