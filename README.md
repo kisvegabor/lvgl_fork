@@ -2,16 +2,16 @@
   <a href="https://lvgl.io/docs" title="Documentation">Docs</a> |
   <a href="https://forum.lvgl.io" title="Community forum">Forum</a> |
   <a href="https://blog.lvgl.io" title="News and articles">Blog</a> |
-  <a href="https://lvgl.io/services" title="Professional services">Services</a> 
+  <a href="https://lvgl.io/services" title="Professional services">Services</a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/lvgl/lvgl/releases"><img src="https://img.shields.io/github/v/release/lvgl/lvgl?label=version" alt="Latest release"></a>
   <a href="https://github.com/lvgl/lvgl/blob/master/LICENCE.txt"><img src="https://img.shields.io/github/license/lvgl/lvgl" alt="License: MIT"></a>
   <a href="https://github.com/lvgl/lvgl/graphs/contributors"><img src="https://img.shields.io/github/contributors/lvgl/lvgl" alt="Contributors"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>EN</b> • 
-  <a href="./docs/README_zh.md">中文</a> • 
-  <a href="./docs/README_jp.md">日本語</a> • 
-  <a href="./docs/README_pt_BR.md">PT</a> • 
+  <b>EN</b> •
+  <a href="./docs/README_zh.md">中文</a> •
+  <a href="./docs/README_jp.md">日本語</a> •
+  <a href="./docs/README_pt_BR.md">PT</a> •
   <a href="./docs/README_he.md">עברית</a>
 </p>
 
@@ -63,15 +63,26 @@ from small MCUs to multi-core Linux-based MPUs with 3D support. For a *typical* 
 and board manufacturers (Riverdi, Seeed Studio, VIEWE, Elecrow, etc.). If a development board has a display, it's very likely
 the vendor offers LVGL support too.
 
-**To get started**, Juck out the [Examples](#examples), pick a [Simulator project](https://lvgl.io/docs/open/integration/pc), check out the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, or check out our AI Ready [Docs](https://lvgl.io/docs/open)! Just click [**Ask AI**](https://lvgl.io/docs/open)
+**To get started**, browse the [Examples](#examples), spin up a [Simulator project](https://lvgl.io/docs/open/integration/pc), explore the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, or dive into our AI-ready [Docs](https://lvgl.io/docs/open). Just click [**Ask AI**](https://lvgl.io/docs/open)
 and ask anything!
 
 ## LVGL Pro
 
-You can build any UI with LVGL in C, but with [LVGL Pro](https://lvgl.io/pro) you can build UIs in a much faster, professional and maintainable way.
-You can quickly create reusable components and screens, preview them instantly, and export normal LVGL C code that you can integrate anywhere.
+Building UIs in C works well, but it gets slow to iterate on and harder to keep consistent as a project grows.
+[LVGL Pro](https://lvgl.io/pro) lets you build reusable components and screens visually, preview changes
+instantly, and manage data bindings, translations, animations, and tests in one place.
 
-<img height="400" alt="LVGL Pro in action" align="center" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
+Pro exports plain LVGL C code: the same LVGL you already use, with no extra runtime or dependency. It drops
+into an existing project without changing how you build or ship.
+
+<p align="center">
+  <img height="400" alt="Building a UI in the LVGL Pro editor with live preview" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
+</p>
+
+You can try it in the browser at [viewer.lvgl.io](https://viewer.lvgl.io) without installing anything, or
+[download the Editor](https://lvgl.io/pro#download) and use it under the free Community license.
+
+<!-- TODO(social-proof): if any teams/products ship Pro-built UIs, a short quote or a "used by" logo strip fits well here. -->
 
 LVGL Pro consists of four tightly related tools:
 
@@ -80,7 +91,7 @@ LVGL Pro consists of four tightly related tools:
 3. **Figma Plugin**: Move a Figma design to LVGL Pro with one click. See how it works [here](https://lvgl.io/docs/pro/figma).
 4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/syntax/cli).
 
-It comes with **free Community and Evaluation licenses**, so you can just [download](https://lvgl.io/pro#download) it and start using it immediately.
+The Community and Evaluation tiers are free to use; see [licensing](#license) for commercial use.
 
 
 ## Features
@@ -102,11 +113,11 @@ It comes with **free Community and Evaluation licenses**, so you can just [downl
   - [Multiple display](https://lvgl.io/docs/open/main-modules/display/overview#how-many-displays-can-lvgl-use) support.
 
 **Rendering**
-  - Built-in 2D rengine supporting basic shapes, gradients, anti-aliasing, opacity, smooth scrolling, box and drop shadows, image transformation, etc.
+  - Built-in 2D rendering engine supporting basic shapes, gradients, anti-aliasing, opacity, smooth scrolling, box and drop shadows, image transformation, etc.
   - [Powerful 3D rendering engine](https://lvgl.io/docs/open/libs/gltf) to show [glTF models](https://sketchfab.com/) with OpenGL.
-  - Vector graphics, SVG and Lottie support
+  - Vector graphics, SVG, and Lottie support.
   - Text is rendered with UTF-8 encoding, supporting CJK, Thai, Hindi, Arabic, and Persian writing systems.
-  - Built in support for GPUs like VG-Lite, Dave2D, NeoChrome, OpenGL, etc
+  - Built-in support for GPUs like VG-Lite, Dave2D, NeoChrome, OpenGL, etc.
 
 ## Examples
 
@@ -160,7 +171,7 @@ lv_label_set_text(label, "Hello from LVGL!");
 </tr>
 </table>
 
-
+The XML above is what [LVGL Pro](#lvgl-pro) works with: you build the screen visually and it generates the C for you.
 
 ## Integration
 
@@ -175,7 +186,7 @@ many package managers and RTOSes, and is also easy to port to any new device.
 
 - **Frameworks**: [Arduino](https://lvgl.io/docs/open/integration/framework/arduino), [PlatformIO](https://registry.platformio.org/libraries/lvgl/lvgl), [CMSIS-Pack](https://lvgl.io/docs/open/integration/framework/cmsis-pack)
 
-- **Board manufacturers**: Seeed Studio, Elecrow, Riverdi, VIEWE
+- **Board manufacturers**: [Seeed Studio](https://www.seeedstudio.com), [Elecrow](https://www.elecrow.com/display/esp-hmi-display.html), [Riverdi](https://lvgl.io/docs/open/integration/boards/manufacturers/riverdi), [VIEWE](https://lvgl.io/docs/open/integration/boards/manufacturers/viewe), and [many more](https://lvgl.io/boards)
 
 ### Built-in drivers
 LVGL ships with ready-to-use drivers, so on common platforms you don't have to write display and input handling yourself:
