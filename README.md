@@ -1,7 +1,7 @@
 <p align="center">
-  <a href="https://lvgl.io/docs" title="Documentation">Docs</a> |
-  <a href="https://forum.lvgl.io" title="Community forum">Forum</a> |
-  <a href="https://blog.lvgl.io" title="News and articles">Blog</a> |
+  <a href="https://lvgl.io/docs" title="Documentation">Docs</a> •
+  <a href="https://forum.lvgl.io" title="Community forum">Forum</a> •
+  <a href="https://blog.lvgl.io" title="News and articles">Blog</a> •
   <a href="https://lvgl.io/services" title="Professional services">Services</a>
   <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png" alt="spacer" width="250px" height="1px">
   <b>EN</b> •
