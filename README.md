@@ -29,15 +29,14 @@
 <br/>
 
   <a href="#overview" title="What LVGL is">Overview</a> •
-  <a href="#lvgl-pro" title="The professional toolchain">LVGL Pro</a> •
   <a href="#features" title="What LVGL can do">Features</a> •
+  <a href="#lvgl-pro" title="The professional toolchain">LVGL Pro</a> •
   <a href="#examples" title="C and XML examples">Examples</a> •
   <a href="#integration" title="How to add LVGL to your project">Integration</a> •
   <a href="#contributing" title="How to get involved">Contributing</a> •
   <a href="#license" title="Licensing terms">License</a>
 
 ## Overview
-
 
 **LVGL** is a free and open-source UI library that enables you to create graphical user interfaces
 for any MCUs and MPUs from any vendor on any platform.
@@ -52,34 +51,6 @@ the vendor offers LVGL support too.
 
 **To get started**, browse the [Examples](#examples), spin up a [Simulator project](https://lvgl.io/docs/open/integration/pc), explore the [Online Viewer](https://viewer.lvgl.io/) of LVGL Pro, or dive into our AI-ready [Docs](https://lvgl.io/docs/open). Just click [**Ask AI**](https://lvgl.io/docs/open)
 and ask anything!
-
-## LVGL Pro
-
-Building UIs in C works well, but it gets slow to iterate on and harder to keep consistent as a project grows.
-[LVGL Pro](https://lvgl.io/pro) lets you build reusable components and screens visually, preview changes
-instantly, and manage data bindings, translations, animations, and tests in one place.
-
-Pro exports plain LVGL C code: the same LVGL you already use, with no extra runtime or dependency. It drops
-into an existing project without changing how you build or ship.
-
-<p align="center">
-  <img height="500" alt="Building a UI in the LVGL Pro editor with live preview" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
-</p>
-
-You can try it in the browser at [viewer.lvgl.io](https://viewer.lvgl.io) without installing anything, or
-[download the Editor](https://lvgl.io/pro#download) and use it under the free Community license.
-
-<!-- TODO(social-proof): if any teams/products ship Pro-built UIs, a short quote or a "used by" logo strip fits well here. -->
-
-LVGL Pro consists of four tightly related tools:
-
-1. **Editor**: The heart of LVGL Pro. A desktop app to build components and screens in XML, manage data bindings, translations, animations, tests, and more. Learn more about the [XML Format](https://lvgl.io/docs/pro/syntax) and the [Widgets](https://lvgl.io/docs/pro/built_in_widgets).
-2. **Online Viewer**: Run the Editor in your browser, open GitHub projects, and share easily without setting up a developer environment. Visit [https://viewer.lvgl.io](https://viewer.lvgl.io).
-3. **Figma Plugin**: Move a Figma design to LVGL Pro with one click. See how it works [here](https://lvgl.io/docs/pro/figma).
-4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/syntax/cli).
-
-The Community and Evaluation tiers are free to use; see [licensing](#license) for commercial use.
-
 
 ## Features
 
@@ -105,6 +76,32 @@ The Community and Evaluation tiers are free to use; see [licensing](#license) fo
   - Vector graphics, SVG, and Lottie support.
   - Text is rendered with UTF-8 encoding, supporting CJK, Thai, Hindi, Arabic, and Persian writing systems.
   - Built-in support for GPUs like VG-Lite, Dave2D, NeoChrome, OpenGL, etc.
+
+## LVGL Pro
+
+Building UIs in C works well, but it gets slow to iterate on and harder to keep consistent as a project grows.
+[LVGL Pro](https://lvgl.io/pro) lets you build reusable components and screens visually, preview changes
+instantly, and manage data bindings, translations, animations, and tests in one place.
+
+Pro exports plain LVGL C code: the same LVGL you already use, with no extra runtime or dependency. It drops
+into an existing project without changing how you build or ship.
+
+<p align="center">
+  <img height="500" alt="Building a UI in the LVGL Pro editor with live preview" src="https://github.com/user-attachments/assets/8cef0f05-0ff1-4766-8dfd-1d15e47f181a" />
+</p>
+
+You can try it in the browser at [viewer.lvgl.io](https://viewer.lvgl.io) without installing anything, or
+[download the Editor](https://lvgl.io/pro#download) and use it under the free Community license.
+
+LVGL Pro consists of four tightly related tools:
+
+1. **Editor**: The heart of LVGL Pro. A desktop app to build components and screens in XML, manage data bindings, translations, animations, tests, and more. Learn more about the [XML Format](https://lvgl.io/docs/pro/syntax) and the [Widgets](https://lvgl.io/docs/pro/built_in_widgets).
+2. **Online Viewer**: Run the Editor in your browser, open GitHub projects, and share easily without setting up a developer environment. Visit [https://viewer.lvgl.io](https://viewer.lvgl.io).
+3. **Figma Plugin**: Move a Figma design to LVGL Pro with one click. See how it works [here](https://lvgl.io/docs/pro/figma).
+4. **CLI Tool**: Generate C code and run tests in CI/CD. See the details [here](https://lvgl.io/docs/pro/syntax/cli).
+
+The Community and Evaluation tiers are free to use; see [licensing](#license) for commercial use.
+
 
 ## Examples
 
