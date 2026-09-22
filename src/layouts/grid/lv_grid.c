@@ -376,9 +376,10 @@ static lv_result_t calc_cols(lv_obj_t * cont, lv_grid_calc_t * c, int32_t iterat
                 uint32_t col_pos = get_col_pos(item);
                 if(col_pos != i) continue;
 
-                /*In the first iteration content sizes are not resolved yet, so ignore them*/
+                /*A stretched item in a CONTENT track is circular: the track takes its
+                 *size from the item and the item from the track. Use the item's self size.*/
                 if(iteration == 0 && get_cell_col_align(item) == LV_GRID_ALIGN_STRETCH) {
-                    size = 0;
+                    size = LV_MAX(size, lv_obj_get_self_width(item));
                 }
                 else {
                     size = LV_MAX(size, lv_area_get_width(&item->coords));
@@ -490,9 +491,10 @@ static lv_result_t calc_rows(lv_obj_t * cont, lv_grid_calc_t * c, int32_t iterat
                 uint32_t row_pos = get_row_pos(item);
                 if(row_pos != i) continue;
 
-                /*In the first iteration content sizes are not resolved yet, so ignore them*/
+                /*A stretched item in a CONTENT track is circular: the track takes its
+                 *size from the item and the item from the track. Use the item's self size.*/
                 if(iteration == 0 && get_cell_row_align(item) == LV_GRID_ALIGN_STRETCH) {
-                    size = 0;
+                    size = LV_MAX(size, lv_obj_get_self_height(item));
                 }
                 else {
                     size = LV_MAX(size, lv_area_get_height(&item->coords));

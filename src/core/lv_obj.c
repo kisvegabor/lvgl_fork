@@ -1481,13 +1481,9 @@ static void lv_obj_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
 
     lv_obj_t * parent = obj->parent;
     if(parent) {
-        int32_t sl = lv_obj_get_scroll_left(parent);
-        int32_t st = lv_obj_get_scroll_top(parent);
-
-        obj->coords.y1 = parent->coords.y1 + lv_obj_get_style_pad_top_internal(parent, LV_PART_MAIN) - st;
-        obj->coords.y2 = obj->coords.y1 - 1;
-        obj->coords.x1  = parent->coords.x1 + lv_obj_get_style_pad_left_internal(parent, LV_PART_MAIN) - sl;
-        obj->coords.x2  = obj->coords.x1 - 1;
+        /*Zero sized area by default.
+         *Will be recalculated in lv_obj_update_layout before the first render*/
+        lv_area_set(&obj->coords, 0, 0, -1, -1);
     }
 
     /*Set attributes*/

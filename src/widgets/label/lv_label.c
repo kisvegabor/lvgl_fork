@@ -151,6 +151,7 @@ static void request_text_flow_update(lv_obj_t * obj)
     lv_label_t * label = (lv_label_t *)obj;
     lv_obj_mark_layout_as_dirty(obj);
     label->text_flow_invalid = 1;
+    label->self_size_invalid = 1;
     lv_obj_invalidate(obj);
 }
 
@@ -819,6 +820,7 @@ static void lv_label_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
 
     label->text       = NULL;
     label->text_flow_invalid = 0;
+    label->self_size_invalid = 1;
     label->dot_begin  = LV_LABEL_DOT_BEGIN_INV;
     label->long_mode  = LV_LABEL_LONG_MODE_WRAP;
     lv_point_set(&label->offset, 0, 0);
@@ -855,9 +857,16 @@ static void lv_label_destructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
 #endif /*LV_USE_TRANSLATION*/
 }
 
+/**
+ * Measure the text into `label->text_size`, if anything it depends on has changed.
+ * It is called on every LV_EVENT_GET_SELF_SIZE, and the scroll calculations send that
+ * while drawing, so without the flag every label measures its text on every frame.
+ */
 static void update_self_size(lv_obj_t * obj)
 {
     lv_label_t * label = (lv_label_t *)obj;
+    if(!label->self_size_invalid) return;
+    label->self_size_invalid = 0;
 
     uint32_t dot_begin = label->dot_begin;
     lv_label_revert_dots(obj);
@@ -896,6 +905,7 @@ static void lv_label_event(const lv_obj_class_t * class_p, lv_event_t * e)
     if(code == LV_EVENT_SIZE_CHANGED || code == LV_EVENT_STYLE_CHANGED) {
         lv_label_t * label = (lv_label_t *)obj;
         label->text_flow_invalid = 1;
+        label->self_size_invalid = 1;
     }
     else if(code == LV_EVENT_REFR_EXT_DRAW_SIZE) {
         /* Italic or other non-typical letters can be drawn of out of the object.
