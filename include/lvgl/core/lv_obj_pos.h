@@ -489,7 +489,7 @@ lv_result_t lv_obj_invalidate_area(const lv_obj_t * obj, const lv_area_t * area)
  * @return LV_RESULT_OK: the area is invalidated; LV_RESULT_INVALID: the area wasn't invalidated.
  *         (maybe it was off-screen or fully clipped)
  */
-lv_result_t lv_obj_invalidate(const lv_obj_t * obj);
+lv_result_t lv_obj_invalidate(lv_obj_t * obj);
 
 /**
  * Tell whether an area of an object is visible (even partially) now or not

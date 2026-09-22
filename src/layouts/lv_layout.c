@@ -72,7 +72,7 @@ uint32_t lv_layout_register(lv_layout_update_cb_t cb, void * user_data)
     LV_CHECK_ARG(cb != NULL, return 0);
 
     LV_LOG_DEPRECATED("`lv_layout_register` is deprecated and replaced by `lv_layout_create`.");
-    lv_layout_callbacks_t cbs = {.layout_update_cb  = cb, . get_min_size_cb = NULL};
+    lv_layout_callbacks_t cbs = {.update_positions_cb  = cb, .update_sizes_cb = NULL, .get_min_size_cb = NULL};
     return lv_layout_create(cbs, user_data);
 }
 

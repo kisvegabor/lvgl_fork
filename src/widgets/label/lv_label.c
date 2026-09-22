@@ -182,10 +182,6 @@ void lv_label_set_text_static(lv_obj_t * obj, const char * text)
 {
     LV_CHECK_OBJ(obj, MY_CLASS, return);
     lv_label_t * label = (lv_label_t *)obj;
-    if(!text) {
-        lv_label_mark_need_refr_text(obj);
-        return;
-    }
 
     remove_translation_tag(obj);
     if(label->static_txt == 0 && label->text != NULL) {
@@ -249,7 +245,7 @@ void lv_label_set_max_lines(lv_obj_t * obj, int32_t lines)
     LV_CHECK_OBJ(obj, MY_CLASS, return);
     lv_label_t * label = (lv_label_t *)obj;
     label->max_lines = lines;
-    lv_label_mark_need_refr_text(obj);
+    request_text_flow_update(obj);
 }
 
 void lv_label_set_text_selection_start(lv_obj_t * obj, uint32_t index)
@@ -1075,14 +1071,11 @@ static void draw_main(lv_event_t * e)
 static void set_text_internal(lv_obj_t * obj, const char * text)
 {
     LV_ASSERT(obj != NULL);
+
     lv_label_t * label = (lv_label_t *)obj;
 
     /*If text is NULL then just refresh with the current text*/
     if(text == NULL) text = label->text;
-    if(text == NULL) {
-        lv_label_mark_need_refr_text(obj);
-        return;
-    }
 
     lv_label_revert_dots(obj); /*In case text == label->text*/
     const size_t text_len = get_text_length(text);

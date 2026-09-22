@@ -48,18 +48,9 @@ static void update_coordinates(lv_obj_t * obj);
 static void transform_point_array(const lv_obj_t * obj, lv_point_t * p, size_t p_count, bool inv);
 static bool is_transformed(const lv_obj_t * obj);
 static lv_result_t invalidate_area_core(const lv_obj_t * obj, lv_area_t * area_tmp);
-<<<<<<< HEAD
 static lv_result_t obj_invalidate_area_internal(const lv_obj_t * obj, const lv_area_t * area);
-static int32_t calc_dynamic_width(lv_obj_t * obj, lv_style_prop_t prop, int32_t * content_width);
-static int32_t calc_dynamic_height(lv_obj_t * obj, lv_style_prop_t prop, int32_t * content_height);
-static bool size_in_effect_is_pct(int32_t unclamped, int32_t min, int32_t max, int32_t size_style,
-                                  int32_t min_style, int32_t max_style);
-=======
-static lv_result_t obj_invalidate_area_internal(const lv_display_t * disp, const lv_obj_t * obj,
-                                                const lv_area_t * area);
 static void obj_move_to(lv_obj_t * obj, int32_t x, int32_t y);
 
->>>>>>> 230af3689 (arch(layout): rework the layout calculation to make it more predicatble and faster)
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -176,115 +167,45 @@ static void update_coordinates_init(lv_obj_t * obj)
 
 static void update_fixed_and_pct_size(lv_obj_t * obj)
 {
-    LV_CHECK_OBJ(obj, MY_CLASS, return false);
-
-    /*If the width or height is set by a layout do not modify them*/
-    if(obj->w_layout && obj->h_layout) return false;
-
     lv_obj_t * parent = lv_obj_get_parent(obj);
 
-    int32_t w;
-    if(obj->w_layout) {
-        w = lv_obj_get_width(obj);
-    }
-    else {
-        int32_t content_width = -1;
-        int32_t unclamped_w = calc_dynamic_width(obj, LV_STYLE_WIDTH, &content_width);
-        int32_t minw = calc_dynamic_width(obj, LV_STYLE_MIN_WIDTH, &content_width);
-        int32_t maxw = calc_dynamic_width(obj, LV_STYLE_MAX_WIDTH, &content_width);
-        w = LV_CLAMP(minw, unclamped_w, maxw);
+    /*Don't set the size of the screen as they always cover the whole display*/
+    if(parent == NULL) return;
 
-        /**
-         * If the width in effect is a percentage of a parent that is itself LV_SIZE_CONTENT and not managed by
-         * a layout, the two sizes would depend on each other, so `w_ignore_size` excludes this object from the
-         * parent's content width calculation.
-         */
-        bool w_pct = size_in_effect_is_pct(unclamped_w, minw, maxw,
-                                           lv_obj_get_style_width_internal(obj, LV_PART_MAIN),
-                                           lv_obj_get_style_min_width_internal(obj, LV_PART_MAIN),
-                                           lv_obj_get_style_max_width_internal(obj, LV_PART_MAIN));
-        obj->w_ignore_size =
-            (w_pct && parent->w_layout == 0 && lv_obj_get_style_width_internal(parent, 0) == LV_SIZE_CONTENT);
+    /*Don't update layout and content width now*/
+    int32_t width = lv_obj_get_style_width(obj, 0);
+
+    if(obj->w_layout == 0 && width != LV_SIZE_CONTENT) {
+        /*Just use the width, handle percentage values and clamp*/
+        width = lv_obj_calc_dynamic_width(obj, LV_STYLE_WIDTH);
+        int32_t min_width = lv_obj_calc_dynamic_width(obj, LV_STYLE_MIN_WIDTH);
+        int32_t max_width = lv_obj_calc_dynamic_width(obj, LV_STYLE_MAX_WIDTH);
+        width = LV_CLAMP(min_width, width, max_width);
+        if(lv_area_get_width(&obj->coords) != width) {
+            lv_obj_invalidate(obj);
+            lv_area_set_width(&obj->coords, width);
+            obj->size_changed = 1;
+            parent->child_coords_changed = 1;
+        }
     }
 
-    int32_t h;
-    if(obj->h_layout) {
-        h = lv_obj_get_height(obj);
+    /*Don't update layout and content width now*/
+    int32_t height = lv_obj_get_style_height(obj, 0);
+    if(obj->h_layout == 0 && height != LV_SIZE_CONTENT) {
+        /*Just use the height, handle percentage values and clamp*/
+        height = lv_obj_calc_dynamic_height(obj, LV_STYLE_HEIGHT);
+        int32_t min_height = lv_obj_calc_dynamic_height(obj, LV_STYLE_MIN_HEIGHT);
+        int32_t max_height = lv_obj_calc_dynamic_height(obj, LV_STYLE_MAX_HEIGHT);
+        height = LV_CLAMP(min_height, height, max_height);
+        if(lv_area_get_height(&obj->coords) != height) {
+            lv_obj_invalidate(obj);
+            lv_area_set_height(&obj->coords, height);
+            obj->size_changed = 1;
+            parent->child_coords_changed = 1;
+        }
     }
-    else {
-        int32_t content_height = -1;
-        int32_t unclamped_h = calc_dynamic_height(obj, LV_STYLE_HEIGHT, &content_height);
-        int32_t minh = calc_dynamic_height(obj, LV_STYLE_MIN_HEIGHT, &content_height);
-        int32_t maxh = calc_dynamic_height(obj, LV_STYLE_MAX_HEIGHT, &content_height);
-        h = LV_CLAMP(minh, unclamped_h, maxh);
-
-        /**
-         * If the height in effect is a percentage of a parent that is itself LV_SIZE_CONTENT and not managed by
-         * a layout, the two sizes would depend on each other, so `h_ignore_size` excludes this object from the
-         * parent's content height calculation. See the width branch above.
-         */
-        bool h_pct = size_in_effect_is_pct(unclamped_h, minh, maxh,
-                                           lv_obj_get_style_height_internal(obj, LV_PART_MAIN),
-                                           lv_obj_get_style_min_height_internal(obj, LV_PART_MAIN),
-                                           lv_obj_get_style_max_height_internal(obj, LV_PART_MAIN));
-
-        obj->h_ignore_size = (h_pct && parent->h_layout == 0 &&
-                              lv_obj_get_style_height_internal(parent, 0) == LV_SIZE_CONTENT);
-    }
-
-    /*Do nothing if the size is not changed*/
-    /*It is very important else recursive resizing can occur without size change*/
-    if(lv_obj_get_width(obj) == w && lv_obj_get_height(obj) == h)
-        return false;
-
-    /*Invalidate the original area*/
-    lv_obj_invalidate(obj);
-
-    /*Save the original coordinates*/
-    lv_area_t ori;
-    lv_obj_get_coords(obj, &ori);
-
-    /*Check if the object inside the parent or not*/
-    lv_area_t parent_fit_area;
-    lv_obj_get_content_coords(parent, &parent_fit_area);
-
-    /*If the object is already out of the parent and its position is changes
-     *surely the scrollbars also changes so invalidate them*/
-    bool on1 = lv_area_is_in(&ori, &parent_fit_area, 0);
-    if(!on1)
-        lv_obj_scrollbar_invalidate(parent);
-
-    /*Set the length and height
-     *Be sure the content is not scrolled in an invalid position on the new size*/
-    obj->coords.y2 = obj->coords.y1 + h - 1;
-    if(lv_obj_get_style_base_dir_internal(obj, LV_PART_MAIN) == LV_BASE_DIR_RTL) {
-        obj->coords.x1 = obj->coords.x2 - w + 1;
-    }
-    else {
-        obj->coords.x2 = obj->coords.x1 + w - 1;
-    }
-
-    /*Call the ancestor's event handler to the object with its new coordinates*/
-    lv_obj_send_event(obj, LV_EVENT_SIZE_CHANGED, &ori);
-
-    /*Call the ancestor's event handler to the parent too*/
-    lv_obj_send_event(parent, LV_EVENT_CHILD_CHANGED, obj);
-
-    /*Invalidate the new area*/
-    lv_obj_invalidate(obj);
-
-    obj->readjust_scroll_after_layout = 1;
-
-    /*If the object was out of the parent invalidate the new scrollbar area too.
-     *If it wasn't out of the parent but out now, also invalidate the scrollbars*/
-    bool on2 = lv_area_is_in(&obj->coords, &parent_fit_area, 0);
-    if(on1 || (!on1 && on2))
-        lv_obj_scrollbar_invalidate(parent);
-
-    lv_obj_refresh_ext_draw_size(obj);
-
-    return true;
 }
+
 
 void lv_obj_set_size(lv_obj_t * obj, int32_t w, int32_t h)
 {
@@ -380,7 +301,7 @@ void lv_obj_mark_layout_as_dirty(lv_obj_t * obj)
     }
 }
 
-void lv_obj_update_layout(lv_obj_t * obj)
+void lv_obj_update_layout(const lv_obj_t * obj)
 {
     LV_CHECK_OBJ(obj, MY_CLASS, return);
 
@@ -418,7 +339,7 @@ void lv_obj_align(lv_obj_t * obj, lv_align_t align, int32_t x_ofs, int32_t y_ofs
     lv_obj_set_pos(obj, x_ofs, y_ofs);
 }
 
-void lv_obj_align_to(lv_obj_t * obj, lv_obj_t * base, lv_align_t align, int32_t x_ofs, int32_t y_ofs)
+void lv_obj_align_to(lv_obj_t * obj, const  lv_obj_t * base, lv_align_t align, int32_t x_ofs, int32_t y_ofs)
 {
     LV_CHECK_OBJ(obj, MY_CLASS, return);
 
