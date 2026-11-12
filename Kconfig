@@ -551,14 +551,6 @@ config LV_USE_DRAW_SW_COMPLEX_GRADIENTS
 	help
 		Adds linear gradients at an angle, plus radial and conical gradients.
 
-config LV_DRAW_SW_SHADOW_CACHE_SIZE
-	int "Shadow cache size"
-	depends on LV_DRAW_SW_COMPLEX
-	default 0
-	help
-		Maximum shadow size to buffer, where shadow size is `shadow_width + radius`.
-		Costs this value squared in RAM; 0 disables caching.
-
 config LV_DRAW_SW_CIRCLE_CACHE_SIZE
 	int "Circle cache size"
 	depends on LV_DRAW_SW_COMPLEX

@@ -290,11 +290,6 @@
 #define LV_USE_DRAW_SW_COMPLEX_GRADIENTS 0
 
 #if LV_DRAW_SW_COMPLEX
-/** Maximum shadow size to buffer, where shadow size is `shadow_width + radius`.
- *  Costs this value squared in RAM; 0 disables caching.
- */
-#define LV_DRAW_SW_SHADOW_CACHE_SIZE 0
-
 /** The circumference of a 1/4 circle is cached for anti-aliasing, costing
  *  radius * 4 bytes per circle. Set to 0 to disable caching.
  */

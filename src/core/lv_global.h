@@ -129,9 +129,6 @@ typedef struct _lv_global_t {
     lv_ll_t subject_ll;
 #endif
 
-#if defined(LV_DRAW_SW_SHADOW_CACHE_SIZE) && LV_DRAW_SW_SHADOW_CACHE_SIZE > 0
-    lv_draw_sw_shadow_cache_t sw_shadow_cache;
-#endif
 #if LV_DRAW_SW_COMPLEX
     lv_draw_sw_mask_radius_circle_dsc_arr_t sw_circle_cache;
 #endif
