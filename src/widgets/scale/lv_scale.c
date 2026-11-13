@@ -54,7 +54,8 @@ static void scale_calculate_main_compensation(lv_obj_t * obj);
 
 static void scale_get_center(const lv_obj_t * obj, lv_point_t * center, int32_t * arc_r);
 static void scale_get_tick_points(lv_obj_t * obj, const uint32_t tick_idx, bool is_major_tick,
-                                  lv_point_t * tick_point_a, lv_point_t * tick_point_b);
+                                  lv_point_t * tick_point_a, lv_point_t * tick_point_b,
+                                  lv_point_precise_t * precise_a, lv_point_precise_t * precise_b);
 static void scale_get_label_coords(lv_obj_t * obj, lv_draw_label_dsc_t * label_dsc, lv_point_t * tick_point,
                                    lv_area_t * label_coords);
 static void scale_set_indicator_label_properties(lv_obj_t * obj, lv_draw_label_dsc_t * label_dsc,
@@ -918,7 +919,9 @@ static void scale_draw_indicator(lv_obj_t * obj, lv_event_t * event)
         /* The tick is represented by a line. We need two points to draw it */
         lv_point_t tick_point_a;
         lv_point_t tick_point_b;
-        scale_get_tick_points(obj, tick_idx, is_major_tick, &tick_point_a, &tick_point_b);
+        lv_point_precise_t precise_a;
+        lv_point_precise_t precise_b;
+        scale_get_tick_points(obj, tick_idx, is_major_tick, &tick_point_a, &tick_point_b, &precise_a, &precise_b);
 
         /* Setup a label if they're enabled and we're drawing a major tick */
         if(scale->label_enabled && is_major_tick) {
@@ -926,15 +929,15 @@ static void scale_draw_indicator(lv_obj_t * obj, lv_event_t * event)
         }
 
         if(is_major_tick) {
-            major_tick_dsc.p1 = lv_point_to_precise(&tick_point_a);
-            major_tick_dsc.p2 = lv_point_to_precise(&tick_point_b);
+            major_tick_dsc.p1 = precise_a;
+            major_tick_dsc.p2 = precise_b;
             major_tick_dsc.base.id1 = tick_idx;
             major_tick_dsc.base.id2 = tick_value;
             lv_draw_line(layer, &major_tick_dsc);
         }
         else {
-            minor_tick_dsc.p1 = lv_point_to_precise(&tick_point_a);
-            minor_tick_dsc.p2 = lv_point_to_precise(&tick_point_b);
+            minor_tick_dsc.p1 = precise_a;
+            minor_tick_dsc.p2 = precise_b;
             minor_tick_dsc.base.id1 = tick_idx;
             minor_tick_dsc.base.id2 = tick_value;
             lv_draw_line(layer, &minor_tick_dsc);
@@ -1137,7 +1140,7 @@ static void scale_calculate_main_compensation(lv_obj_t * obj)
         /* The tick is represented by a line. We need two points to draw it */
         lv_point_t tick_point_a;
         lv_point_t tick_point_b;
-        scale_get_tick_points(obj, tick_idx, is_major_tick, &tick_point_a, &tick_point_b);
+        scale_get_tick_points(obj, tick_idx, is_major_tick, &tick_point_a, &tick_point_b, NULL, NULL);
 
         /* Store initial and last tick widths to be used in the main line drawing */
         scale_store_main_line_tick_width_compensation(obj, tick_idx, is_major_tick, major_tick_dsc.width, minor_tick_dsc.width);
@@ -1361,9 +1364,12 @@ static void scale_get_center(const lv_obj_t * obj, lv_point_t * center, int32_t 
  * @param is_major_tick true if tick_idx is a major tick
  * @param tick_point_a  pointer to point 'a' of the tick
  * @param tick_point_b  pointer to point 'b' of the tick
+ * @param precise_a     point 'a' with sub-pixel precision in round modes (if LV_USE_FLOAT), or NULL
+ * @param precise_b     point 'b' with sub-pixel precision in round modes (if LV_USE_FLOAT), or NULL
  */
 static void scale_get_tick_points(lv_obj_t * obj, const uint32_t tick_idx, bool is_major_tick,
-                                  lv_point_t * tick_point_a, lv_point_t * tick_point_b)
+                                  lv_point_t * tick_point_a, lv_point_t * tick_point_b,
+                                  lv_point_precise_t * precise_a, lv_point_precise_t * precise_b)
 {
     LV_ASSERT(obj != NULL);
     LV_ASSERT(tick_point_a != NULL);
@@ -1520,8 +1526,34 @@ static void scale_get_tick_points(lv_obj_t * obj, const uint32_t tick_idx, bool 
         tick_point_b->x = center_point.x + adjusted_radio_with_tick_len + radial_offset;
         tick_point_b->y = center_point.y;
         lv_point_transform(tick_point_b, angle_upscale, LV_SCALE_NONE, LV_SCALE_NONE, &center_point, false);
+
+#if LV_USE_FLOAT
+        if(precise_a && precise_b) {
+            /*Interpolate the 1 degree sine table to the 0.1 degree angle. Integer math in
+             *1/256 px, so every platform gets the same points; the division by 256 is exact.*/
+            int32_t a10 = angle_upscale % 3600;
+            if(a10 < 0) a10 += 3600;
+            int32_t deg = a10 / 10;
+            int32_t frac = a10 % 10;
+            int64_t s = (int64_t)lv_trigo_sin(deg) * 10 + (lv_trigo_sin(deg + 1) - lv_trigo_sin(deg)) * frac;
+            int64_t c = (int64_t)lv_trigo_cos(deg) * 10 + (lv_trigo_cos(deg + 1) - lv_trigo_cos(deg)) * frac;
+            int64_t ra = (int64_t)(point_closer_to_arc + radial_offset) * 256;
+            int64_t rb = (int64_t)(adjusted_radio_with_tick_len + radial_offset) * 256;
+            const int64_t div = 32767 * 10;
+            precise_a->x = (float)(center_point.x * 256 + c * ra / div) / 256.0f;
+            precise_a->y = (float)(center_point.y * 256 + s * ra / div) / 256.0f;
+            precise_b->x = (float)(center_point.x * 256 + c * rb / div) / 256.0f;
+            precise_b->y = (float)(center_point.y * 256 + s * rb / div) / 256.0f;
+            return;
+        }
+#endif
     }
     else { /* Nothing to do */ }
+
+    if(precise_a && precise_b) {
+        *precise_a = lv_point_to_precise(tick_point_a);
+        *precise_b = lv_point_to_precise(tick_point_b);
+    }
 }
 
 /**

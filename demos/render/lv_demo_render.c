@@ -1114,6 +1114,143 @@ static void conical_gradient_cb(lv_obj_t * parent)
 
 #endif
 
+/*Lines: a chart with many short segments, round scales and sub-pixel lines in every direction*/
+static uint32_t lcg_state;
+static int32_t lcg_next(int32_t range)
+{
+    lcg_state = lcg_state * 1103515245u + 12345u;
+    return (int32_t)((lcg_state >> 16) % (uint32_t)range);
+}
+
+static void chart_cb(lv_obj_t * parent)
+{
+    lv_obj_set_layout(parent, LV_LAYOUT_NONE);
+    lcg_state = 1;
+
+    lv_obj_t * chart = lv_chart_create(parent);
+    lv_obj_remove_style_all(chart);
+    lv_obj_set_style_opa(chart, opa_saved, 0);
+    lv_obj_set_size(chart, 470, 262);
+    lv_obj_set_pos(chart, 5, 5);
+    lv_obj_set_style_line_width(chart, 2, LV_PART_ITEMS);
+    lv_obj_set_style_width(chart, 0, LV_PART_INDICATOR);
+    lv_obj_set_style_height(chart, 0, LV_PART_INDICATOR);
+    lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
+    lv_chart_set_div_line_count(chart, 0, 0);
+    lv_chart_set_point_count(chart, 120);
+    lv_chart_set_axis_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 1000);
+
+    lv_color_t colors[] = {lv_color_hex(0xff0000), lv_color_hex(0x008000), lv_color_hex(0x0000ff), lv_color_hex(0x000000)};
+    uint32_t s;
+    for(s = 0; s < 4; s++) {
+        lv_chart_series_t * ser = lv_chart_add_series(chart, colors[s], LV_CHART_AXIS_PRIMARY_Y);
+        int32_t v = 500;
+        uint32_t i;
+        for(i = 0; i < 120; i++) {
+            v += lcg_next(201) - 100;
+            if(v < 0) v = 0;
+            if(v > 1000) v = 1000;
+            lv_chart_set_next_value(chart, ser, v);
+        }
+    }
+}
+
+static lv_obj_t * scale_obj_create(lv_obj_t * parent, int32_t x, int32_t y, int32_t size, uint32_t tick_cnt,
+                                   int32_t minor_len, int32_t major_len, int32_t rotation)
+{
+    lv_obj_t * scale = lv_scale_create(parent);
+    lv_obj_remove_style_all(scale);
+    lv_obj_set_style_opa(scale, opa_saved, 0);
+    lv_obj_set_size(scale, size, size);
+    lv_obj_set_pos(scale, x, y);
+    lv_scale_set_mode(scale, LV_SCALE_MODE_ROUND_INNER);
+    lv_scale_set_label_show(scale, false);
+    lv_scale_set_total_tick_count(scale, tick_cnt);
+    lv_scale_set_major_tick_every(scale, 5);
+    lv_scale_set_angle_range(scale, 270);
+    lv_scale_set_rotation(scale, rotation);
+    lv_obj_set_style_arc_width(scale, 2, LV_PART_MAIN);
+    lv_obj_set_style_arc_color(scale, lv_color_black(), LV_PART_MAIN);
+    lv_obj_set_style_line_width(scale, 1, LV_PART_ITEMS);
+    lv_obj_set_style_length(scale, minor_len, LV_PART_ITEMS);
+    lv_obj_set_style_line_color(scale, lv_color_black(), LV_PART_ITEMS);
+    lv_obj_set_style_line_width(scale, 2, LV_PART_INDICATOR);
+    lv_obj_set_style_length(scale, major_len, LV_PART_INDICATOR);
+    lv_obj_set_style_line_color(scale, lv_color_hex(0xc00000), LV_PART_INDICATOR);
+    return scale;
+}
+
+static void scale_cb(lv_obj_t * parent)
+{
+    lv_obj_set_layout(parent, LV_LAYOUT_NONE);
+    scale_obj_create(parent, 5, 5, 262, 81, 8, 16, 135);
+    scale_obj_create(parent, 272, 5, 100, 41, 4, 8, 135);
+    scale_obj_create(parent, 376, 5, 100, 61, 3, 6, 90);
+    scale_obj_create(parent, 272, 140, 100, 31, 5, 10, 0);
+    scale_obj_create(parent, 376, 140, 100, 41, 4, 7, 45);
+}
+
+static void line_fan_draw_cb(lv_event_t * e)
+{
+    lv_obj_t * obj = lv_event_get_current_target(e);
+    lv_layer_t * layer = lv_event_get_layer(e);
+    int32_t idx = (int32_t)(lv_uintptr_t)lv_event_get_user_data(e);
+    static const int32_t widths[] = {1, 2, 3, 5, 1, 2, 3, 5};
+
+    lv_draw_line_dsc_t dsc;
+    lv_draw_line_dsc_init(&dsc);
+    dsc.color = lv_color_black();
+    dsc.width = widths[idx];
+    dsc.opa = opa_saved;
+    if(idx >= 4 && idx < 7) {
+        dsc.dash_width = 6;
+        dsc.dash_gap = 4;
+    }
+    if(idx == 7) {
+        dsc.round_start = 1;
+        dsc.round_end = 1;
+    }
+
+    lv_area_t coords;
+    lv_obj_get_coords(obj, &coords);
+    int32_t a;
+    for(a = 0; a < 360; a += 8) {
+        int32_t s = lv_trigo_sin(a + idx);
+        int32_t c = lv_trigo_cos(a + idx);
+#if LV_USE_FLOAT
+        /*Integer math in 1/256 px, so every platform renders the same; /256 is exact in float*/
+        int32_t cx = coords.x1 * 256 + 15181; /*+59.3 px*/
+        int32_t cy = coords.y1 * 256 + 17331; /*+67.7 px*/
+        dsc.p1.x = (float)(cx + c * 18 * 256 / 32767) / 256.0f;
+        dsc.p1.y = (float)(cy + s * 18 * 256 / 32767) / 256.0f;
+        dsc.p2.x = (float)(cx + c * 56 * 256 / 32767) / 256.0f;
+        dsc.p2.y = (float)(cy + s * 56 * 256 / 32767) / 256.0f;
+#else
+        int32_t cx = coords.x1 + 59;
+        int32_t cy = coords.y1 + 67;
+        dsc.p1.x = cx + ((c * 18) >> 15);
+        dsc.p1.y = cy + ((s * 18) >> 15);
+        dsc.p2.x = cx + ((c * 56) >> 15);
+        dsc.p2.y = cy + ((s * 56) >> 15);
+#endif
+        lv_draw_line(layer, &dsc);
+    }
+}
+
+static void line_fan_cb(lv_obj_t * parent)
+{
+    lv_obj_set_layout(parent, LV_LAYOUT_NONE);
+    int32_t i;
+    for(i = 0; i < 8; i++) {
+        lv_obj_t * obj = lv_obj_create(parent);
+        lv_obj_remove_style_all(obj);
+        lv_obj_set_style_opa(obj, opa_saved, 0);
+        lv_obj_set_size(obj, 120, 136);
+        lv_obj_set_pos(obj, (i % 4) * 120, (i / 4) * 136);
+        lv_obj_add_event_cb(obj, line_fan_draw_cb, LV_EVENT_DRAW_MAIN, (void *)(lv_uintptr_t)i);
+    }
+}
+
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -1141,6 +1278,9 @@ static scene_dsc_t scenes[] = {
     {.name = "radial_gradient",     .create_cb = radial_gradient_cb},
     {.name = "conical_gradient",    .create_cb = conical_gradient_cb},
 #endif
+    {.name = "chart",               .create_cb = chart_cb},
+    {.name = "scale",               .create_cb = scale_cb},
+    {.name = "line_fan",            .create_cb = line_fan_cb},
 
     {.name = "", .create_cb = NULL}
 };
