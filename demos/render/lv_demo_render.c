@@ -1114,6 +1114,63 @@ static void conical_gradient_cb(lv_obj_t * parent)
 
 #endif
 
+static void blur_cb(lv_obj_t * parent)
+{
+    /*15 tracks: the 5x5 background spans 3 tracks per item and the 3x3 blur spans 5,
+     *so the edges of the blurred areas do not line up with the background pattern*/
+    static const int32_t grid_tracks[] = {LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1),
+                                          LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1),
+                                          LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1),
+                                          LV_GRID_TEMPLATE_LAST
+                                         };
+    lv_obj_set_grid_dsc_array(parent, grid_tracks, grid_tracks);
+
+    static const char * texts[] = {
+        "First", "Second", "Third", "Fourth", "Fifth",
+        "Sixth", "Seventh", "Eighth", "Ninth", "Tenth",
+        "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth",
+        "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth",
+        "Twenty-\nfirst", "Twenty-\nsecond", "Twenty-\nthird", "Twenty-\nfourth", "Twenty-\nfifth",
+    };
+
+    uint32_t i;
+    for(i = 0; i < 25; i++) {
+        uint32_t color_id = (i * 3 + i / 5) % COL_CNT;
+        lv_obj_t * obj = fill_obj_create(parent, color_id, 0);
+        lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_CENTER, (i % 5) * 3, 3, LV_GRID_ALIGN_CENTER, (i / 5) * 3, 3);
+        lv_obj_set_size(obj, 92, 46);
+        lv_obj_set_style_radius(obj, (i % 3) * 8, 0);
+
+        lv_obj_t * label = lv_label_create(obj);
+        lv_label_set_text(label, texts[i]);
+        lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
+        /*White text on the black and the blue background*/
+        lv_obj_set_style_text_color(label, color_id == 0 || color_id == 4 ? lv_color_white() : lv_color_black(), 0);
+        lv_obj_center(label);
+    }
+
+    /*Columns: corner radius, rows: blur radius*/
+    static const int32_t radius_values[] = {0, 12, LV_RADIUS_CIRCLE};
+    static const int32_t blur_values[] = {4, 16, 40};
+
+    uint32_t row;
+    for(row = 0; row < 3; row++) {
+        uint32_t col;
+        for(col = 0; col < 3; col++) {
+            lv_obj_t * obj = lv_obj_create(parent);
+            lv_obj_remove_style_all(obj);
+            lv_obj_set_style_bg_opa(obj, LV_OPA_20, 0);
+            lv_obj_set_style_bg_color(obj, lv_color_white(), 0);
+            lv_obj_set_style_radius(obj, radius_values[col], 0);
+            lv_obj_set_style_blur_backdrop(obj, true, 0);
+            lv_obj_set_style_blur_radius(obj, blur_values[row], 0);
+            lv_obj_set_style_blur_quality(obj, LV_BLUR_QUALITY_AUTO, 0);
+            lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_CENTER, col * 5, 5, LV_GRID_ALIGN_CENTER, row * 5, 5);
+            lv_obj_set_size(obj, 140, 76);
+        }
+    }
+}
+
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -1141,6 +1198,8 @@ static scene_dsc_t scenes[] = {
     {.name = "radial_gradient",     .create_cb = radial_gradient_cb},
     {.name = "conical_gradient",    .create_cb = conical_gradient_cb},
 #endif
+
+    {.name = "blur",                .create_cb = blur_cb},
 
     {.name = "", .create_cb = NULL}
 };

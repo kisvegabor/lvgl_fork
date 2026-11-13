@@ -132,4 +132,79 @@ void test_blur(void)
     }
 }
 
+#define SHIFT_AREA_WIDTH 57
+#define SHIFT_AREA_HEIGHT 41
+
+/*Draw some shapes and blur them. Everything is moved by `ofs` pixels in both directions.*/
+static lv_obj_t * shifted_canvas_render(lv_color_format_t cf, void * canvas_buf, int32_t ofs, int32_t blur_radius,
+                                        lv_blur_quality_t quality)
+{
+    lv_obj_t * canvas = lv_canvas_create(lv_screen_active());
+    lv_canvas_set_buffer(canvas, lv_draw_buf_align(canvas_buf, cf), CANVAS_WIDTH, CANVAS_HEIGHT, cf);
+    lv_canvas_fill_bg(canvas, lv_color_hex3(0xccc), LV_OPA_COVER);
+
+    lv_layer_t layer;
+    lv_canvas_init_layer(canvas, &layer);
+
+    lv_draw_fill_dsc_t fill_dsc;
+    lv_draw_fill_dsc_init(&fill_dsc);
+    uint32_t i;
+    for(i = 0; i < 6; i++) {
+        fill_dsc.color = lv_palette_main((lv_palette_t)(i * 3));
+        fill_dsc.radius = i * 2;
+        lv_area_t fill_coords = {ofs + i * 11, ofs + i * 7, ofs + i * 11 + 13, ofs + i * 7 + 9};
+        lv_draw_fill(&layer, &fill_dsc, &fill_coords);
+    }
+
+    lv_draw_blur_dsc_t blur_dsc;
+    lv_draw_blur_dsc_init(&blur_dsc);
+    blur_dsc.blur_radius = blur_radius;
+    blur_dsc.quality = quality;
+
+    lv_area_t blur_coords = {ofs + 8, ofs + 8, ofs + 8 + SHIFT_AREA_WIDTH - 1, ofs + 8 + SHIFT_AREA_HEIGHT - 1};
+    lv_draw_blur(&layer, &blur_dsc, &blur_coords);
+
+    lv_canvas_finish_layer(canvas, &layer);
+
+    return canvas;
+}
+
+/*The result of the blur must not depend on where the area is in the memory*/
+void test_blur_shifted(void)
+{
+    static LV_ATTRIBUTE_MEM_ALIGN uint8_t canvas_buf[2][LV_TEST_WIDTH_TO_STRIDE(CANVAS_WIDTH,
+                                                                                4) * CANVAS_HEIGHT + LV_DRAW_BUF_ALIGN];
+    static const lv_color_format_t cfs[] = {
+        LV_COLOR_FORMAT_L8, LV_COLOR_FORMAT_RGB565, LV_COLOR_FORMAT_RGB888,
+        LV_COLOR_FORMAT_XRGB8888, LV_COLOR_FORMAT_ARGB8888,
+    };
+    static const int32_t blur_radii[] = {5, 4, 12, 30};
+    static const lv_blur_quality_t qualities[] = {
+        LV_BLUR_QUALITY_PRECISION, LV_BLUR_QUALITY_AUTO, LV_BLUR_QUALITY_AUTO, LV_BLUR_QUALITY_SPEED,
+    };
+
+    uint32_t cf_i;
+    uint32_t blur_i;
+    int32_t ofs;
+    for(cf_i = 0; cf_i < sizeof(cfs) / sizeof(cfs[0]); cf_i++) {
+        uint32_t px_size = lv_color_format_get_size(cfs[cf_i]);
+        for(blur_i = 0; blur_i < sizeof(blur_radii) / sizeof(blur_radii[0]); blur_i++) {
+            lv_obj_t * canvas_ref = shifted_canvas_render(cfs[cf_i], canvas_buf[0], 0, blur_radii[blur_i],
+                                                          qualities[blur_i]);
+            for(ofs = 1; ofs <= 3; ofs++) {
+                lv_obj_t * canvas = shifted_canvas_render(cfs[cf_i], canvas_buf[1], ofs, blur_radii[blur_i],
+                                                          qualities[blur_i]);
+                int32_t y;
+                for(y = 0; y < SHIFT_AREA_HEIGHT; y++) {
+                    const uint8_t * row_ref = lv_draw_buf_goto_xy(lv_canvas_get_draw_buf(canvas_ref), 8, 8 + y);
+                    const uint8_t * row = lv_draw_buf_goto_xy(lv_canvas_get_draw_buf(canvas), 8 + ofs, 8 + ofs + y);
+                    TEST_ASSERT_EQUAL_UINT8_ARRAY(row_ref, row, SHIFT_AREA_WIDTH * px_size);
+                }
+                lv_obj_delete(canvas);
+            }
+            lv_obj_delete(canvas_ref);
+        }
+    }
+}
+
 #endif
