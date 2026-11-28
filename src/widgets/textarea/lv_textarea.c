@@ -17,6 +17,7 @@
 #include "../../misc/lv_text_private.h"
 #include "../../font/lv_font_private.h"
 #include "../../core/lv_obj_style_internal.h"
+#include "../../core/lv_observer_private.h"
 
 /*********************
  *      DEFINES
@@ -64,6 +65,11 @@ static void lv_textarea_scroll_to_cursor_pos(lv_obj_t * obj, int32_t pos);
 static lv_result_t add_char(lv_obj_t * obj, uint32_t c);
 static bool add_text(lv_obj_t * obj, const char * txt);
 static void set_cursor_pos_internal(lv_obj_t * obj, int32_t pos);
+
+#if LV_USE_OBSERVER
+    static void textarea_text_changed_event_cb(lv_event_t * e);
+    static void textarea_text_observer_cb(lv_observer_t * observer, lv_subject_t * subject);
+#endif /*LV_USE_OBSERVER*/
 static void calc_placeholder_text_size(lv_obj_t * obj);
 
 /**********************
@@ -806,6 +812,22 @@ void lv_textarea_cursor_up(lv_obj_t * obj)
     lv_textarea_set_cursor_pos(obj, new_cur_pos);
     ta->cursor.valid_x = cur_valid_x_tmp;
 }
+
+#if LV_USE_OBSERVER
+lv_observer_t * lv_textarea_bind_text(lv_obj_t * obj, lv_subject_t * subject)
+{
+    LV_CHECK_OBJ(obj, MY_CLASS, return NULL);
+    LV_CHECK_ARG(subject != NULL, return NULL);
+    LV_CHECK_ARG_FORMAT_MSG(
+        subject->type == LV_SUBJECT_TYPE_STRING,
+        return NULL,
+        "Incompatible subject type: %d", subject->type);
+
+    lv_obj_add_event_cb(obj, textarea_text_changed_event_cb, LV_EVENT_VALUE_CHANGED, subject);
+    lv_observer_t * observer = lv_subject_add_observer_obj(subject, textarea_text_observer_cb, obj, NULL);
+    return observer;
+}
+#endif /*LV_USE_OBSERVER*/
 
 /**********************
  *   STATIC FUNCTIONS
@@ -1589,5 +1611,47 @@ static void calc_placeholder_text_size(lv_obj_t * obj)
                               LV_COORD_MAX,
                               ph_dsc.flag);
 }
+
+#if LV_USE_OBSERVER
+
+static void textarea_text_changed_event_cb(lv_event_t * e)
+{
+    LV_ASSERT(e != NULL);
+    lv_obj_t * obj = lv_event_get_current_target(e);
+    lv_subject_t * subject = lv_event_get_user_data(e);
+    LV_ASSERT(obj != NULL);
+    LV_ASSERT(subject != NULL);
+    LV_ASSERT(subject->type == LV_SUBJECT_TYPE_STRING);
+
+    const char * txt = lv_textarea_get_text(obj);
+    if(txt == NULL) return;
+
+    /*Skip if the Subject already holds this text, e.g. when the change was
+     *caused by the Subject itself*/
+    if(lv_strcmp(txt, lv_subject_get_string(subject)) == 0) return;
+
+    lv_subject_set_string(subject, txt);
+}
+
+static void textarea_text_observer_cb(lv_observer_t * observer, lv_subject_t * subject)
+{
+    LV_ASSERT(observer != NULL);
+    LV_ASSERT(observer->target != NULL);
+    LV_ASSERT(subject != NULL);
+    LV_ASSERT(subject->type == LV_SUBJECT_TYPE_STRING);
+
+    lv_obj_t * obj = lv_observer_get_target_obj(observer);
+    const char * new_txt = lv_subject_get_string(subject);
+    if(new_txt == NULL) return;
+
+    /*Don't set the same text again: it would move the cursor to the end
+     *while the user is typing and could cause an endless notification loop*/
+    const char * act_txt = lv_textarea_get_text(obj);
+    if(act_txt && lv_strcmp(act_txt, new_txt) == 0) return;
+
+    lv_textarea_set_text(obj, new_txt);
+}
+
+#endif /*LV_USE_OBSERVER*/
 
 #endif

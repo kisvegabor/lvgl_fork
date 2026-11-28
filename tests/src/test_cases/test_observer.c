@@ -865,6 +865,37 @@ void test_observer_slider_value(void)
     TEST_ASSERT_EQUAL(29, lv_subject_get_int(subject));
 }
 
+void test_observer_textarea_text(void)
+{
+    lv_obj_t * obj = lv_textarea_create(lv_screen_active());
+
+    static char buf[16];
+    lv_subject_t * subject = subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subject, buf, NULL, sizeof(buf));
+    lv_subject_set_string(subject, "hello");
+    TEST_ASSERT_NOT_NULL(lv_textarea_bind_text(obj, subject));
+
+    /*Subject -> Text Area*/
+    TEST_ASSERT_EQUAL_STRING("hello", lv_textarea_get_text(obj));
+    lv_subject_set_string(subject, "world");
+    TEST_ASSERT_EQUAL_STRING("world", lv_textarea_get_text(obj));
+
+    /*Text Area -> Subject, the cursor stays in place*/
+    lv_textarea_set_cursor_pos(obj, 0);
+    lv_textarea_add_text(obj, "ab");
+    TEST_ASSERT_EQUAL_STRING("abworld", lv_textarea_get_text(obj));
+    TEST_ASSERT_EQUAL_STRING("abworld", lv_subject_get_string(subject));
+    TEST_ASSERT_EQUAL(2, lv_textarea_get_cursor_pos(obj));
+
+    lv_textarea_delete_char(obj);
+    TEST_ASSERT_EQUAL_STRING("aworld", lv_subject_get_string(subject));
+
+    /*Too long text is truncated to the Subject's buffer*/
+    lv_textarea_set_text(obj, "0123456789abcdefghij");
+    TEST_ASSERT_EQUAL_STRING("0123456789abcde", lv_subject_get_string(subject));
+    TEST_ASSERT_EQUAL_STRING("0123456789abcde", lv_textarea_get_text(obj));
+}
+
 void test_observer_roller_value(void)
 {
     lv_obj_t * obj = lv_roller_create(lv_screen_active());

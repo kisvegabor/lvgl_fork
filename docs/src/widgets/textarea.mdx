@@ -168,6 +168,39 @@ style and a `selector`:
 - <ApiLink name="LV_PART_TEXTAREA_PLACEHOLDER" /> Unique to Text Area; allows styling
    the [placeholder text](/widgets/textarea).
 
+## Data binding
+
+Data bindings connect a widget property to a piece of global data, called a
+[Subject](/main-modules/data_binding/subjects). When the subject's value
+changes, every widget bound to it updates automatically; and an
+interactive widget can write back into the subject so other subscribers
+see the new value.
+
+A Text Area binds its text to a string Subject. The link is two-way: the
+end user's typing updates the subject, and any application-side write into
+the subject replaces the Text Area's text.
+
+- <ApiLink name="lv_textarea_bind_text" display="lv_textarea_bind_text(textarea, subject)" />
+
+```c
+static lv_subject_t * name_subject;
+static char name_buf[32];
+
+name_subject = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+lv_subject_set_string_buffer_static(name_subject, name_buf, NULL, sizeof(name_buf));
+
+lv_obj_t * ta = lv_textarea_create(lv_screen_active());
+lv_textarea_bind_text(ta, name_subject);
+
+/*Mirror the typed text in a Label*/
+lv_obj_t * label = lv_label_create(lv_screen_active());
+lv_label_bind_text(label, name_subject, NULL);
+```
+
+The Subject's buffer limits the text length: text that doesn't fit is
+truncated, in the Text Area as well. To keep this from happening, set
+<ApiLink name="lv_textarea_set_max_length" display="lv_textarea_set_max_length(textarea, buf_size - 1)" />.
+
 ## Events
 
 - <ApiLink name="LV_EVENT_INSERT" /> Sent just before a character or text is

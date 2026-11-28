@@ -340,6 +340,20 @@ void lv_textarea_cursor_down(lv_obj_t * obj);
  */
 void lv_textarea_cursor_up(lv_obj_t * obj);
 
+#if LV_USE_OBSERVER
+/**
+ * Bind a string Subject to a Text Area's text.
+ * The binding is two-way: editing the Text Area updates the Subject,
+ * and setting the Subject updates the Text Area's text.
+ * @param obj       pointer to Text Area
+ * @param subject   pointer to a string Subject
+ * @return          pointer to newly-created Observer
+ * @note            Text longer than the Subject's buffer is truncated to fit,
+ *                  in the Text Area as well.
+ */
+lv_observer_t * lv_textarea_bind_text(lv_obj_t * obj, lv_subject_t * subject);
+#endif
+
 /**********************
  *      MACROS
  **********************/
